@@ -1,0 +1,7 @@
+.vs
+*.csproj.user
+bin
+obj
+node_modules
+wwwroot/dist
+wwwroot/service-worker.js

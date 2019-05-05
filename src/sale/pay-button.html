@@ -1,0 +1,8 @@
+<template>
+    <div class="btn-group btn-block">
+        <button class="btn btn-primary btn-lg" style="width: 7em" disabled="true">${total | money} kr.</button>
+        <button class="btn btn-primary btn-lg" click.delegate="doConfirm('account')" disabled.bind="!canConfirm"><font-awesome-icon icon="file-invoice-dollar" fixed-width="true"></font-awesome-icon></button>
+        <button class="btn btn-primary btn-lg" click.delegate="doConfirm('card')" disabled.bind="!canConfirm"><font-awesome-icon icon="credit-card" fixed-width="true"></font-awesome-icon></button>
+        <button class="btn btn-primary btn-lg" click.delegate="doConfirm('cash')" disabled.bind="!canConfirm"><font-awesome-icon icon="money-bill-alt" fixed-width="true"></font-awesome-icon></button>
+    </div>
+</template>

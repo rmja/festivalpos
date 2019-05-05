@@ -1,0 +1,34 @@
+<template>
+    <top-navbar>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a route-href="create" class="nav-link"><font-awesome-icon icon="plus"></font-awesome-icon></a>                
+            </li>
+        </ul>
+    </top-navbar>
+    <page-body>
+        <div if.bind="accounts.length">
+            <table class="table">
+                <thead>
+                    <th>&#x2116;</th>
+                    <th>Navn</th>
+                    <th>Maks</th>
+                    <th></th>
+                </thead>
+                <tr repeat.for="account of accounts">
+                    <td>${account.number}</td>
+                    <td style="width: 100%">${account.name}</td>
+                    <td class="text-right" style="white-space: nowrap">${account.maxCredit | money} kr.</td>
+                    <td>
+                        <a route-href="route: details; params.bind: { accountId: account.id }" class="btn btn-light btn-sm"><font-awesome-icon icon="arrow-right"></font-awesome-icon></a>
+                    </td>
+                </tr>
+            </table>
+
+            <button class="btn btn-warning btn-block" click.delegate="resetCredit()">Sæt alle konti til kreditmaks</button>
+        </div>
+        <empty-hint else>
+            Der er ingen konti
+        </empty-hint>
+    </page-body>
+</template>

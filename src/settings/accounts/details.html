@@ -1,0 +1,18 @@
+<template>
+    <top-navbar>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a route-href="list" class="nav-link"><font-awesome-icon icon="list"></font-awesome-icon></a>
+            </li>
+            <li class="nav-item">
+                <a route-href="route:edit; params.bind: { accountId }" class="nav-link"><font-awesome-icon icon="edit"></font-awesome-icon></a>
+            </li>
+            <li class="nav-item">
+                <a href click.delegate="delete()" class="nav-link text-danger"><font-awesome-icon icon="trash"></font-awesome-icon></a>
+            </li>
+        </ul>
+    </top-navbar>
+    <page-body>
+        <h1>${name}</h1>
+    </page-body>
+</template>

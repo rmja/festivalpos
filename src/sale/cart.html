@@ -1,0 +1,21 @@
+<template>
+    <require from="./pay-button"></require>
+
+    <template if.bind="orderLines.length">
+        <table class="table">
+            <tr repeat.for="line of orderLines">
+                <td>${line.quantity}</td>
+                <td style="width: 100%">${line.name || 'Engangsbeløb'}</td>
+                <td class="text-right" style="width: 5em">${line.total | money}</td>
+                <td><button class="btn btn-sm btn-danger" click.delegate="delete($index)"><font-awesome-icon icon="trash"></font-awesome-icon></button></td>
+            </tr>
+        </table>
+
+        <button type="reset" class="btn btn-danger btn-block" click.delegate="clear()"><font-awesome-icon icon="trash"></font-awesome-icon> Slet alt</button>
+    </template>
+    <empty-hint else icon.bind="faShoppingCart">
+        Kurven er tom
+    </empty-hint>
+
+    <pay-button class="fixed-bottom"></pay-button>
+</template>

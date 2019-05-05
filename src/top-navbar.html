@@ -1,0 +1,34 @@
+<template>
+    <style>
+        .top-navbar-actions .navbar-nav {
+            flex-direction: row;
+            font-size: 1.7em
+        }
+        .top-navbar-actions .nav-item a.nav-link {
+            padding: 0 15px
+        }
+    </style>
+    <nav class="navbar navbar-dark bg-dark">
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="top-navbar-actions ml-auto">
+            <slot></slot>
+        </div>
+
+        <div class="navbar-collapse collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li repeat.for="nav of router.navigation" class="nav-item ${nav.active ? 'active' : ''} ${nav.settings.childRoutes ? 'dropdown' : ''}">
+                    <template if.bind="nav.settings.childRoutes">
+                        <a class="nav-link dropdown-toggle" href data-toggle="dropdown">${nav.title}</a>
+                        <div class="dropdown-menu">
+                            <a repeat.for="route of nav.settings.childRoutes" class="dropdown-item" href="${nav.href}/${route.route}">${route.title}</a>
+                        </div>
+                    </template>
+                    <a else class="nav-link" href="${nav.href}">${nav.title}</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</template>

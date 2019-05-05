@@ -1,0 +1,14 @@
+<template>
+    <ux-dialog>
+        <form submit.delegate="submit()">
+            <ux-dialog-body>
+                <select value.bind="product">
+                    <option repeat.for="product of products" model.bind="product">${product.name}</option>
+                </select>
+            </ux-dialog-body>
+            <ux-dialog-footer>
+                <button type="submit">Tilføj</button>
+            </ux-dialog-footer>
+        </form>
+    </ux-dialog>
+</template>
