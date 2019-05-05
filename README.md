@@ -6,3 +6,6 @@ It is designed to be easy to use for non-technical volunteer staff, while suppor
 * Allow for multiple points of sale with individual statistics
 * Buy using predefined customer credit accounts, creditcard using SumUp (not working yet), and cash payments.
 * Easily message organizing staff in case of technical issues, supply outages, etc.
+
+The program is used by the local music festival [Kajfest](http://kajfest.dk) on the beatiful island of [Læsø](https://laesoe.dk).
+It is made by me and is free and open source - please use it however you want!
