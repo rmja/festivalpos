@@ -3,7 +3,9 @@ ARG WEBPACK_MODE=production
 WORKDIR /src
 COPY ["package*.json", "./"]
 RUN npm install
-COPY . .
+COPY ["tsconfig*.json", "webpack.config.*", "./"]
+COPY ["typings", "./typings"]
+COPY ["src", "./src"]
 RUN node_modules/.bin/webpack --mode ${WEBPACK_MODE}
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim AS base
