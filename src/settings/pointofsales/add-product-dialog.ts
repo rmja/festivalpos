@@ -1,11 +1,10 @@
-import { autoinject, view, View } from "aurelia-framework";
+import { autoinject } from "aurelia-framework";
 import { Api } from "../../api";
 import { Product } from "../../api/product";
 import { DialogController } from "aurelia-dialog";
 
 @autoinject()
 export class AddProductDialog {
-    static view: View;
     products!: ProductViewModel[];
     product!: ProductViewModel;
 

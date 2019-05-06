@@ -92,23 +92,23 @@ const config = (_env: any, argv?: { mode?: "production" | "development" }): Conf
                 "jQuery": "jquery"
             }),
 
-            // new GenerateSW({
-            //     cacheId: "KajfestPOS",
-            //     clientsClaim: true,
-            //     skipWaiting: true,
-            //     navigateFallback: "index.html",
-            //     runtimeCaching: [
-            //         {
-            //             urlPattern: /\?bypassCache/,
-            //             handler: "NetworkOnly"
-            //         },
-            //         {
-            //             urlPattern: /\/api\/.*/,
-            //             handler: "StaleWhileRevalidate"
-            //         }
-            //     ],
-            //     swDest: resolve("./wwwroot/service-worker.js")
-            // })
+            new GenerateSW({
+                cacheId: "FestivalPOS",
+                clientsClaim: true,
+                skipWaiting: true,
+                navigateFallback: "index.html",
+                runtimeCaching: [
+                    {
+                        urlPattern: /\?bypassCache/,
+                        handler: "NetworkOnly"
+                    },
+                    {
+                        urlPattern: /\/api\/.*/,
+                        handler: "StaleWhileRevalidate"
+                    }
+                ],
+                swDest: resolve("./wwwroot/service-worker.js")
+            })
         ]
     };
 };

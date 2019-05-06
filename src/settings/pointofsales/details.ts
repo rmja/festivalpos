@@ -1,7 +1,6 @@
-import { autoinject } from "aurelia-framework";
+import { autoinject, PLATFORM } from "aurelia-framework";
 import { Api } from "../../api";
 import { DialogService } from "aurelia-dialog";
-import { AddProductDialog } from "./add-product-dialog";
 import { Product } from "../../api/product";
 import { diff } from "ur-jsonpatch";
 import { PointOfSale } from "../../api/point-of-sale";
@@ -36,7 +35,7 @@ export class PointOfSaleDetails {
     }
 
     async addProduct() {
-        const result = await this.dialog.open({ viewModel: AddProductDialog }).whenClosed();
+        const result = await this.dialog.open({ viewModel: PLATFORM.moduleName("./add-product-dialog") }).whenClosed();
 
         if (!result.wasCancelled) {
             const product = result.output as Product;
