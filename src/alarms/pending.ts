@@ -15,7 +15,7 @@ export class PendingAlarms {
     }
 
     async activate() {
-        this.pendingEvents = await this.api.getAllPendingAlarmEvents().transfer();
+        this.pendingEvents = await this.api.getAllPendingAlarmEvents().bypassCache().transfer();
 
         this.disposables = [
             this.eventAggregator.subscribe(EventCreated, this.eventCreated.bind(this))

@@ -22,6 +22,13 @@ export class EditTerminal {
         this.name = terminal.name;
     }
 
+    async delete() {
+        if (confirm("Skal terminalen slettes?")) {
+            await this.api.deleteTerminal(this.terminalId).send();
+            this.router.navigateToRoute("list");
+        }
+    }
+
     async submit() {
         const patch = new Patch<Terminal>()
             .replace(x => x.name, this.name);

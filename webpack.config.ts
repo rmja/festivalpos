@@ -96,10 +96,9 @@ const config = (_env: any, argv?: { mode?: "production" | "development" }): Conf
                 cacheId: "FestivalPOS",
                 clientsClaim: true,
                 skipWaiting: true,
-                navigateFallback: "index.html",
                 runtimeCaching: [
                     {
-                        urlPattern: /\?bypassCache/,
+                        urlPattern: /[\?&]bypassCache/,
                         handler: "NetworkOnly"
                     },
                     {

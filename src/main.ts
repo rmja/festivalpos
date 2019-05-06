@@ -1,7 +1,5 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "./styles.css";
-// import "jquery/dist/jquery.slim";
-// import "pupper.js";
 import "bootstrap/dist/js/bootstrap.js";
 import { Aurelia, PLATFORM } from "aurelia-framework";
 import { HttpClient } from "aurelia-fetch-client";
@@ -9,12 +7,12 @@ import { Http } from "ur-http";
 import { initialState } from "./state";
 import { DialogConfiguration } from "aurelia-dialog";
 
-// if ('serviceWorker' in navigator && window.location.protocol.startsWith('https')) {
-//     window.addEventListener('load', async () => {
-//         const registration = await navigator.serviceWorker.register('service-worker.js');
-//         console.log('ServiceWorker registration successful with scope: ', registration.scope);
-//     });
-// }
+if ('serviceWorker' in navigator && window.location.protocol.startsWith('https')) {
+    window.addEventListener('load', async () => {
+        const registration = await navigator.serviceWorker.register('service-worker.js');
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    });
+}
 
 export async function configure(aurelia: Aurelia) {
     aurelia.use

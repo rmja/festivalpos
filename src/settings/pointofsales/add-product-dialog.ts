@@ -1,9 +1,10 @@
-import { autoinject } from "aurelia-framework";
+import { autoinject, useView, PLATFORM, viewStrategy } from "aurelia-framework";
 import { Api } from "../../api";
 import { Product } from "../../api/product";
 import { DialogController } from "aurelia-dialog";
 
 @autoinject()
+@useView("settings/pointofsales/add-product-dialog.html")
 export class AddProductDialog {
     products!: ProductViewModel[];
     product!: ProductViewModel;

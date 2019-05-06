@@ -1,4 +1,4 @@
-import { autoinject, PLATFORM } from "aurelia-framework";
+import { autoinject } from "aurelia-framework";
 import { Api } from "../../api";
 import { DialogService } from "aurelia-dialog";
 import { Product } from "../../api/product";
@@ -6,6 +6,7 @@ import { diff } from "ur-jsonpatch";
 import { PointOfSale } from "../../api/point-of-sale";
 import { moveBefore } from "../../move-before";
 import { Router } from "aurelia-router";
+import { AddProductDialog } from "./add-product-dialog";
 
 @autoinject()
 export class PointOfSaleDetails {
@@ -35,7 +36,7 @@ export class PointOfSaleDetails {
     }
 
     async addProduct() {
-        const result = await this.dialog.open({ viewModel: PLATFORM.moduleName("./add-product-dialog") }).whenClosed();
+        const result = await this.dialog.open({ viewModel: AddProductDialog }).whenClosed();
 
         if (!result.wasCancelled) {
             const product = result.output as Product;
