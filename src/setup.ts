@@ -1,5 +1,5 @@
-import { autoinject, computedFrom } from "aurelia-framework";
-import { Router, RedirectToRoute } from "aurelia-router";
+import { autoinject } from "aurelia-framework";
+import { Router } from "aurelia-router";
 import { Api } from "./api";
 import { connectTo, Store } from "aurelia-store";
 import { State, setup } from "./state";
@@ -25,16 +25,17 @@ export class Setup {
         this.terminals = await this.api.getAllTerminals().transfer();
         this.pointOfSales = await this.api.getAllPointOfSales().transfer();
 
-        if (this.terminals.length === 0 || this.pointOfSales.length === 0) {
-            return new RedirectToRoute("settings");
-        }
-
         return true;
     }
 
     bind() {
         this.terminal = this.terminals.find(x => x.id === this.state.terminalId);
         this.pointOfSale = this.pointOfSales.find(x => x.id === this.state.pointOfSaleId);
+    }
+
+    async createDefaults() {
+        this.terminals.push(await this.api.createTerminal({ name: "Terminal 1" }).transfer());
+        this.pointOfSales.push(await this.api.createPointOfSale({ name: "Salgssted 1" }).transfer());
     }
 
     async submit() {

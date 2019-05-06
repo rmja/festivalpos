@@ -1,7 +1,7 @@
 <template>
     <top-navbar></top-navbar>
     <page-body>
-        <form submit.delegate="submit()">
+        <form submit.delegate="submit()" if.bind="terminals.length && pointOfSales.length">
             <div class"form-group">
                 <label>Terminal</label>
                 <select value.bind="terminal" class="form-control">
@@ -17,5 +17,8 @@
 
             <button type="submit" class="btn btn-primary btn-block fixed-bottom"><font-awesome-icon icon="save"></font-awesome-icon> Gem</button>
         </form>
+        <div else>
+            Der skal være opsat med terminaler og salgssteder for at starte. <a href click.delegate="createDefaults()">Klik her for at oprette en af hver.</a>
+        </div>
     </page-body>
 </template>

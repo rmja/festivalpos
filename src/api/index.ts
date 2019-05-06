@@ -13,8 +13,8 @@ import { AlarmFeed, AlarmEvent } from "./alarms";
 import { Account } from "./account";
 
 export class Api {
-    createPointOfSale(terminal: { name: string }) {
-        return Http.post("/PointOfSales").withJson(terminal).expectJson(PointOfSale);
+    createPointOfSale(pos: { name: string }) {
+        return Http.post("/PointOfSales").withJson(pos).expectJson(PointOfSale);
     }
 
     getAllPointOfSales() {

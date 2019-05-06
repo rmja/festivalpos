@@ -24,7 +24,7 @@ export class App {
 
     constructor(private store: Store<State>, private alarmsHub: AlarmsHub) {
         store.registerMiddleware(logMiddleware, MiddlewarePlacement.After, { logType: LogLevel.log });
-        store.registerMiddleware(localStorageMiddleware, MiddlewarePlacement.After, { key: "state" });
+        store.registerMiddleware(localStorageMiddleware, MiddlewarePlacement.After, { key: "festivalpos-state" });
 
         store.registerAction("EnsureValidState", ensureValidState);
         store.registerAction("Setup", setup);
@@ -42,7 +42,7 @@ export class App {
     }
 
     async activate() {
-        await this.store.dispatch(rehydrateFromLocalStorage, "state");
+        await this.store.dispatch(rehydrateFromLocalStorage, "festivalpos-state");
         await this.store.dispatch(ensureValidState);
         await this.alarmsHub.connect();
     }
