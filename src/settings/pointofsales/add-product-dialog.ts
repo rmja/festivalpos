@@ -1,10 +1,11 @@
-import { autoinject } from "aurelia-framework";
+import { autoinject, view, View } from "aurelia-framework";
 import { Api } from "../../api";
 import { Product } from "../../api/product";
 import { DialogController } from "aurelia-dialog";
 
 @autoinject()
 export class AddProductDialog {
+    static view: View;
     products!: ProductViewModel[];
     product!: ProductViewModel;
 
@@ -19,6 +20,10 @@ export class AddProductDialog {
 
     activate() {
         this.product = this.products[0];
+    }
+
+    close() {
+        this.controller.cancel();
     }
 
     submit() {
