@@ -7,6 +7,7 @@ import { Aurelia, PLATFORM } from "aurelia-framework";
 import { HttpClient } from "aurelia-fetch-client";
 import { Http } from "ur-http";
 import { initialState } from "./state";
+import { DialogConfiguration } from "aurelia-dialog";
 
 // if ('serviceWorker' in navigator && window.location.protocol.startsWith('https')) {
 //     window.addEventListener('load', async () => {
@@ -22,7 +23,10 @@ export async function configure(aurelia: Aurelia) {
         .plugin(PLATFORM.moduleName("aurelia-validation"))
         .plugin(PLATFORM.moduleName("aurelia-fontawesome"))
         .plugin(PLATFORM.moduleName("aurelia-fontawesome-loader"))
-        .plugin(PLATFORM.moduleName("aurelia-dialog"))
+        .plugin(PLATFORM.moduleName("aurelia-dialog"), (config: DialogConfiguration) => {
+            config.useDefaults();
+            config.settings.keyboard = true;
+        })
         .plugin(PLATFORM.moduleName("aurelia-store"), { initialState })
         .globalResources(PLATFORM.moduleName("top-navbar"))
         .globalResources(PLATFORM.moduleName("page-body.html"))

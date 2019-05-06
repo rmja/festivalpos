@@ -18,8 +18,8 @@
         <form submit.delegate="submit()">
             <div class="card">
                 <div class="card-header">
-                    <button type="button" class="btn btn-secondary float-right" click.delegate="addProduct()"><font-awesome-icon icon="plus"></font-awesome-icon> Tilføj produkt</button>
-                    <h4>Tilknyttede produkter</h4>
+                    <button type="button" class="btn btn-secondary float-right" click.delegate="addProduct()"><font-awesome-icon icon="plus"></font-awesome-icon></button>
+                    <h4>Produkter</h4>
                 </div>
                 <div class="card-body" if.bind="products.length">
                     <dragula-and-drop drop-fn.call="itemDropped(item, sibling)"></dragula-and-drop>

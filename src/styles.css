@@ -6,3 +6,8 @@
 .wrapper {
     margin-top: 10px;
 }
+
+ux-dialog-overlay.active {
+    background-color: black;
+    opacity: .5 !important;
+}
