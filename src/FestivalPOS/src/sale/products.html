@@ -2,26 +2,36 @@
     <require from="./pay-button"></require>
 
     <style>
-        .product-badge {
+        .qty-badge {
             position: absolute;
             top: 5px;
             right: 5px;
             font-size: 100%;
         }
+        .price-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+        }
     </style>
 
-    <div class="row" if.bind="products.length">
+    <div class="row pad-bottom" if.bind="products.length">
         <div repeat.for="product of products" class="col-4 col-sm-3 col-md-2" style="display: flex">
-            <div class="card div-link" style="width: 100%" click.delegate="addToCart(product)">
-                <span class="badge badge-info product-badge" show.bind="product.qty">${product.qty}</span>
+            <div class="card div-link mb-3" style="width: 100%" click.delegate="addToCart(product)">
                 <template if.bind="$index">
-                    <img class="card-img-top" src="https://via.placeholder.com/150">
-                    <div class="card-body text-center" style="padding: 0">${product.name}</div>
+                    <div style="position: relative">
+                        <img class="card-img-top" src="https://via.placeholder.com/150x120">
+                        <small class="text-muted price-badge">${product.price}</small>
+                    </div>
+                    <span class="badge badge-info qty-badge" show.bind="product.qty">${product.qty}</span>
                 </template>
                 <template else>
-                    <div class="card-body text-center" style="padding: 0; display: flex; justify-content: center; align-items: center"><strong>${product.name}</strong></div>
+                    <div class="card-body text-center" style="position: relative; padding: 0; display: flex; justify-content: center; align-items: center">
+                        <strong>${product.name}</strong>
+                        <small class="text-muted price-badge">${product.price}</small>
+                    </div>
                 </template>
-                <div class="card-footer text-center" style="padding: 0"><small class="text-muted">${product.price}</small></div>
+                <div class="card-footer text-center" style="padding: 0; white-space: nowrap; overflow: hidden"><small>${product.name}</small></div>
             </div>
         </div>
     </div>

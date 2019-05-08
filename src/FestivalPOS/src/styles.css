@@ -1,8 +1,8 @@
 .keypad {
     position: fixed;
-    right: 20px;
-    bottom: 68px;
-    left: 20px;
+    right: 15px;
+    bottom: 63px;
+    left: 15px;
 }
 
 .keypad button {
@@ -12,6 +12,10 @@
 
 .wrapper {
     margin-top: 10px;
+}
+
+.pad-bottom {
+    padding-bottom: 63px;
 }
 
 ux-dialog-overlay.active {

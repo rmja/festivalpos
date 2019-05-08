@@ -3,5 +3,5 @@
 bin
 obj
 node_modules
-wwwroot/dist
-wwwroot/service-worker.js
+**/wwwroot/dist
+**/wwwroot/service-worker.js

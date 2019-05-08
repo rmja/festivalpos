@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "dist/precache-manifest.a671e205384e476a1b5088fc84fe47e5.js"
+  "dist/precache-manifest.a2ba3a637c8d7e97225f2f63862c1faf.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "FestivalPOS"});
