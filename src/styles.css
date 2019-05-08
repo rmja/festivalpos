@@ -1,5 +1,12 @@
-.btn-keypad {
-    height: 80px;
+.keypad {
+    position: fixed;
+    right: 20px;
+    bottom: 68px;
+    left: 20px;
+}
+
+.keypad button {
+    height: 70px;
     width: 100%;
 }
 
