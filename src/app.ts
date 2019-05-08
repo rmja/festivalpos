@@ -4,7 +4,6 @@ import { Store, MiddlewarePlacement, logMiddleware, LogLevel, localStorageMiddle
 import { State, addProductOrderLine, resetOrder, removeOrderLine, updateCurrentMisc, addCurrentMiscOrderLine, setup, ensureValidState } from "./state";
 
 import { routes as settingsRoutes } from "./settings/router";
-import { AlarmsHub } from "./api/alarms-hub";
 
 const routes: RouteConfig[] = [
     { route: "", redirect: "sale" },
@@ -22,7 +21,7 @@ const routes: RouteConfig[] = [
 export class App {
     router!: Router;
 
-    constructor(private store: Store<State>, private alarmsHub: AlarmsHub) {
+    constructor(private store: Store<State>) {
         store.registerMiddleware(logMiddleware, MiddlewarePlacement.After, { logType: LogLevel.log });
         store.registerMiddleware(localStorageMiddleware, MiddlewarePlacement.After, { key: "festivalpos-state" });
 
@@ -44,10 +43,5 @@ export class App {
     async activate() {
         await this.store.dispatch(rehydrateFromLocalStorage, "festivalpos-state");
         await this.store.dispatch(ensureValidState);
-        await this.alarmsHub.connect();
-    }
-
-    async deactivate() {
-        await this.alarmsHub.disconnect();
     }
 }

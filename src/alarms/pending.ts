@@ -2,7 +2,7 @@ import { autoinject, Disposable } from "aurelia-framework";
 import { Api } from "../api";
 import { DateTime } from "luxon";
 import { EventAggregator } from "aurelia-event-aggregator";
-import { EventCreated } from "../api/alarms-hub";
+import { EventCreated, AlarmsHub } from "../api/alarms-hub";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 
 @autoinject()
@@ -11,10 +11,12 @@ export class PendingAlarms {
     faBell = faBell;
     private disposables!: Disposable[];
 
-    constructor(private api: Api, private eventAggregator: EventAggregator) {
+    constructor(private api: Api, private alarmsHub: AlarmsHub, private eventAggregator: EventAggregator) {
     }
 
     async activate() {
+        await this.alarmsHub.connect();
+
         this.pendingEvents = await this.api.getAllPendingAlarmEvents().bypassCache().transfer();
 
         this.disposables = [
@@ -22,10 +24,12 @@ export class PendingAlarms {
         ];
     }
 
-    deactivate() {
+    async deactivate() {
         for (const disposable of this.disposables) {
             disposable.dispose();
         }
+
+        await this.alarmsHub.disconnect();
     }
 
     private eventCreated(event: EventCreated) {
