@@ -20,6 +20,9 @@ export class Payment {
     amount!: Big;
 
     @jsonProperty()
+    transactionNumber?: string;
+
+    @jsonProperty()
     accountId?: number;
 
     @jsonProperty({ converter: dateTimeConverter })

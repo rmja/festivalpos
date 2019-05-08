@@ -3,6 +3,8 @@ import { State, getOrderTotal, getOrderQuantityTotal, resetOrder } from "../stat
 import { computedFrom, autoinject, bindable } from "aurelia-framework";
 import { Api } from "../api";
 import { Router } from "aurelia-router";
+import { Order } from "../api/order";
+import { Sumup } from "../sumup";
 
 @autoinject()
 @connectTo()
@@ -23,10 +25,10 @@ export class PayButtonCustomElement {
         }
     }
 
-    constructor(private api: Api, private store: Store<State>, private router: Router) {
+    constructor(private api: Api, private store: Store<State>, private sumup: Sumup, private router: Router) {
     }
 
-    async doConfirm(method: "card" | "cash") {
+    async doConfirm(method: "card" | "cash" | "account") {
         if (!this.canConfirm) {
             return;
         }
@@ -42,6 +44,11 @@ export class PayButtonCustomElement {
         }).transfer();
 
         await this.store.dispatch(resetOrder);
-        await this.router.navigate(`/checkout/orders/${order.id}/pay/${method}`);
+
+        if (method === "card") {
+            await this.sumup.redirectToApp(order);
+        } else {
+            this.router.navigate(`/checkout/orders/${order.id}/pay/${method}`);
+        }
     }
 }

@@ -104,7 +104,7 @@ export class Api {
         return Http.delete(`/Orders/${orderId}`).onSent(this.invalidate());
     }
 
-    createPayment(orderId: number, payment: { method: "card" | "cash" | "account", amount: Big, accountId?: number }) {
+    createPayment(orderId: number, payment: { method: "card" | "cash" | "account", amount: Big, transactionNumber?: string, accountId?: number }) {
         return Http.post(`/Orders/${orderId}/Payments`).withJson(payment).expectJson(Payment).onSent(this.invalidate(
             "/Payments",
             `/Orders/${orderId}`
