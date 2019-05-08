@@ -20,6 +20,11 @@ export class CacheBuster {
      * @param urlFilter The filter to match the url for. The url is without the query string
      */
     async invalidate(urlFilter: string | RegExp | (string | RegExp)[]) {
+        if (!caches) {
+            // Browser cache is not available, running http?
+            return;
+        }
+
         if (!this.cache) {
             this.cache = await caches.open(this.cacheName);
         }
