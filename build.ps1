@@ -1,0 +1,1 @@
+docker build -f src/FestivalPOS/Dockerfile -t rmjac/festivalpos .
