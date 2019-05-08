@@ -1,4 +1,4 @@
-import { HubConnection, HubConnectionBuilder } from "@aspnet/signalr";
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from "@aspnet/signalr";
 import { AlarmEvent } from "./alarms";
 import { EventAggregator } from "aurelia-event-aggregator";
 import { modelBind } from "ur-json";
@@ -7,6 +7,8 @@ import { autoinject } from "aurelia-framework";
 @autoinject()
 export class AlarmsHub {
     private connection: HubConnection;
+    private connectPromise?: Promise<void>;
+    private connectedUsers = 0;
     
     constructor(eventAggregator: EventAggregator) {
         this.connection = new HubConnectionBuilder()
@@ -19,12 +21,20 @@ export class AlarmsHub {
         });
     }
 
-    connect() {
-        return this.connection.start();
+    async connect() {
+        if (!this.connectPromise) {
+            this.connectPromise = this.connection.start();
+        }
+
+        await this.connectPromise;
+
+        this.connectedUsers++;
     }
 
-    disconnect() {
-        return this.connection.stop();
+    async disconnect() {
+        if (--this.connectedUsers === 0) {
+            await this.connection.stop();
+        }
     }
 }
 
