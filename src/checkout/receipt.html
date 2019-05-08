@@ -1,6 +1,4 @@
 <template>
-    <h1 class="text-center">Kvittering</h1>
-
     <div class="row">
         <h3 class="col text-muted">Ordrenr.</h3>
         <h3 class="col text-right">${orderId}</h3>
@@ -13,6 +11,9 @@
     <div class="row" if.bind="change">
         <h4 class="col text-muted">Tilbage</h4>
         <h4 class="col text-right">${change | money} kr.</h4>
+    </div>
+    <div class="text-center">
+        <font-awesome-icon icon="check-circle" class="text-success" size="8x"></font-awesome-icon>
     </div>
 
     <button type="button" class="btn btn-primary btn-lg btn-block fixed-bottom" click.delegate="complete()">Udført</button>
