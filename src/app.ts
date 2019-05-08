@@ -7,14 +7,13 @@ import { routes as settingsRoutes } from "./settings/router";
 
 const routes: RouteConfig[] = [
     { route: "", redirect: "sale" },
-    { route: "setup", name: "setup", moduleId: PLATFORM.moduleName("./setup") },
-    { route: "sale", name: "sale", moduleId: PLATFORM.moduleName("./sale/router"), nav: true, title: "Salg" },
-    { route: "checkout", name: "checkout", moduleId: PLATFORM.moduleName("./checkout/router"), title: "Betaling" },
-    { route: "accounts", name: "accounts", moduleId: PLATFORM.moduleName("./accounts/router"), nav: true, title: "Konti" },
-    { route: "alarms", name: "alarms", moduleId: PLATFORM.moduleName("./alarms/router"), nav: true, title: "Alarmeringer" },
-    { route: "statistics", name: "statistics", moduleId: PLATFORM.moduleName("./statistics/router"), nav: true, title: "Statistik" },
-    { route: "setup", name: "setup", moduleId: PLATFORM.moduleName("./setup"), nav: true, title: "Opsætning" },
-    { route: "settings", name: "settings", moduleId: PLATFORM.moduleName("./settings/router"), nav: true, title: "Indstillinger", settings: { childRoutes: settingsRoutes } },
+    { route: "sale", name: "sale", moduleId: PLATFORM.moduleName("./sale/router", "sale"), nav: true, title: "Salg" },
+    { route: "checkout", name: "checkout", moduleId: PLATFORM.moduleName("./checkout/router", "checkout"), title: "Betaling" },
+    { route: "accounts", name: "accounts", moduleId: PLATFORM.moduleName("./accounts/router", "accounts"), nav: true, title: "Konti" },
+    { route: "alarms", name: "alarms", moduleId: PLATFORM.moduleName("./alarms/router", "alarms"), nav: true, title: "Alarmeringer" },
+    { route: "statistics", name: "statistics", moduleId: PLATFORM.moduleName("./statistics/router", "statistics"), nav: true, title: "Statistik" },
+    { route: "setup", name: "setup", moduleId: PLATFORM.moduleName("./setup", "setup"), nav: true, title: "Opsætning" },
+    { route: "settings", name: "settings", moduleId: PLATFORM.moduleName("./settings/router", "settings"), nav: true, title: "Indstillinger", settings: { childRoutes: settingsRoutes } },
 ];
 
 @autoinject()

@@ -5,8 +5,8 @@ import { State, getOrderQuantityTotal, isSetup } from "../state";
 import { connectTo } from "aurelia-store";
 
 const routes: RouteConfig[] = [
-    { route: "", name: "list", moduleId: PLATFORM.moduleName("./list") },
-    { route: ":accountId", name: "details", moduleId: PLATFORM.moduleName("./details") },
+    { route: "", name: "list", moduleId: PLATFORM.moduleName("./list", "accounts") },
+    { route: ":accountId", name: "details", moduleId: PLATFORM.moduleName("./details", "accounts") },
 ];
 
 @autoinject()

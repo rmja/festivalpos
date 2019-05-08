@@ -3,7 +3,7 @@ import { PLATFORM } from "aurelia-pal";
 
 const routes: RouteConfig[] = [
     { route: "", redirect: "pending" },
-    { route: "pending", name: "pending", moduleId: PLATFORM.moduleName("./pending") },
+    { route: "pending", name: "pending", moduleId: PLATFORM.moduleName("./pending", "alarms") },
 ]
 
 export class AlarmsRouter {

@@ -5,10 +5,10 @@ import { State, getOrderQuantityTotal, isSetup } from "../state";
 import { connectTo } from "aurelia-store";
 
 const routes: RouteConfig[] = [
-    { route: "alarms", name: "alarms", moduleId: PLATFORM.moduleName("./alarms") },
-    { route: "", name: "products", moduleId: PLATFORM.moduleName("./products") },
-    { route: "misc", name: "misc", moduleId: PLATFORM.moduleName("./misc") },
-    { route: "cart", name: "cart", moduleId: PLATFORM.moduleName("./cart") },
+    { route: "alarms", name: "alarms", moduleId: PLATFORM.moduleName("./alarms", "alarms") },
+    { route: "", name: "products", moduleId: PLATFORM.moduleName("./products", "sale") },
+    { route: "misc", name: "misc", moduleId: PLATFORM.moduleName("./misc", "sale") },
+    { route: "cart", name: "cart", moduleId: PLATFORM.moduleName("./cart", "sale") },
 ];
 
 @autoinject()
