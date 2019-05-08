@@ -18,3 +18,8 @@ ux-dialog-overlay.active {
     background-color: black;
     opacity: .5 !important;
 }
+
+.div-link {
+    cursor: pointer;
+    user-select: none;
+}

@@ -1,9 +1,19 @@
 <template>
     <require from="./pay-button"></require>
 
+    <style>
+        .product-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 100%;
+        }
+    </style>
+
     <div class="row" if.bind="products.length">
         <div repeat.for="product of products" class="col-4 col-sm-3 col-md-2" style="display: flex">
-            <div class="card" style="width: 100%; cursor: pointer;" click.delegate="addToCart(product)">
+            <div class="card div-link" style="width: 100%" click.delegate="addToCart(product)">
+                <span class="badge badge-info product-badge" show.bind="product.qty">${product.qty}</span>
                 <template if.bind="$index">
                     <img class="card-img-top" src="https://via.placeholder.com/150">
                     <div class="card-body text-center" style="padding: 0">${product.name}</div>
