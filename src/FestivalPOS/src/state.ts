@@ -5,7 +5,6 @@ export interface State {
     pointOfSaleId: number
     orderLines: OrderLineState[];
     currentMiscOrderLine: {
-        name?: string;
         total: Big;
     }
 }
@@ -59,7 +58,6 @@ export function updateCurrentMisc(state: State, amount: Big) {
     const newState = Object.assign({}, state);
 
     newState.currentMiscOrderLine = {
-        name: state.currentMiscOrderLine.name,
         total: amount.plus(0)
     };
 
@@ -98,11 +96,11 @@ export function addProductOrderLine(state: State, product: { id: number, name: s
     return newState;
 }
 
-export function addCurrentMiscOrderLine(state: State) {
+export function addCurrentMiscOrderLine(state: State, name: string) {
     const newState = Object.assign({}, state);
     newState.orderLines = [...state.orderLines, {
         quantity: 1,
-        name: state.currentMiscOrderLine.name,
+        ...name && name.length && { name },
         total: state.currentMiscOrderLine.total.plus(0)
     }];
 

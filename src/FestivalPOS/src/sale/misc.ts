@@ -9,6 +9,8 @@ import { autoinject } from "aurelia-framework";
 @connectTo()
 export class Misc {
     private state!: State;
+    private description = "";
+    protected descriptionElement!: HTMLInputElement;
     
     @computedFrom("state")
     get amount() {
@@ -36,6 +38,9 @@ export class Misc {
     }
 
     private keyup(event: KeyboardEvent) {
+        if (event.target === this.descriptionElement) {
+            return;
+        }
         if (event.key >= "0" && event.key <= "9") {
             const digit = Number(event.key) as Digit;
             this.pushKey(digit);
@@ -59,7 +64,7 @@ export class Misc {
     }
 
     pushLine() {
-        return this.store.dispatch(addCurrentMiscOrderLine);
+        return this.store.dispatch(addCurrentMiscOrderLine, this.description);
     }
 
     private setAmount(amount: Big) {
