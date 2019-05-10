@@ -42,5 +42,6 @@ interface ProductViewModel {
     id: number;
     name: string;
     price: Big;
+    thumbnailImageUrl?: string;
     qty?: number;
 }

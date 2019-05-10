@@ -78,6 +78,17 @@ export class Api {
         ));
     }
 
+    uploadImage(productId: number, image: Blob, fileName: string) {
+        const form = new FormData();
+        form.append('file', image, fileName);
+
+        return Http.put(`/Products/${productId}/Image`).withForm(form).expectJson(Product).onSent(this.invalidate(
+            "/Products",
+            `/Products/${productId}`,
+            /\/PointOfSales\/\d+\/Products/
+        ));
+    }
+
     deleteProduct(productId: number) {
         return Http.delete(`/Products/${productId}`).onSent(this.invalidate(
             /\/PointOfSales\/\d+\/Products/

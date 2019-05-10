@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using KajfestPOS.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace KajfestPOS.Controllers
 {
@@ -14,10 +21,13 @@ namespace KajfestPOS.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly PosContext _db;
+        private readonly CloudStorageAccount _storageAccount;
+        private static bool _productImagesContainerExists = false;
 
-        public ProductsController(PosContext db)
+        public ProductsController(PosContext db, CloudStorageAccount storageAccount)
         {
             _db = db;
+            _storageAccount = storageAccount;
         }
 
         [HttpPost]
@@ -66,7 +76,63 @@ namespace KajfestPOS.Controllers
             return product;
         }
 
-        [HttpDelete("{id}")]
+        [HttpPut("{id:int}/Image")]
+        public async Task<ActionResult<Product>> UploadImage(int id, [FromForm] IFormFile file)
+        {
+            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var blobClient = _storageAccount.CreateCloudBlobClient();
+            var container = blobClient.GetContainerReference("product-images");
+
+            if (!_productImagesContainerExists)
+            {
+                await container.CreateIfNotExistsAsync();
+                await container.SetPermissionsAsync(new BlobContainerPermissions()
+                {
+                    PublicAccess = BlobContainerPublicAccessType.Blob
+                });
+                _productImagesContainerExists = true;
+            }
+
+            using (var inputStream = file.OpenReadStream())
+            using (var previewImage = Image.Load(inputStream))
+            {
+                var thumbnailImage = previewImage.Clone(x => x.Resize(150, 120));
+
+                var version = Guid.NewGuid();
+                product.PreviewImageUrl = await UploadAsync(previewImage, $"{id}/{version}.300x240.png");
+                product.ThumbnailImageUrl = await UploadAsync(thumbnailImage, $"{id}/{version}.150x120.png");
+            }
+
+            await _db.SaveChangesAsync();
+
+            return product;
+
+            async Task<string> UploadAsync(Image<Rgba32> image, string name)
+            {
+                var blob = container.GetBlockBlobReference(name);
+
+                using (var stream = new MemoryStream())
+                {
+                    image.SaveAsPng(stream);
+
+                    stream.Position = 0;
+                    await blob.UploadFromStreamAsync(stream);
+
+                    blob.Properties.ContentType = "image/png";
+                    await blob.SetPropertiesAsync();
+                }
+
+                return blob.Uri.ToString();
+            }
+        }
+
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
             var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);

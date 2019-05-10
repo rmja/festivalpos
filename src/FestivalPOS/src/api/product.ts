@@ -11,4 +11,10 @@ export class Product {
 
     @jsonProperty({ converter: bigConverter })
     price!: Big;
+
+    @jsonProperty()
+    previewImageUrl?: string;
+
+    @jsonProperty()
+    thumbnailImageUrl?: string;
 }

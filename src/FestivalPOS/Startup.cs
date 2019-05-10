@@ -1,10 +1,12 @@
 using KajfestPOS.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.Azure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Converters;
 
 namespace KajfestPOS
@@ -23,12 +25,18 @@ namespace KajfestPOS
             services.Configure<PosOptions>(Configuration);
 
             services.AddMvc()
-                .AddJsonOptions(options => options.SerializerSettings.Converters.Add(new StringEnumConverter(camelCaseText: true)))
-                .AddRazorPagesOptions(options => options.Conventions.AddPageRoute("/Index", "{*url:regex(^(?!api).*$)}")); // https://github.com/aspnet/JavaScriptServices/issues/1354;
+                .AddJsonOptions(options => options.SerializerSettings.Converters.Add(new StringEnumConverter(camelCaseText: true)));
 
-            services.AddEntityFrameworkSqlServer().AddDbContext<PosContext>();
+            services.AddEntityFrameworkSqlServer()
+                .AddDbContext<PosContext>();
 
             services.AddSignalR();
+
+            services.AddSingleton(sp =>
+            {
+                var options = sp.GetRequiredService<IOptions<PosOptions>>().Value;
+                return CloudStorageAccount.Parse(options.StorageConnectionString);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceScopeFactory serviceScopeFactory)
@@ -41,18 +49,13 @@ namespace KajfestPOS
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app
+                    .UseDeveloperExceptionPage()
+                    .UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions { HotModuleReplacement = true });
             }
             else
             {
                 app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
-
-            if (env.IsDevelopment())
-            {
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions { HotModuleReplacement = true });
             }
 
             app
