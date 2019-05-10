@@ -104,6 +104,17 @@ const config = (_env: any, argv?: { mode?: "production" | "development" }): Conf
                     {
                         urlPattern: /\/api\/.*/,
                         handler: "StaleWhileRevalidate"
+                    },
+                    {
+                        urlPattern: new RegExp("^https?://.*/product-images/.*150x120.png$"),
+                        handler: "StaleWhileRevalidate",
+                        options: {
+                            cacheName: "product-images",
+                            expiration: {
+                                maxEntries: 50,
+                                maxAgeSeconds: 60 * 60 // 1 hour
+                            }
+                        }
                     }
                 ],
                 swDest: resolve("./wwwroot/service-worker.js")
