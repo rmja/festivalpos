@@ -1,4 +1,4 @@
-import { Http, HttpResponse } from "ur-http";
+import { Http, HttpResponse, HttpResponseOfT } from "ur-http";
 import { PointOfSale } from "./point-of-sale";
 import { Terminal } from "./terminal";
 import { Product } from "./product";
@@ -12,118 +12,169 @@ import { HttpBuilderOfT, QueryString } from "ur-http";
 import { AlarmFeed, AlarmEvent } from "./alarms";
 import { Account } from "./account";
 import { autoinject } from "aurelia-framework";
-import { CacheBuster } from "./cache-buster";
+import { CacheControl } from "./cache-control";
+
+enum K {
+    PointOfSales = "pos",
+    Terminals = "term",
+    Products = "prod",
+    Orders = "ord",
+    Payments = "pay",
+    Accounts = "acc",
+    Alarms = "alarm",
+    AlarmEvents = "event",
+}
 
 @autoinject()
 export class Api {
-    constructor(private buster: CacheBuster) {
-        this.invalidate = this.invalidate.bind(this);
+    constructor(private cache: CacheControl) {
+        this.bust = this.bust.bind(this);
     }
 
     createPointOfSale(pos: { name: string }) {
-        return Http.post("/PointOfSales").withJson(pos).expectJson(PointOfSale).onSent(this.invalidate());
+        return Http.post("/PointOfSales").withJson(pos).expectJson(PointOfSale).onSent(this.bust([
+            K.PointOfSales
+        ]));
     }
 
     getAllPointOfSales() {
-        return Http.get("/PointOfSales").expectJsonArray(PointOfSale);
+        return Http.get("/PointOfSales").expectJsonArray(PointOfSale).onReceived(this.tag(result => [
+            K.PointOfSales,
+            ...result.map(x => `${K.PointOfSales}:${x.id}`)
+        ]));
     }
 
     getPointOfSale(pointOfSaleId: number) {
-        return Http.get(`/PointOfSales/${pointOfSaleId}`).expectJson(PointOfSale);
+        return Http.get(`/PointOfSales/${pointOfSaleId}`).expectJson(PointOfSale).onReceived(this.tag(result => [
+            `${K.PointOfSales}:${result.id}`
+        ]));
     }
 
     updatePointOfSale(pointOfSaleId: number, patch: Operation[]) {
-        return Http.patch(`/PointOfSales/${pointOfSaleId}`).withJson(patch).expectJson(PointOfSale).onSent(this.invalidate());
+        return Http.patch(`/PointOfSales/${pointOfSaleId}`).withJson(patch).expectJson(PointOfSale).onSent(this.bust([
+            `${K.PointOfSales}:${pointOfSaleId}`
+        ]));
     }
 
     deletePointOfSale(pointOfSaleId: number) {
-        return Http.delete(`/PointOfSales/${pointOfSaleId}`).onSent(this.invalidate());
+        return Http.delete(`/PointOfSales/${pointOfSaleId}`).onSent(this.bust([
+            `${K.PointOfSales}:${pointOfSaleId}`
+        ]));
     }
 
     createTerminal(terminal: { name: string }) {
-        return Http.post("/Terminals").withJson(terminal).expectJson(Terminal).onSent(this.invalidate());
+        return Http.post("/Terminals").withJson(terminal).expectJson(Terminal).onSent(this.bust([
+            K.Terminals
+        ]));
     }
 
     getAllTerminals() {
-        return Http.get("/Terminals").expectJsonArray(Terminal);
+        return Http.get("/Terminals").expectJsonArray(Terminal).onReceived(this.tag(result => [
+            K.Terminals,
+            ...result.map(x => `${K.Terminals}:${x.id}`)
+        ]));
     }
 
     getTerminal(terminalId: number) {
-        return Http.get(`/Terminals/${terminalId}`).expectJson(Terminal);
+        return Http.get(`/Terminals/${terminalId}`).expectJson(Terminal).onReceived(this.tag(result => [
+            `${K.Terminals}:${result.id}`
+        ]));
     }
 
     updateTerminal(terminalId: number, patch: Operation[]) {
-        return Http.patch(`/Terminals/${terminalId}`).withJson(patch).expectJson(Terminal).onSent(this.invalidate());
+        return Http.patch(`/Terminals/${terminalId}`).withJson(patch).expectJson(Terminal).onSent(this.bust([
+            `${K.Terminals}:${terminalId}`
+        ]));
     }
 
     deleteTerminal(terminalId: number) {
-        return Http.delete(`/Terminals/${terminalId}`).onSent(this.invalidate());
+        return Http.delete(`/Terminals/${terminalId}`).onSent(this.bust([
+            `${K.Terminals}:${terminalId}`
+        ]));
     }
 
     createProduct(product: { name: string, price?: Big }) {
-        return Http.post("/Products").withJson(product).expectJson(Product).onSent(this.invalidate());
+        return Http.post("/Products").withJson(product).expectJson(Product).onSent(this.bust([
+            K.Products
+        ]));
     }
 
     getAllProducts() {
-        return Http.get("/Products").expectJsonArray(Product);
+        return Http.get("/Products").expectJsonArray(Product).onReceived(this.tag(result => [
+            K.Products,
+            ...result.map(x => `${K.Products}:${x.id}`)
+        ]));
     }
 
     getProduct(productId: number) {
-        return Http.get(`/Products/${productId}`).expectJson(Product);
+        return Http.get(`/Products/${productId}`).expectJson(Product).onReceived(this.tag(result => [
+            `${K.Products}:${result.id}`
+        ]));
     }
 
     updateProduct(productId: number, patch: Operation[]) {
-        return Http.patch(`/Products/${productId}`).withJson(patch).expectJson(Product).onSent(this.invalidate(
-            /\/PointOfSales\/\d+\/Products/
-        ));
+        return Http.patch(`/Products/${productId}`).withJson(patch).expectJson(Product).onSent(this.bust([
+            `${K.Products}:${productId}`
+        ]));
     }
 
     uploadImage(productId: number, image: Blob, fileName: string) {
         const form = new FormData();
         form.append('file', image, fileName);
 
-        return Http.put(`/Products/${productId}/Image`).withForm(form).expectJson(Product).onSent(this.invalidate(
-            "/Products",
-            `/Products/${productId}`,
-            /\/PointOfSales\/\d+\/Products/
-        ));
+        return Http.put(`/Products/${productId}/Image`).withForm(form).expectJson(Product).onSent(this.bust([
+            `${K.Products}:${productId}`
+        ]));
     }
 
     deleteProduct(productId: number) {
-        return Http.delete(`/Products/${productId}`).onSent(this.invalidate(
-            /\/PointOfSales\/\d+\/Products/
-        ));
+        return Http.delete(`/Products/${productId}`).onSent(this.bust([
+            `${K.Products}:${productId}`
+        ]));
     }
 
     getProductsByPointOfSaleId(pointOfSaleId: number) {
-        return Http.get(`/PointOfSales/${pointOfSaleId}/Products`).expectJsonArray(Product);
+        return Http.get(`/PointOfSales/${pointOfSaleId}/Products`).expectJsonArray(Product).onReceived(this.tag(result => [
+            K.Products,
+            ...result.map(x => `${K.Products}:${x.id}`)
+        ]));
     }
 
     updateProductsByPointOfSaleId(pointOfSaleId: number, patch: Operation[]) {
-        return Http.patch(`/PointOfSales/${pointOfSaleId}/Products`).withJson(patch).expectJsonArray(Product).onSent(this.invalidate());
+        return Http.patch(`/PointOfSales/${pointOfSaleId}/Products`).withJson(patch).expectJsonArray(Product).onSent(this.bust([
+            K.Products
+        ]));
     }
 
     createOrder(order: { pointOfSaleId: number, terminalId: number, lines: { name?: string, note?: string, quantity: number, total: Big, productId?: number }[] }) {
-        return Http.post("/Orders").withJson(order).expectJson(Order).onSent(this.invalidate());
+        return Http.post("/Orders").withJson(order).expectJson(Order).onSent(this.bust([
+            K.Orders
+        ]));
     }
 
     getOrderById(orderId: number) {
-        return Http.get(`/Orders/${orderId}`).expectJson(Order);
+        return Http.get(`/Orders/${orderId}`).expectJson(Order).onReceived(this.tag(result => [
+            K.Orders
+        ]));
     }
 
     deleteOrder(orderId: number) {
-        return Http.delete(`/Orders/${orderId}`).onSent(this.invalidate());
+        return Http.delete(`/Orders/${orderId}`).onSent(this.bust([
+            K.Orders
+        ]));
     }
 
     createPayment(orderId: number, payment: { method: "card" | "cash" | "account", amount: Big, transactionNumber?: string, accountId?: number }) {
-        return Http.post(`/Orders/${orderId}/Payments`).withJson(payment).expectJson(Payment).onSent(this.invalidate(
-            "/Payments",
-            `/Orders/${orderId}`
-        ));
+        return Http.post(`/Orders/${orderId}/Payments`).withJson(payment).expectJson(Payment).onSent(this.bust([
+            K.Payments,
+            K.Orders
+        ]));
     }
 
     getAllPayments(filter?: { terminalId?: number, pointOfSaleId?: number, accountId?: number, from?: DateTime, to?: DateTime }) {
-        return Http.get("/Payments", filter).expectJsonArray(Payment);
+        return Http.get("/Payments", filter).expectJsonArray(Payment).onReceived(this.tag(result => [
+            K.Payments,
+        ]));
     }
 
     getHourlyStats(filter: { year: number, terminalId?: number, pointOfSaleId?: number }) {
@@ -131,78 +182,102 @@ export class Api {
     }
 
     createAlarmFeed(feed: { name: string, subscriberEmail?: string }) {
-        return Http.post("/Alarms/Feeds").withJson(feed).expectJson(AlarmFeed).onSent(this.invalidate());
+        return Http.post("/Alarms/Feeds").withJson(feed).expectJson(AlarmFeed).onSent(this.bust([
+            K.Alarms
+        ]));
     }
 
     getAllAlarmFeeds() {
-        return Http.get("/Alarms/Feeds").expectJsonArray(AlarmFeed);
+        return Http.get("/Alarms/Feeds").expectJsonArray(AlarmFeed).onReceived(this.tag(result => [
+            K.Alarms
+        ]));
     }
 
     getAlarmFeed(alarmFeedId: number) {
-        return Http.get(`/Alarms/Feeds/${alarmFeedId}`).expectJson(AlarmFeed);
+        return Http.get(`/Alarms/Feeds/${alarmFeedId}`).expectJson(AlarmFeed).onReceived(this.tag(result => [
+            K.Alarms
+        ]));
     }
 
     updateAlarmFeed(alarmFeedId: number, patch: Operation[]) {
-        return Http.patch(`/Alarms/Feeds/${alarmFeedId}`).withJson(patch).expectJson(AlarmFeed).onSent(this.invalidate());
+        return Http.patch(`/Alarms/Feeds/${alarmFeedId}`).withJson(patch).expectJson(AlarmFeed).onSent(this.bust([
+            K.Alarms
+        ]));
     }
 
     deleteAlarmFeed(alarmFeedId: number) {
-        return Http.delete(`/Alarms/Feeds/${alarmFeedId}`).onSent(this.invalidate());
+        return Http.delete(`/Alarms/Feeds/${alarmFeedId}`).onSent(this.bust([
+            K.Alarms
+        ]));
     }
 
     createAlarmEvent(alarmFeedId: number, event: { terminalId: number, pointOfSaleId: number, }) {
-        return Http.post(`/Alarms/Feeds/${alarmFeedId}/Events`).withJson(event).expectJson(AlarmEvent).onSent(this.invalidate(
-            "/Alarms/Events/Pending"
-        ));
+        return Http.post(`/Alarms/Feeds/${alarmFeedId}/Events`).withJson(event).expectJson(AlarmEvent).onSent(this.bust([
+            K.AlarmEvents
+        ]));
     }
 
     getAllPendingAlarmEvents(filter?: { terminalId?: number, pointOfSaleId?: number }) {
-        return Http.get("/Alarms/Events/Pending", filter).expectJsonArray(AlarmEvent);
+        return Http.get("/Alarms/Events/Pending", filter).expectJsonArray(AlarmEvent).onReceived(this.tag(result => [
+            K.AlarmEvents
+        ]));
     }
 
     cancelAlarmEvent(alarmEventId: number) {
-        return Http.delete(`/Alarms/Events/${alarmEventId}`).expectJson(AlarmEvent).onSent(this.invalidate(
-            "/Alarms/Events/Pending"
-        ));
+        return Http.delete(`/Alarms/Events/${alarmEventId}`).expectJson(AlarmEvent).onSent(this.bust([
+            K.AlarmEvents
+        ]));
     }
 
     createAccount(account: { number: number; name: string, maxCredit: Big }) {
-        return Http.post("/Accounts").withJson(account).expectJson(Account).onSent(this.invalidate());
+        return Http.post("/Accounts").withJson(account).expectJson(Account).onSent(this.bust([
+            K.Accounts
+        ]));
     }
 
     getAllAccounts() {
-        return Http.get("/Accounts").expectJsonArray(Account);
+        return Http.get("/Accounts").expectJsonArray(Account).onReceived(this.tag(result => [
+            K.Accounts,
+            K.Payments,
+            ...result.map(x => `${K.Accounts}:${x.id}`)
+        ]));
     }
 
     getAccount(accountId: number) {
-        return Http.get(`/Accounts/${accountId}`).expectJson(Account);
+        return Http.get(`/Accounts/${accountId}`).expectJson(Account).onReceived(this.tag(result => [
+            K.Payments,
+            `${K.Accounts}:${result.id}`
+        ]));
     }
 
     updateAccount(accountId: number, patch: Operation[]) {
-        return Http.patch(`/Accounts/${accountId}`).withJson(patch).expectJson(Account).onSent(this.invalidate());
+        return Http.patch(`/Accounts/${accountId}`).withJson(patch).expectJson(Account).onSent(this.bust([
+            `${K.Accounts}:${accountId}`
+        ]));
     }
 
     resetAllAccounts() {
-        return Http.post("/Accounts/Reset").onSent(this.invalidate(
-            /\/Accounts/
-        ));
+        return Http.post("/Accounts/Reset").onSent(this.bust([
+            K.Payments
+        ]));
     }
 
     deleteAccount(accountId: number) {
-        return Http.delete(`/Accounts/${accountId}`).onSent(this.invalidate());
+        return Http.delete(`/Accounts/${accountId}`).onSent(this.bust([
+            `${K.Accounts}:${accountId}`
+        ]));
     }
 
-    private invalidate(...additionalFilters: (string | RegExp)[]) {
-        return (response: HttpResponse) => {
-            const url = response.rawResponse.url;
-            const filters = [url, ...additionalFilters];
+    private bust(tags: string[]) {
+        return () => {
+            return this.cache.bust(tags);
+        }
+    }
 
-            const match = /(.*)\/\d+$/.exec(url);
-            if (match) {
-                filters.push(match[1]);
-            }
-
-            return this.buster.invalidate(filters);
+    private tag<T>(getTags: (body: T) => string[]) {
+        return async (received: T, response: HttpResponseOfT<T>) => {
+            const tags = getTags(received);
+            await this.cache.tag(response.rawResponse.url, tags);
         }
     }
 }
