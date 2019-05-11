@@ -13,6 +13,6 @@ namespace KajfestPOS.Models
         public decimal MaxCredit { get; set; }
         public decimal RemainingCredit { get; set; }
         public bool IsDeleted { get; set; }
-        public ICollection<Payment> Payments { get; set; }
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }

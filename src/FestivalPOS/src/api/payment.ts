@@ -11,7 +11,7 @@ export class Payment {
     id!: number;
 
     @jsonProperty()
-    orderId!: number;
+    orderId?: number;
 
     @jsonProperty()
     method!: PaymentMethod;

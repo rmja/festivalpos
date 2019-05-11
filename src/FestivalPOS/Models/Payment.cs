@@ -7,7 +7,7 @@ namespace KajfestPOS.Models
     public class Payment
     {
         public int Id { get; set; }
-        public int OrderId { get; set; }
+        public int? OrderId { get; set; }
         [JsonIgnore]
         public Order Order { get; set; }
         public PaymentMethod Method { get; set; }
@@ -24,6 +24,8 @@ namespace KajfestPOS.Models
     {
         Card = 1,
         Cash = 2,
-        Account = 3
+        Account = 3,
+        Offset = 4,
+        Deposit = 5
     }
 }

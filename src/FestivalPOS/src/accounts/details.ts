@@ -41,7 +41,7 @@ export class YearValueConverter {
 }
 
 interface PaymentViewModel {
-    orderId: number;
+    orderId?: number;
     amount: Big;
     created: DateTime;
 }

@@ -23,6 +23,12 @@ namespace KajfestPOS.Controllers
         public async Task<Account> Create(Account account)
         {
             account.RemainingCredit = account.MaxCredit;
+            account.Payments.Add(new Payment()
+            {
+                Method = PaymentMethod.Offset,
+                Amount = -account.MaxCredit,
+                Created = LocalClock.Now
+            });
             _db.Accounts.Add(account);
 
             await _db.SaveChangesAsync();
@@ -52,7 +58,9 @@ namespace KajfestPOS.Controllers
         [HttpPatch("{id:int}")]
         public async Task<ActionResult<Account>> Update(int id, JsonPatchDocument<Account> patch)
         {
-            var account = await _db.Accounts.FirstOrDefaultAsync(x => x.Id == id);
+            var account = await _db.Accounts
+                .Include(x => x.Payments)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (account == null)
             {
@@ -62,7 +70,20 @@ namespace KajfestPOS.Controllers
             var oldMaxCredit = account.MaxCredit;
 
             patch.ApplyTo(account);
-            account.RemainingCredit += account.MaxCredit - oldMaxCredit;
+
+            if (account.MaxCredit != oldMaxCredit)
+            {
+                var offset = account.MaxCredit - oldMaxCredit;
+
+                account.RemainingCredit += offset;
+                account.Payments.Add(new Payment()
+                {
+                    Method = PaymentMethod.Offset,
+                    Amount = -offset,
+                    Created = LocalClock.Now
+                });
+            }
+
             await _db.SaveChangesAsync();
 
             return account;
@@ -71,11 +92,21 @@ namespace KajfestPOS.Controllers
         [HttpPost("Reset")]
         public async Task ResetAll()
         {
-            var accounts = await _db.Accounts.ToListAsync();
+            var accounts = await _db.Accounts
+                .Include(x => x.Payments)
+                .ToListAsync();
 
             foreach (var account in accounts)
             {
-                account.RemainingCredit = account.MaxCredit;
+                var offset = account.MaxCredit - account.RemainingCredit;
+
+                account.RemainingCredit += offset;
+                account.Payments.Add(new Payment()
+                {
+                    Method = PaymentMethod.Offset,
+                    Amount = -offset,
+                    Created = LocalClock.Now
+                });
             }
 
             await _db.SaveChangesAsync();
