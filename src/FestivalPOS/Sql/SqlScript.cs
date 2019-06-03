@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace KajfestPOS.Sql
+namespace FestivalPOS.Sql
 {
     public static class SqlScript
     {

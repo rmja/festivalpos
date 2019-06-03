@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-namespace KajfestPOS.Models
+namespace FestivalPOS.Models
 {
     public class OrderLine
     {
@@ -17,6 +17,7 @@ namespace KajfestPOS.Models
         public int Quantity { get; set; }
         public decimal Total { get; set; }
         public int? ProductId { get; set; }
+        public int Receiveable { get; set; }
         [JsonIgnore]
         public Product Product { get; set; }
     }

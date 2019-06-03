@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace KajfestPOS
+namespace FestivalPOS
 {
     public static class LocalClock
     {

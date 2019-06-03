@@ -1,20 +1,33 @@
-﻿using KajfestPOS.Models;
+﻿using FestivalPOS.Models;
+using FestivalPOS.Notifications;
+using FestivalPOS.Printing;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KajfestPOS.Controllers
+namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
+        private readonly IMediator _mediator;
         private readonly PosContext _db;
+        private readonly PrintDispatcher _printDispatcher;
+        private readonly ReceiptPrintGenerator _receiptPrintGenerator;
+        private readonly ServingPrintGenerator _servingPrintGenerator;
+        private readonly PrintQueue _printQueue;
 
-        public OrdersController(PosContext db)
+        public OrdersController(IMediator mediator, PosContext db, PrintDispatcher printDispatcher, ReceiptPrintGenerator receiptPrintGenerator, ServingPrintGenerator servingPrintGenerator, PrintQueue printQueue)
         {
+            _mediator = mediator;
             _db = db;
+            _printDispatcher = printDispatcher;
+            _receiptPrintGenerator = receiptPrintGenerator;
+            _servingPrintGenerator = servingPrintGenerator;
+            _printQueue = printQueue;
         }
 
         [HttpPost]
@@ -45,6 +58,66 @@ namespace KajfestPOS.Controllers
             }
 
             return order;
+        }
+
+        [HttpPost("{id:int}/PrintReceipt")]
+        public async Task<ActionResult> PrintReceipt(int id, int? pointOfSaleId)
+        {
+            var order = await _db.Orders
+                .Include(x => x.Lines)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var printerId = await _printDispatcher.GetReceiptPrinterAsync(pointOfSaleId ?? order.PointOfSaleId);
+
+            if (printerId == null)
+            {
+                return BadRequest();
+            }
+
+            var data = _receiptPrintGenerator.Generate(order);
+            await _printQueue.EnqueueAsync(printerId.Value, new PrintJob()
+            {
+                Name = $"Kvittering {order.Id}",
+                Data = data
+            });
+            await _mediator.Publish(new PrintJobCreated(printerId.Value));
+
+            return NoContent();
+        }
+
+        [HttpPost("{id:int}/ProcessPresale")]
+        public async Task<ActionResult> ProcessPresale(int id, int pointOfSaleId, int[] redeem)
+        {
+            var order = await _db.Orders
+                .Include(x => x.Lines)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var printerId = await _printDispatcher.GetServingPrinterAsync(pointOfSaleId);
+
+            if (printerId == null)
+            {
+                return BadRequest();
+            }
+
+            var data = _servingPrintGenerator.Generate(order, pointOfSaleId);
+            await _printQueue.EnqueueAsync(printerId.Value, new PrintJob()
+            {
+                Name = $"Servering {order.Id}",
+                Data = data
+            });
+            await _mediator.Publish(new PrintJobCreated(printerId.Value));
+
+            return NoContent();
         }
 
         [HttpDelete("{id:int}")]

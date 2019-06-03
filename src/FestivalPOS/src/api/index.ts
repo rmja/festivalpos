@@ -1,22 +1,26 @@
+import { AlarmEvent, AlarmFeed } from "./alarms";
 import { Http, HttpResponse, HttpResponseOfT } from "ur-http";
-import { PointOfSale } from "./point-of-sale";
-import { Terminal } from "./terminal";
-import { Product } from "./product";
-import { Payment } from "./payment";
+import { HttpBuilderOfT, QueryString } from "ur-http";
+
+import { Account } from "./account";
 import { Big } from "big.js";
+import { CacheControl } from "./cache-control";
 import { DateTime } from "luxon";
 import { Operation } from "ur-jsonpatch";
 import { Order } from "./order";
 import { OrderStats } from "./order-stats";
-import { HttpBuilderOfT, QueryString } from "ur-http";
-import { AlarmFeed, AlarmEvent } from "./alarms";
-import { Account } from "./account";
+import { Payment } from "./payment";
+import { PointOfSale } from "./point-of-sale";
+import { PointOfSaleProduct } from './point-of-sale-product';
+import { Printer } from "./printer";
+import { Product } from "./product";
+import { Terminal } from "./terminal";
 import { autoinject } from "aurelia-framework";
-import { CacheControl } from "./cache-control";
 
 enum K {
     PointOfSales = "pos",
     Terminals = "term",
+    Printers = "prn",
     Products = "prod",
     Orders = "ord",
     Payments = "pay",
@@ -93,6 +97,37 @@ export class Api {
         ]));
     }
 
+    createPrinter(printer: { name: string }) {
+        return Http.post("/Printers").withJson(printer).expectJson(Printer).onSent(this.bust([
+            K.Printers
+        ]));
+    }
+
+    getAllPrinters() {
+        return Http.get("/Printers").expectJsonArray(Printer).onReceived(this.tag(result => [
+            K.Printers,
+            ...result.map(x => `${K.Printers}:${x.id}`)
+        ]));
+    }
+
+    getPrinter(printerId: number) {
+        return Http.get(`/Printers/${printerId}`).expectJson(Printer).onReceived(this.tag(result => [
+            `${K.Printers}:${result.id}`
+        ]));
+    }
+
+    updatePrinter(printerId: number, patch: Operation[]) {
+        return Http.patch(`/Printers/${printerId}`).withJson(patch).expectJson(Printer).onSent(this.bust([
+            `${K.Printers}:${printerId}`
+        ]));
+    }
+
+    deletePrinter(printerId: number) {
+        return Http.delete(`/Printers/${printerId}`).onSent(this.bust([
+            `${K.Printers}:${printerId}`
+        ]));
+    }
+
     createProduct(product: { name: string, price?: Big }) {
         return Http.post("/Products").withJson(product).expectJson(Product).onSent(this.bust([
             K.Products
@@ -134,19 +169,19 @@ export class Api {
     }
 
     getProductsByPointOfSaleId(pointOfSaleId: number) {
-        return Http.get(`/PointOfSales/${pointOfSaleId}/Products`).expectJsonArray(Product).onReceived(this.tag(result => [
+        return Http.get(`/PointOfSales/${pointOfSaleId}/Products`).expectJsonArray(PointOfSaleProduct).onReceived(this.tag(result => [
             K.Products,
-            ...result.map(x => `${K.Products}:${x.id}`)
+            ...result.map(x => `${K.Products}:${x.product.id}`)
         ]));
     }
 
     updateProductsByPointOfSaleId(pointOfSaleId: number, patch: Operation[]) {
-        return Http.patch(`/PointOfSales/${pointOfSaleId}/Products`).withJson(patch).expectJsonArray(Product).onSent(this.bust([
+        return Http.patch(`/PointOfSales/${pointOfSaleId}/Products`).withJson(patch).expectJsonArray(PointOfSaleProduct).onSent(this.bust([
             K.Products
         ]));
     }
 
-    createOrder(order: { pointOfSaleId: number, terminalId: number, lines: { name?: string, note?: string, quantity: number, total: Big, productId?: number }[] }) {
+    createOrder(order: { pointOfSaleId: number, terminalId: number, lines: { name?: string, note?: string, quantity: number, total: Big, productId?: number, receiveable: number }[] }) {
         return Http.post("/Orders").withJson(order).expectJson(Order).onSent(this.bust([
             K.Orders
         ]));
@@ -156,6 +191,14 @@ export class Api {
         return Http.get(`/Orders/${orderId}`).expectJson(Order).onReceived(this.tag(result => [
             K.Orders
         ]));
+    }
+
+    printReceipt(orderId: number, pointOfSaleId?: number) {
+        return Http.post(`/Orders/${orderId}/PrintReceipt`, { pointOfSaleId });
+    }
+
+    processPresale(orderId: number, pointOfSaleId: number, redeem: number[]) {
+        return Http.post(`/Orders/${orderId}/ProcessPresale`, { pointOfSaleId, redeem })
     }
 
     deleteOrder(orderId: number) {

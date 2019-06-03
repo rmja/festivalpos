@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using KajfestPOS.Models;
+using FestivalPOS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +14,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace KajfestPOS.Controllers
+namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -150,42 +150,52 @@ namespace KajfestPOS.Controllers
         }
 
         [HttpGet("/api/PointOfSales/{pointOfSaleId:int}/Products")]
-        public Task<List<Product>> GetProductsByPointOfSaleId(int pointOfSaleId)
+        public Task<List<PointOfSaleProduct>> GetProductsByPointOfSaleId(int pointOfSaleId)
         {
             return _db.PointOfSaleProducts
+                .Include(x => x.Product)
                 .Where(x => x.PointOfSaleId == pointOfSaleId)
                 .OrderBy(x => x.Position)
-                .Select(x => x.Product)
                 .ToListAsync();
         }
 
         [HttpPatch("/api/PointOfSales/{pointOfSaleId:int}/Products")]
-        public async Task<List<Product>> UpdateProductsByPointOfSaleId(int pointOfSaleId, JsonPatchDocument<IList<Product>> patch)
+        public async Task<List<PointOfSaleProduct>> UpdateProductsByPointOfSaleId(int pointOfSaleId, JsonPatchDocument<IList<PointOfSaleProduct>> patch)
         {
-            var items = await _db.PointOfSaleProducts.Where(x => x.PointOfSaleId == pointOfSaleId).OrderBy(x => x.Position).Include(x => x.Product).ToListAsync();
-            var products = items.Select(x => x.Product).ToList();
+            var items = await _db.PointOfSaleProducts
+                .Where(x => x.PointOfSaleId == pointOfSaleId)
+                .OrderBy(x => x.Position)
+                .Include(x => x.Product)
+                .ToListAsync();
+            var patchedItems = items.ToList();
 
-            patch.ApplyTo(products);
+            patch.ApplyTo(patchedItems);
 
-            _db.Products.AddRange(products.Where(x => x.Id == default));
+            _db.Products.AddRange(patchedItems.Select(x => x.Product).Where(x => x.Id == default));
             _db.PointOfSaleProducts.RemoveRange(items);
 
-            for (var position = 0; position < products.Count; position++)
+            foreach (var item in patchedItems)
             {
-                var product = products[position];
+                item.PointOfSaleId = pointOfSaleId;
+                item.ProductId = item.Product.Id;
+            }
+
+            for (var position = 0; position < patchedItems.Count; position++)
+            {
+                var item = patchedItems[position];
 
                 _db.PointOfSaleProducts.Add(new PointOfSaleProduct()
                 {
-                    PointOfSaleId = pointOfSaleId,
-                    ProductId = product.Id,
-                    Position = position
+                    PointOfSaleId = item.PointOfSaleId,
+                    ProductId = item.Product.Id,
+                    Position = position,
+                    Presale = item.Presale
                 });
             }
 
             await _db.SaveChangesAsync();
 
-            return products;
-
+            return patchedItems;
         }
     }
 }

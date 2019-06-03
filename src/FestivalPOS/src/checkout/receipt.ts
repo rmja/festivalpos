@@ -1,7 +1,7 @@
-import { Router } from "aurelia-router";
 import { Api } from "../api";
 import { Big } from "big.js";
 import { Payment } from "../api/payment";
+import { Router } from "aurelia-router";
 import { autoinject } from "aurelia-framework";
 
 interface Params { orderId: string, paymentId: string, change?: string };
@@ -45,10 +45,16 @@ export class CashReceipt {
         removeEventListener("keyup", this.keyup);
     }
 
+
+
     private keyup(event: KeyboardEvent) {
         if (event.keyCode === 13) {
             return this.complete();
         }
+    }
+
+    printReceipt() {
+        return this.api.printReceipt(this.orderId).send();
     }
 
     complete() {

@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "KajfestPOS": {
+    "FestivalPOS": {
       "commandName": "Project",
       "launchUrl": "api/values",
       "environmentVariables": {

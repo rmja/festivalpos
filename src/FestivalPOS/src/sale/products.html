@@ -17,18 +17,18 @@
     </style>
 
     <div class="row pad-bottom" if.bind="products.length">
-        <div repeat.for="product of products" class="col-4 col-sm-3 col-md-2" style="display: flex">
-            <div class="card div-link mb-3" style="width: 100%" click.delegate="addToCart(product)">
-                <div if.bind="product.thumbnailImageUrl" style="position: relative">
-                    <img class="card-img-top" src.one-time="product.thumbnailImageUrl">
-                    <small class="price-badge">${product.price}</small>
+        <div repeat.for="item of products" class="col-4 col-sm-3 col-md-2" style="display: flex">
+            <div class="card div-link mb-3" style="width: 100%" click.delegate="addToCart(item)">
+                <div if.bind="item.product.thumbnailImageUrl" style="position: relative">
+                    <img class="card-img-top" src.one-time="item.product.thumbnailImageUrl">
+                    <small class="price-badge">${item.product.price}</small>
                 </div>
                 <div else class="card-body text-center" style="position: relative; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 70px;">
-                    <strong class="text-muted">${product.name}</strong>
-                    <small class="price-badge">${product.price}</small>
+                    <strong class="text-muted">${item.product.name}</strong>
+                    <small class="price-badge">${item.product.price}</small>
                 </div>
-                <span class="badge badge-info qty-badge" show.bind="product.qty">${product.qty}</span>
-                <div class="card-footer text-center" style="padding: 0; white-space: nowrap; overflow: hidden"><small>${product.name}</small></div>
+                <span class="badge badge-info qty-badge" show.bind="item.qty">${item.qty}</span>
+                <div class="card-footer text-center" style="padding: 0; white-space: nowrap; overflow: hidden"><small>${item.product.name}</small><small class="text-muted" if.bind="item.presale">, forsalg</small></div>
             </div>
         </div>
     </div>

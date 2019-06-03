@@ -1,8 +1,8 @@
-﻿using KajfestPOS.Models;
+﻿using FestivalPOS.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace KajfestPOS
+namespace FestivalPOS
 {
     public class PosContext : DbContext
     {
@@ -17,6 +17,7 @@ namespace KajfestPOS
         public DbSet<Product> Products { get; set; }
         public DbSet<PointOfSale> PointOfSales { get; set; }
         public DbSet<PointOfSaleProduct> PointOfSaleProducts { get; set; }
+        public DbSet<Printer> Printers { get; set; }
         public DbSet<Terminal> Terminals { get; set; }
 
         public PosContext(IOptions<PosOptions> options)
@@ -47,7 +48,12 @@ namespace KajfestPOS
             modelBuilder.Entity<Payment>().Property(x => x.Amount).HasColumnType("decimal(9,2)");
 
             modelBuilder.Entity<PointOfSale>().HasQueryFilter(x => !x.IsDeleted);
+            //modelBuilder.Entity<PointOfSale>().HasOne(x => x.ReceiptPrinter).WithMany().OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<PointOfSale>().HasOne(x => x.TicketPrinter).WithMany().OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<PointOfSale>().HasOne(x => x.ServingPrinter).WithMany().OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<PointOfSaleProduct>().HasKey(x => new { x.PointOfSaleId, x.ProductId });
+
+            modelBuilder.Entity<Printer>().HasOne(x => x.Terminal).WithMany(x => x.Printers).OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Product>().Property(x => x.Price).HasColumnType("decimal(9,2)");
             modelBuilder.Entity<Product>().HasQueryFilter(x => !x.IsDeleted);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KajfestPOS.Models
+namespace FestivalPOS.Models
 {
     public class OrderStats
     {

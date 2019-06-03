@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace KajfestPOS.Controllers
+namespace FestivalPOS.Hubs
 {
     public class AlarmsHub : Hub
     {

@@ -1,5 +1,6 @@
 ﻿
-using KajfestPOS.Models;
+using FestivalPOS.Hubs;
+using FestivalPOS.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KajfestPOS.Controllers
+namespace FestivalPOS.Controllers
 {
     [Route("api/Alarms")]
     [ApiController]
@@ -107,7 +108,7 @@ namespace KajfestPOS.Controllers
 
             //feed.SubscriberEmails
 
-            await _hub.Clients.All.SendAsync("event-created", @event);
+            await _hub.Clients.All.SendAsync("EventCreated", @event);
 
             return @event;
         }

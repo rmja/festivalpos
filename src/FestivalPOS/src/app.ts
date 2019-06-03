@@ -1,8 +1,9 @@
-import { autoinject, PLATFORM } from "aurelia-framework";
-import { RouteConfig, RouterConfiguration, Router } from "aurelia-router";
-import { Store, MiddlewarePlacement, logMiddleware, LogLevel, localStorageMiddleware, rehydrateFromLocalStorage } from "aurelia-store";
-import { State, addProductOrderLine, resetOrder, removeOrderLine, updateCurrentMisc, addCurrentMiscOrderLine, setup, ensureValidState } from "./state";
+import { LogLevel, MiddlewarePlacement, Store, localStorageMiddleware, logMiddleware, rehydrateFromLocalStorage } from "aurelia-store";
+import { PLATFORM, autoinject } from "aurelia-framework";
+import { RouteConfig, Router, RouterConfiguration } from "aurelia-router";
+import { State, addCurrentMiscOrderLine, addProductOrderLine, ensureValidState, removeOrderLine, resetOrder, setup, updateCurrentMisc } from "./state";
 
+import { PrintManager } from "./print-manager";
 import { routes as settingsRoutes } from "./settings/router";
 
 const routes: RouteConfig[] = [
@@ -20,7 +21,7 @@ const routes: RouteConfig[] = [
 export class App {
     router!: Router;
 
-    constructor(private store: Store<State>) {
+    constructor(private store: Store<State>, private printManager: PrintManager) {
         store.registerMiddleware(logMiddleware, MiddlewarePlacement.After, { logType: LogLevel.log });
         store.registerMiddleware(localStorageMiddleware, MiddlewarePlacement.After, { key: "festivalpos-state" });
 
@@ -42,5 +43,11 @@ export class App {
     async activate() {
         await this.store.dispatch(rehydrateFromLocalStorage, "festivalpos-state");
         await this.store.dispatch(ensureValidState);
+
+        await this.printManager.setup();
+    }
+
+    deactivate() {
+        this.printManager.teardown();
     }
 }

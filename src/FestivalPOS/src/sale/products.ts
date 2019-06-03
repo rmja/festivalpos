@@ -1,8 +1,9 @@
-import { autoinject } from "aurelia-framework";
-import { Api } from "../api";
-import { Big } from "big.js";
 import { State, addProductOrderLine } from "../state";
 import { Store, connectTo } from "aurelia-store";
+
+import { Api } from "../api";
+import { Big } from "big.js";
+import { autoinject } from "aurelia-framework";
 
 @connectTo({
     selector: store => store.state,
@@ -21,8 +22,8 @@ export class Products {
         this.updateQuantity(this.state);
     }
 
-    addToCart(product: ProductViewModel) {
-        return this.store.dispatch(addProductOrderLine, product);
+    addToCart(item: ProductViewModel) {
+        return this.store.dispatch(addProductOrderLine, item.product, item.presale);
     }
 
     stateChanged(newState: State) {
@@ -33,15 +34,18 @@ export class Products {
 
     private updateQuantity(state: State) {
         for (const product of this.products) {
-            product.qty = state.orderLines.filter(x => x.productId === product.id).reduce((sum, line) => sum + line.quantity, 0);
+            product.qty = state.orderLines.filter(x => x.productId === product.product.id).reduce((sum, line) => sum + line.quantity, 0);
         }
     }
 }
 
 interface ProductViewModel {
-    id: number;
-    name: string;
-    price: Big;
-    thumbnailImageUrl?: string;
+    product: {
+        id: number;
+        name: string;
+        price: Big;
+        thumbnailImageUrl?: string;
+    }
+    presale: boolean;
     qty?: number;
 }

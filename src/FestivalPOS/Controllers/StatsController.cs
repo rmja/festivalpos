@@ -1,13 +1,13 @@
 ﻿using Dapper;
-using KajfestPOS.Models;
-using KajfestPOS.Sql;
+using FestivalPOS.Models;
+using FestivalPOS.Sql;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KajfestPOS.Controllers
+namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,4 +1,6 @@
-﻿using KajfestPOS.Models;
+﻿using FestivalPOS.Models;
+using FestivalPOS.Notifications;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -6,17 +8,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KajfestPOS.Controllers
+namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentsController : ControllerBase
     {
         private readonly PosContext _db;
+        private readonly IMediator _mediator;
 
-        public PaymentsController(PosContext db)
+        public PaymentsController(PosContext db, IMediator mediator)
         {
             _db = db;
+            _mediator = mediator;
         }
 
         [HttpPost("/api/Orders/{orderId:int}/Payments")]
@@ -55,8 +59,13 @@ namespace KajfestPOS.Controllers
 
             await _db.SaveChangesAsync();
 
+            if (order.AmountDue == 0)
+            {
+                await _mediator.Publish(new OrderPayedNotification(order.Id));
+            }
+
             return payment;
-        }       
+        }
 
         [HttpGet]
         public Task<List<Payment>> GetAll(int? terminalId, int? pointOfSaleId, int? accountId, DateTimeOffset? from, DateTimeOffset? to)

@@ -11,6 +11,7 @@ export interface State {
 
 export interface OrderLineState {
     productId?: number;
+    presale?: boolean;
     name?: string;
     quantity: number;
     total: Big;
@@ -64,7 +65,7 @@ export function updateCurrentMisc(state: State, amount: Big) {
     return newState;
 }
 
-export function addProductOrderLine(state: State, product: { id: number, name: string, price: Big }) {
+export function addProductOrderLine(state: State, product: { id: number, name: string, price: Big }, presale: boolean) {
     const newState = Object.assign({}, state);
     const index = state.orderLines.findIndex(x => x.productId === product.id);
     const orderLine = state.orderLines[index];
@@ -73,6 +74,7 @@ export function addProductOrderLine(state: State, product: { id: number, name: s
         newState.orderLines = [...state.orderLines, {
             name: product.name,
             productId: product.id,
+            presale: presale,
             quantity: 1,
             total: product.price.plus(0)
         }];
@@ -86,6 +88,7 @@ export function addProductOrderLine(state: State, product: { id: number, name: s
             {
                 name: product.name,
                 productId: product.id,
+                presale: presale,
                 quantity: newQuantity,
                 total: newTotal
             },

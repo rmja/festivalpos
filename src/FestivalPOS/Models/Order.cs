@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using FestivalPOS.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace KajfestPOS.Models
+namespace FestivalPOS.Models
 {
     public class Order
     {

@@ -6,9 +6,17 @@
                 Tilføj produkt
             </ux-dialog-header>
             <ux-dialog-body>
-                <select class="form-control" value.bind="product">
-                    <option repeat.for="product of products" model.bind="product">${product.name}</option>
-                </select>
+                <div class="form-group">
+                    <select class="form-control" value.bind="product">
+                        <option repeat.for="product of products" model.bind="product">${product.name}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-check-label">
+                        <input type="checkbox" checked.bind="presale">
+                        Forsalg
+                    </label>
+                </div>
             </ux-dialog-body>
             <ux-dialog-footer>
                 <button type="submit" class="btn btn-primary">Tilføj</button>

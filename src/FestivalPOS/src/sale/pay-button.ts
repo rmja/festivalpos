@@ -1,9 +1,10 @@
-import { connectTo, Store } from "aurelia-store";
-import { State, getOrderTotal, getOrderQuantityTotal, resetOrder } from "../state";
-import { computedFrom, autoinject, bindable } from "aurelia-framework";
+import { State, getOrderQuantityTotal, getOrderTotal, resetOrder } from "../state";
+import { Store, connectTo } from "aurelia-store";
+import { autoinject, bindable, computedFrom } from "aurelia-framework";
+
 import { Api } from "../api";
-import { Router } from "aurelia-router";
 import { Order } from "../api/order";
+import { Router } from "aurelia-router";
 import { Sumup } from "../sumup";
 
 @autoinject()
@@ -40,7 +41,11 @@ export class PayButtonCustomElement {
         const order = await this.api.createOrder({
             terminalId: this.state.terminalId,
             pointOfSaleId: this.state.pointOfSaleId,
-            lines: this.state.orderLines
+            lines: this.state.orderLines.map(x => {
+                return Object.assign({}, x, {
+                    receiveable: x.presale ? x.quantity : 0
+                });
+            })
         }).transfer();
 
         await this.store.dispatch(resetOrder);

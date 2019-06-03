@@ -1,13 +1,16 @@
-import { autoinject, useView, PLATFORM, viewStrategy } from "aurelia-framework";
+import { PLATFORM, autoinject, useView, viewStrategy } from "aurelia-framework";
+
 import { Api } from "../../api";
-import { Product } from "../../api/product";
 import { DialogController } from "aurelia-dialog";
+import { PointOfSaleProduct } from './../../api/point-of-sale-product';
+import { Product } from "../../api/product";
 
 @autoinject()
 @useView("settings/pointofsales/add-product-dialog.html")
 export class AddProductDialog {
     products!: ProductViewModel[];
     product!: ProductViewModel;
+    presale = false;
 
     constructor(private controller: DialogController, private api: Api) {
     }
@@ -27,7 +30,11 @@ export class AddProductDialog {
     }
 
     submit() {
-        this.controller.ok(this.product);
+        const output: PointOfSaleProduct = {
+            product: this.product,
+            presale: this.presale
+        };
+        this.controller.ok(output);
     }
 }
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace KajfestPOS.Migrations
+namespace FestivalPOS.Migrations
 {
     public partial class AddUniqueConstraintOnAccountNumber : Migration
     {

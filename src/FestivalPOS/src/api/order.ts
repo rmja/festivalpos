@@ -1,9 +1,9 @@
-import { jsonProperty } from "ur-json";
-import { DateTime } from "luxon";
-import { dateTimeConverter } from "./converters/date-time-converter";
-import { bigConverter } from "./converters/big-converter";
 import { Big } from "big.js";
+import { DateTime } from "luxon";
 import { Payment } from "./payment";
+import { bigConverter } from "./converters/big-converter";
+import { dateTimeConverter } from "./converters/date-time-converter";
+import { jsonProperty } from "ur-json";
 
 export class OrderLine {
     @jsonProperty()
@@ -20,6 +20,9 @@ export class OrderLine {
 
     @jsonProperty()
     productId?: number;
+
+    @jsonProperty()
+    receiveable!: number;
 
     @jsonProperty()
     quantity!: number;

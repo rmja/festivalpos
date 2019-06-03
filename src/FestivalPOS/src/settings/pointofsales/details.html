@@ -23,10 +23,18 @@
                 </div>
                 <div class="card-body" if.bind="products.length">
                     <dragula-and-drop drop-fn.call="itemDropped(item, sibling)"></dragula-and-drop>
-                    <table class="table">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Produkt</th>
+                                <th>Forsalg</th>
+                                <th></th>
+                            </tr>
+                        </thead>
                         <tbody class="drag-source drop-target">
-                            <tr repeat.for="product of products" data-index.bind="$index">
-                                <td style="width: 100%">${product.name}</td>
+                            <tr repeat.for="item of products" data-index.bind="$index">
+                                <td style="width: 100%">${item.product.name}</td>
+                                <td>${item.presale}</td>
                                 <td style="white-space: nowrap"><button type="button" class="btn btn-danger btn-sm" click.delegate="removeProduct($index)"><font-awesome-icon icon="times"></font-awesome-icon> Fjern</button></td>
                             </tr>
                         </tbody>
@@ -36,7 +44,6 @@
                     Der er ingen produkter tilknyttet salgsstedet
                 </div>
             </div>
-
             <button type="submit" class="btn btn-primary btn-block fixed-bottom"><font-awesome-icon icon="save"></font-awesome-icon> Gem</button>
         </form>
     </page-body>

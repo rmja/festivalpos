@@ -1,0 +1,19 @@
+<template>
+    <form submit.delegate="submit()">
+        <div class="row">
+            <h6 class="col-12 text-center text-muted">Ordrenummer</h6>
+            <h1 class="offset-2 col-8 text-center">${orderId}</h1>
+            <button class="col-2 btn btn-light" click.delegate="backspace()"><font-awesome-icon icon="backspace" size="2x"></font-awesome-icon></button>
+        </div>
+
+        <div class="keypad row no-gutters">
+            <div repeat.for="number of [1, 2, 3, 4, 5, 6, 7, 8, 9, '00', 0]" class="col-4">
+                <button type="button" class="btn btn-light" click.delegate="pushKey(number)">
+                    <h5>${number}</h5>
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-lg btn-block fixed-bottom"><font-awesome-icon icon="search"></font-awesome-icon> Søg</button>
+    </form>
+</template>

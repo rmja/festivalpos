@@ -1,4 +1,6 @@
-using KajfestPOS.Controllers;
+using FestivalPOS.Hubs;
+using FestivalPOS.Printing;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Azure.Storage;
@@ -9,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Converters;
 
-namespace KajfestPOS
+namespace FestivalPOS
 {
     public class Startup
     {
@@ -31,12 +33,19 @@ namespace KajfestPOS
                 .AddDbContext<PosContext>();
 
             services.AddSignalR();
+            services.AddMediatR(typeof(Startup).Assembly);
 
             services.AddSingleton(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<PosOptions>>().Value;
                 return CloudStorageAccount.Parse(options.StorageConnectionString);
             });
+
+            services.AddScoped<PrintDispatcher>()
+                .AddSingleton<PrintQueue>()
+                .AddSingleton<ReceiptPrintGenerator>()
+                .AddSingleton<TicketPrintGenerator>()
+                .AddSingleton<ServingPrintGenerator>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceScopeFactory serviceScopeFactory)
@@ -61,6 +70,7 @@ namespace KajfestPOS
             app
                 .UseStaticFiles()
                 .UseSignalR(builder => builder.MapHub<AlarmsHub>("/alarms"))
+                .UseSignalR(builder => builder.MapHub<PrintingHub>("/printing"))
                 .UseMvc();
         }
     }

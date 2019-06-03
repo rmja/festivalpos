@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using FestivalPOS.Models;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace KajfestPOS.Models
+namespace FestivalPOS.Models
 {
     public class AlarmEvent
     {

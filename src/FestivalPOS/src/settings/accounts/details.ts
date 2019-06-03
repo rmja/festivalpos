@@ -1,11 +1,11 @@
-import { autoinject } from "aurelia-framework";
+import { Account } from './../../api/account';
 import { Api } from "../../api";
-import { PointOfSale } from "../../api/point-of-sale";
 import { Router } from "aurelia-router";
+import { autoinject } from "aurelia-framework";
 
 @autoinject()
 export class AccountDetails {
-    private account!: PointOfSale;
+    private account!: Account;
     accountId!: number;
     name!: string;
 

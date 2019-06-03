@@ -1,20 +1,21 @@
-import { autoinject } from "aurelia-framework";
+import { Patch, diff } from "ur-jsonpatch";
+
+import { AddProductDialog } from "./add-product-dialog";
 import { Api } from "../../api";
 import { DialogService } from "aurelia-dialog";
-import { Product } from "../../api/product";
-import { diff } from "ur-jsonpatch";
 import { PointOfSale } from "../../api/point-of-sale";
-import { moveBefore } from "../../move-before";
+import { PointOfSaleProduct } from './../../api/point-of-sale-product';
 import { Router } from "aurelia-router";
-import { AddProductDialog } from "./add-product-dialog";
+import { autoinject } from "aurelia-framework";
+import { moveBefore } from "../../move-before";
 
 @autoinject()
 export class PointOfSaleDetails {
     private pointOfSale!: PointOfSale;
     pointOfSaleId!: number;
     name!: string;
-    private currentProducts!: Product[];
-    products!: ProductViewModel[];
+    private currentProducts!: PointOfSaleProduct[];
+    products!: PointOfSaleProductViewModel[];
 
     constructor(private api: Api, private router: Router, private dialog: DialogService) {
     }
@@ -39,8 +40,8 @@ export class PointOfSaleDetails {
         const result = await this.dialog.open({ viewModel: AddProductDialog }).whenClosed();
 
         if (!result.wasCancelled) {
-            const product = result.output as Product;
-            this.products.push(product);
+            const item = result.output as PointOfSaleProduct;
+            this.products.push(item);
         }
     }
 
@@ -56,13 +57,18 @@ export class PointOfSaleDetails {
 
     async submit() {
         const operations = diff(this.currentProducts, this.products);
+
         await this.api.updateProductsByPointOfSaleId(this.pointOfSale.id, operations).transfer();
         this.currentProducts = this.products;
         this.router.navigateToRoute("list");
     }
 }
 
-interface ProductViewModel extends Product {
-    id: number;
-    name: string;
+type PointOfSaleProductViewModel = PointOfSaleProduct & {
+    product: {
+        id: number;
+        name: string;
+    };
+
+    presale: boolean;
 }

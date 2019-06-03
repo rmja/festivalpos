@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace KajfestPOS.Models
+namespace FestivalPOS.Models
 {
     public class Account
     {
