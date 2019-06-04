@@ -42,7 +42,7 @@ export class EditPointOfSale {
     }
 }
 
-interface PrinterViewModel {
+export interface PrinterViewModel {
     id: number;
     name: string;
 }

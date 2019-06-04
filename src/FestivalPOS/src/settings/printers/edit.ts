@@ -43,7 +43,7 @@ export class EditPrinter {
     }
 }
 
-interface TerminalViewModel {
+export interface TerminalViewModel {
     id: number;
     name: string;
 }
