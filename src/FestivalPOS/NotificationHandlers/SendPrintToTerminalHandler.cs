@@ -22,10 +22,10 @@ namespace FestivalPOS.NotificationHandlers
         public async Task Handle(PrintJobCreated notification, CancellationToken cancellationToken)
         {
             PrintJob job;
-
             while ((job = await _printQueue.DequeueAsync(notification.PrinterId)) != null)
             {
-                await _hub.Clients.Group($"Printers:${notification.PrinterId}").SendAsync("Print", job);
+                var clients = _hub.Clients.Group($"printers:{notification.PrinterId}");
+                await clients.SendAsync("Print", job);
             }
         }
     }

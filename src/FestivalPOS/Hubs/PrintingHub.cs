@@ -24,10 +24,9 @@ namespace FestivalPOS.Hubs
            
             foreach (var printerId in printerIds)
             {
-                PrintJob job;
-
                 await Groups.AddToGroupAsync(Context.ConnectionId, $"printers:{printerId}");
 
+                PrintJob job;
                 while ((job = await _printQueue.DequeueAsync(printerId)) != null)
                 {
                     await Clients.Caller.SendAsync("Print", job);

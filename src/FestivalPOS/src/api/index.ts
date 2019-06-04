@@ -35,7 +35,7 @@ export class Api {
         this.bust = this.bust.bind(this);
     }
 
-    createPointOfSale(pos: { name: string }) {
+    createPointOfSale(pos: { name: string, receiptPrinterId?: number, ticketPrinterId?: number, servingPrinterId?: number }) {
         return Http.post("/PointOfSales").withJson(pos).expectJson(PointOfSale).onSent(this.bust([
             K.PointOfSales
         ]));
@@ -97,7 +97,7 @@ export class Api {
         ]));
     }
 
-    createPrinter(printer: { name: string }) {
+    createPrinter(printer: { name: string, terminalId?: number }) {
         return Http.post("/Printers").withJson(printer).expectJson(Printer).onSent(this.bust([
             K.Printers
         ]));

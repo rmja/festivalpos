@@ -16,7 +16,7 @@ export class PrintingHub {
             .withUrl("/printing")
             .build();
 
-        this.connection.on("print", (job: any) => {
+        this.connection.on("Print", (job: any) => {
             job = modelBind(PrintJob, job);
             eventAggregator.publish(new PrintJobCreated(job));
         });
