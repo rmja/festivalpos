@@ -8,8 +8,6 @@ import { autoinject } from "aurelia-framework";
 export class EditPrinter {
     private printerId!: number;
     name!: string;
-    terminals!: TerminalViewModel[];
-    terminal?: TerminalViewModel;
 
     get canSubmit() {
         return !!this.name.length;
@@ -22,8 +20,6 @@ export class EditPrinter {
         this.printerId = Number(params.printerId);
         const printer = await this.api.getPrinter(this.printerId).transfer();
         this.name = printer.name;
-        this.terminals = await this.api.getAllTerminals().transfer();
-        this.terminal = this.terminals.find(x => x.id === printer.terminalId);
     }
 
     async delete() {
@@ -35,15 +31,9 @@ export class EditPrinter {
 
     async submit() {
         const patch = new Patch<Printer>()
-            .replace(x => x.name, this.name)
-            .replace(x => x.terminalId, this.terminal ? this.terminal.id : null);
+            .replace(x => x.name, this.name);
 
         await this.api.updatePrinter(this.printerId, patch.operations).transfer();
         this.router.navigateToRoute("list");
     }
-}
-
-export interface TerminalViewModel {
-    id: number;
-    name: string;
 }

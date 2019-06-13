@@ -18,11 +18,11 @@ namespace FestivalPOS.Printing
             _options = options.Value;
         }
 
-        public async Task<long> EnqueueAsync(int printerId, PrintJob job)
+        public async Task<long> EnqueueAsync(PrintJob job)
         {
             await EnsureConnected();
 
-            var jobKey = $"printers:{printerId}:jobs:{Guid.NewGuid()}";
+            var jobKey = $"printers:{job.PrinterId}:jobs:{Guid.NewGuid()}";
 
             var batch = _database.CreateBatch();
 
@@ -32,7 +32,7 @@ namespace FestivalPOS.Printing
                 new HashEntry("data", job.Data)
             });
 
-            var positionTask = batch.ListRightPushAsync($"printers:{printerId}:queue", jobKey);
+            var positionTask = batch.ListRightPushAsync($"printers:{job.PrinterId}:queue", jobKey);
 
             batch.Execute();
 
@@ -73,6 +73,7 @@ return {}",
 
             return new PrintJob()
             {
+                PrinterId = printerId,
                 Name = dictionary["name"],
                 Data = dictionary["data"]
             };

@@ -10,7 +10,8 @@
         <table class="table" if.bind="printers.length">
             <tr repeat.for="printer of printers">
                 <td style="width: 100%">${printer.name}</td>
-                <td>${printer.terminalName}</td>
+                <td style="white-space: nowrap">${printer.restPrintPrinterName}</td>
+                <td style="white-space: nowrap">${printer.terminalName}</td>
                 <td>
                     <a route-href="route: edit; params.bind: { printerId: printer.id }" class="btn btn-light btn-sm"><font-awesome-icon icon="arrow-right"></font-awesome-icon></a>
                 </td>

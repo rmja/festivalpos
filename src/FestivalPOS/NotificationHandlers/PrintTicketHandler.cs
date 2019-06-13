@@ -38,8 +38,9 @@ namespace FestivalPOS.NotificationHandlers
                 if (printerId != null)
                 {
                     var data = _ticketPrintGenerator.Generate(order);
-                    await _printQueue.EnqueueAsync(printerId.Value, new PrintJob()
+                    await _printQueue.EnqueueAsync(new PrintJob()
                     {
+                        PrinterId = printerId.Value,
                         Name = $"Billet {order.Id}",
                         Data = data
                     });

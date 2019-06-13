@@ -80,8 +80,9 @@ namespace FestivalPOS.Controllers
             }
 
             var data = _receiptPrintGenerator.Generate(order);
-            await _printQueue.EnqueueAsync(printerId.Value, new PrintJob()
+            await _printQueue.EnqueueAsync(new PrintJob()
             {
+                PrinterId = printerId.Value,
                 Name = $"Kvittering {order.Id}",
                 Data = data
             });
@@ -110,8 +111,9 @@ namespace FestivalPOS.Controllers
             }
 
             var data = _servingPrintGenerator.Generate(order, pointOfSaleId);
-            await _printQueue.EnqueueAsync(printerId.Value, new PrintJob()
+            await _printQueue.EnqueueAsync(new PrintJob()
             {
+                PrinterId = printerId.Value,
                 Name = $"Servering {order.Id}",
                 Data = data
             });

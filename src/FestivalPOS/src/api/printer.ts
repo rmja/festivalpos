@@ -1,5 +1,4 @@
 import { jsonProperty } from "ur-json";
-import { transparentConverter } from './converters/transparent-converter';
 
 export class Printer {
     @jsonProperty()
@@ -8,6 +7,9 @@ export class Printer {
     @jsonProperty()
     name!: string;
 
-    @jsonProperty({ converter: transparentConverter })
-    terminalId!: number | null;
+    @jsonProperty()
+    terminalId!: number;
+
+    @jsonProperty()
+    restPrintPrinterName?: string;
 }

@@ -1,29 +1,41 @@
-import { autoinject, useView } from "aurelia-framework";
-
 import { Api } from "../../api";
 import { Router } from "aurelia-router";
-import { TerminalViewModel } from "./edit";
+import { State } from "../../state";
+import { autoinject } from "aurelia-framework";
+import { connectTo } from "aurelia-store";
+import { getPrinterNames } from "../../restprint";
 
+@connectTo({
+    setup: "activate",
+    selector: store => store.state
+})
 @autoinject()
-@useView("./edit.html")
 export class CreatePrinter {
+    private state!: State;
     name = "";
-    terminals!: TerminalViewModel[];
-    terminal?: TerminalViewModel;
+    terminal!: TerminalViewModel;
+    printerNames!: string[];
+    selectedPrinterName?: string;
 
     get canSubmit() {
-        return !!this.name.length;
+        return !!this.name.length && this.selectedPrinterName;
     }
 
     constructor(private api: Api, private router: Router) {
     }
 
     async activate() {
-        this.terminals = await this.api.getAllTerminals().transfer();
+        this.terminal = await this.api.getTerminal(this.state.terminalId).transfer();
+        this.printerNames = await getPrinterNames();
     }
 
     async submit() {
-        await this.api.createPrinter({ name: this.name, terminalId: this.terminal && this.terminal.id }).transfer();
+        await this.api.createPrinter({ name: this.name, terminalId: this.terminal.id, restPrintPrinterName: this.selectedPrinterName }).transfer();
         this.router.navigateToRoute("list");
     }
+}
+
+interface TerminalViewModel {
+    id: number;
+    name: string;
 }

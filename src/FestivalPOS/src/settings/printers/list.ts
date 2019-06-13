@@ -24,6 +24,7 @@ export class PrintersList {
 interface PrinterViewModel {
     id: number;
     name: string;
-    terminalId: number | null;
+    terminalId: number;
+    restPrintPrinterName?: string;
     terminalName?: string;
 }

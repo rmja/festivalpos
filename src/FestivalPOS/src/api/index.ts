@@ -97,7 +97,7 @@ export class Api {
         ]));
     }
 
-    createPrinter(printer: { name: string, terminalId?: number }) {
+    createPrinter(printer: { name: string, terminalId: number, restPrintPrinterName?: string }) {
         return Http.post("/Printers").withJson(printer).expectJson(Printer).onSent(this.bust([
             K.Printers
         ]));
