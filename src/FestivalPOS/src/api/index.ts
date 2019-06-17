@@ -193,12 +193,26 @@ export class Api {
         ]));
     }
 
-    printReceipt(orderId: number, pointOfSaleId?: number) {
-        return Http.post(`/Orders/${orderId}/PrintReceipt`, { pointOfSaleId });
+    getCurrentOrderByTag(tagNumber: number) {
+        return Http.get(`/Tags/${tagNumber}/CurrentOrder`).expectJson(Order).onReceived(this.tag(result => [
+            K.Orders
+        ]));
     }
 
-    processPresale(orderId: number, pointOfSaleId: number, redeem: number[]) {
-        return Http.post(`/Orders/${orderId}/ProcessPresale`, { pointOfSaleId, redeem })
+    assignOrderTag(orderId: number, tagNumber: number, force?: boolean) {
+        return Http.put(`/Orders/${orderId}/Tags/${tagNumber}`, { force });
+    }
+
+    unassignOrderTag(orderId: number, tagNumber: number) {
+        return Http.delete(`/Orders/${orderId}/Tags/${tagNumber}`);
+    }
+
+    printReceipt(orderId: number, pointOfSaleId?: number) {
+        return Http.post(`/Orders/${orderId}/Receipt`, { pointOfSaleId });
+    }
+
+    serve(orderId: number, pointOfSaleId: number, redeem: number[]) {
+        return Http.post(`/Orders/${orderId}/Serve`, { pointOfSaleId, redeem })
     }
 
     deleteOrder(orderId: number) {

@@ -1,10 +1,11 @@
+import { BACKSPACE, COMMA, Digit, ENTER, ESCAPE } from "../keys";
 import Big, { RoundingMode } from "big.js";
-import { computedFrom } from "aurelia-binding";
-import { autoinject } from "aurelia-framework";
+
 import { Api } from "../api";
 import { Order } from "../api/order";
 import { Router } from "aurelia-router";
-import { Digit, ENTER, ESCAPE, COMMA, BACKSPACE } from "../keys";
+import { autoinject } from "aurelia-framework";
+import { computedFrom } from "aurelia-binding";
 
 @autoinject()
 export class CashPayment {
@@ -79,7 +80,7 @@ export class CashPayment {
     }
 
     async cancel() {
-        await this.api.deleteOrder(this.order.id);
+        await this.api.deleteOrder(this.order.id).send();
 
         this.router.navigate("/sale");
     }

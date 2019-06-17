@@ -1,9 +1,9 @@
-import { Big } from "big.js";
-import { Api } from "../api";
-import { autoinject } from "aurelia-framework";
-import { Order } from "../api/order";
 import { AppRouter, Router } from "aurelia-router";
-import { Sumup } from "../sumup";
+
+import { Api } from "../api";
+import { Big } from "big.js";
+import { Order } from "../api/order";
+import { autoinject } from "aurelia-framework";
 
 @autoinject()
 export class CardError {
@@ -13,7 +13,7 @@ export class CardError {
     message!: string;
     total!: Big;
 
-    constructor(private api: Api, private sumup: Sumup, private router: Router, private appRouter: AppRouter) {
+    constructor(private api: Api, private router: Router, private appRouter: AppRouter) {
     }
 
     async activate(params: { orderId: string, cause: string, message: string }) {
@@ -34,13 +34,9 @@ export class CardError {
         this.appRouter.navigateToRoute("sale");
     }
 
-    async doConfirm(method: "card" | "cash" | "account") {
-        if (method === "card") {
-            await this.sumup.redirectToApp(this.order);
-        } else {
-            this.router.navigateToRoute(method, {
-                orderId: this.order.id
-            });
-        }
+    doConfirm(method: "card" | "cash" | "account") {
+        this.router.navigateToRoute(method, {
+            orderId: this.order.id
+        });
     }
 }

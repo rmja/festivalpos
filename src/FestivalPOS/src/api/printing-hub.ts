@@ -13,7 +13,7 @@ export class PrintingHub {
     
     constructor(eventAggregator: EventAggregator) {
         this.connection = new HubConnectionBuilder()
-            .withUrl("/printing")
+            .withUrl("/Printing")
             .build();
 
         this.connection.on("Print", (job: any) => {

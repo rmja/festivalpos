@@ -1,8 +1,8 @@
 <template>
     <form submit.delegate="submit()">
         <div class="row">
-            <h6 class="col-12 text-center text-muted">Ordrenummer</h6>
-            <h1 class="offset-2 col-8 text-center">${orderId}</h1>
+            <h6 class="col-12 text-center text-muted">Brik</h6>
+            <h1 class="offset-2 col-8 text-center">${tagNumber}</h1>
             <button class="col-2 btn btn-light" click.delegate="backspace()"><font-awesome-icon icon="backspace" size="2x"></font-awesome-icon></button>
         </div>
 
@@ -14,6 +14,9 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-success btn-lg btn-block fixed-bottom"><font-awesome-icon icon="search"></font-awesome-icon> Søg</button>
+        <div class="btn-group btn-block fixed-bottom">
+            <button class="btn btn-secondary btn-lg" if.bind="canSkip"><font-awesome-icon icon="times"></font-awesome-icon> Spring over</button>
+            <button type="submit" class="btn btn-success btn-lg"><font-awesome-icon icon="ticket-alt"></font-awesome-icon> Angiv brik</button>
+        </div>
     </form>
 </template>

@@ -18,6 +18,7 @@ namespace FestivalPOS.Models
         public decimal AmountDue { get; set; }
         public IList<OrderLine> Lines { get; set; } = new List<OrderLine>();
         public IList<Payment> Payments { get; set; } = new List<Payment>();
+        public IList<OrderTag> Tags { get; set; }
         public DateTimeOffset Created { get; set; }
     }
 }

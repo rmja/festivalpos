@@ -1,5 +1,3 @@
-import { faCheckCircle, faCircle } from '@fortawesome/free-regular-svg-icons';
-
 import { Api } from './../api/index';
 import { HttpError } from 'ur-http';
 import { Router } from 'aurelia-router';
@@ -15,8 +13,8 @@ import { connectTo } from 'aurelia-store';
 })
 export class ProcessPresale {
     private state!: State;
-    orderId!: number;
-    order?: OrderViewModel;
+    tagNumber?: number;
+    order!: OrderViewModel;
 
     get totalQuantity() {
         if (this.order) {
@@ -28,28 +26,17 @@ export class ProcessPresale {
         this.keyup = this.keyup.bind(this);
     }
 
-    async activate(params: { orderId: string }) {
-        this.orderId = Number(params.orderId);
-
-        try {
-            this.order = await this.api.getOrderById(this.orderId).transfer();
+    async activate(params: { orderId: string, tagNumber?: string }) {
+        if (params.tagNumber) {
+            this.tagNumber = Number(params.tagNumber);
         }
-        catch (error) {
-            if (error instanceof HttpError && error.statusCode === 404) {
-                delete this.order;
-            }
-            else {
-                throw error;
-            }
-        }
+        const orderId = Number(params.orderId);
+        this.order = await this.api.getOrderById(orderId).transfer();
+        const products = await this.api.getProductsByPointOfSaleId(this.state.pointOfSaleId).transfer();
 
-        if (this.order) {
-            const products = await this.api.getProductsByPointOfSaleId(this.state.pointOfSaleId).transfer();
-
-            for (const line of this.order.lines) {
-                line.canRedeem = !!(line.receiveable && line.productId && products.find(x => x.product.id === line.productId));
-                line.redeem = line.canRedeem;
-            }
+        for (const line of this.order.lines) {
+            line.canRedeem = !!(line.receiveable && line.productId && products.find(x => x.product.id === line.productId));
+            line.redeem = line.canRedeem;
         }
 
         addEventListener("keyup", this.keyup);
@@ -66,16 +53,12 @@ export class ProcessPresale {
     }
 
     async process() {
-        if (!this.order) {
-            return;
-        }
-
         const redeem = this.order.lines.map(x => x.redeem ? x.receiveable : 0);
         if (Math.max(...redeem) === 0) {
             this.router.navigateToRoute("ticket");
         }
 
-        await this.api.processPresale(this.order.id, this.state.pointOfSaleId, redeem).send();
+        await this.api.serve(this.order.id, this.state.pointOfSaleId, redeem).send();
 
         this.router.navigateToRoute("process-presale-confirmation", {
             orderId: this.order.id

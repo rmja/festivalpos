@@ -1,8 +1,9 @@
-import { autoinject } from "aurelia-framework";
-import { Router } from "aurelia-router";
-import { Api } from "./api";
-import { connectTo, Store } from "aurelia-store";
 import { State, setup } from "./state";
+import { Store, connectTo } from "aurelia-store";
+
+import { Api } from "./api";
+import { Router } from "aurelia-router";
+import { autoinject } from "aurelia-framework";
 
 @connectTo()
 @autoinject()

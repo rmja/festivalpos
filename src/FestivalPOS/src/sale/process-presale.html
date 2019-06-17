@@ -1,15 +1,14 @@
 <template>
     <div class="row">
-        <h3 class="col text-muted">Ordrenr.</h3>
-        <h3 class="col text-right">${orderId}</h3>
+        <h3 class="col text-muted">Brik</h3>
+        <h3 class="col text-right">${tagNumber}</h3>
     </div>
 
-    <div if.bind="!order" class="text-center">
-        <font-awesome-icon icon="times-circle" class="text-danger" size="8x"></font-awesome-icon>
-        <h4>Ordren blev ikke fundet</h4>
-    </div>
-
-    <div else>
+    <div>
+        <div class="row">
+            <h3 class="col text-muted">Ordrenr.</h3>
+            <h3 class="col text-right">${order.id}</h3>
+        </div>
         <table class="table">
             <thead>
                 <tr>
@@ -27,7 +26,7 @@
             </tbody>
         </table>
         <button class="btn btn-primary btn-block fixed-bottom" click.delegate="process()">
-            <font-awesome-icon icon="check"></font-awesome-icon> Behandel ${totalQuantity} markerede
+            <font-awesome-icon icon="check"></font-awesome-icon> Servér ${totalQuantity} markerede
         </button>
     </div>
 </template>

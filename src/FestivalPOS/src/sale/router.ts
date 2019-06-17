@@ -1,13 +1,13 @@
 import { RedirectToRoute, RouteConfig, RouterConfiguration } from "aurelia-router";
 import { State, getOrderQuantityTotal, isSetup } from "../state";
-import { autoinject, computedFrom } from "aurelia-framework";
 
 import { PLATFORM } from "aurelia-pal";
+import { computedFrom } from "aurelia-framework";
 import { connectTo } from "aurelia-store";
 
 const routes: RouteConfig[] = [
     { route: "alarms", name: "alarms", moduleId: PLATFORM.moduleName("./alarms", "alarms") },
-    { route: "ticket", name: "ticket", moduleId: PLATFORM.moduleName("./ticket", "ticket") },
+    { route: "tag", name: "tag", moduleId: PLATFORM.moduleName("./tag", "sale") },
     { route: "", name: "products", moduleId: PLATFORM.moduleName("./products", "sale") },
     { route: "misc", name: "misc", moduleId: PLATFORM.moduleName("./misc", "sale") },
     { route: "cart", name: "cart", moduleId: PLATFORM.moduleName("./cart", "sale") },
@@ -15,7 +15,6 @@ const routes: RouteConfig[] = [
     { route: "orders/:orderId/process-presale-confirmation", name: "process-presale-confirmation", moduleId: PLATFORM.moduleName("./process-presale-confirmation", "sale") }
 ];
 
-@autoinject()
 @connectTo({
     selector: store => store.state,
     setup: "canActivate"

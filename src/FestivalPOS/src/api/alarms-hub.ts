@@ -13,7 +13,7 @@ export class AlarmsHub {
     
     constructor(eventAggregator: EventAggregator) {
         this.connection = new HubConnectionBuilder()
-            .withUrl("/alarms")
+            .withUrl("/Alarms")
             .build();
 
         this.connection.on("EventCreated", (event: any) => {

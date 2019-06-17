@@ -1,6 +1,6 @@
-import { jsonProperty } from "ur-json"
 import Big, { } from "big.js"
 import { bigConverter } from "./converters/big-converter";
+import { jsonProperty } from "ur-json"
 
 export class Product {
     @jsonProperty()
@@ -17,4 +17,7 @@ export class Product {
 
     @jsonProperty()
     thumbnailImageUrl?: string;
+
+    @jsonProperty()
+    isServing!: boolean;
 }

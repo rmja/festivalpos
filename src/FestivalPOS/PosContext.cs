@@ -13,6 +13,7 @@ namespace FestivalPOS
         public DbSet<AlarmFeed> AlarmFeeds { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<OrderTag> OrderTags { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<PointOfSale> PointOfSales { get; set; }
@@ -46,6 +47,10 @@ namespace FestivalPOS
             modelBuilder.Entity<Order>().HasIndex(x => x.AmountDue);
             modelBuilder.Entity<OrderLine>().Property(x => x.Total).HasColumnType("decimal(9,2)");
             modelBuilder.Entity<Payment>().Property(x => x.Amount).HasColumnType("decimal(9,2)");
+            modelBuilder.Entity<Order>().HasMany(x => x.Tags).WithOne(x => x.Order).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OrderTag>().HasIndex(x => x.Number).HasFilter("Detached IS NULL");
+            modelBuilder.Entity<OrderTag>().HasIndex(x => new { x.Number, x.OrderId }).HasFilter("Detached IS NULL").IsUnique();
 
             modelBuilder.Entity<PointOfSale>().HasQueryFilter(x => !x.IsDeleted);
             //modelBuilder.Entity<PointOfSale>().HasOne(x => x.ReceiptPrinter).WithMany().OnDelete(DeleteBehavior.SetNull);

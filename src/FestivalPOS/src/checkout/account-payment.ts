@@ -1,10 +1,11 @@
+import { BACKSPACE, COMMA, Digit, ENTER, ESCAPE } from "../keys";
 import { Big, RoundingMode } from "big.js";
-import { autoinject, observable, computedFrom } from "aurelia-framework";
+import { autoinject, computedFrom, observable } from "aurelia-framework";
+
 import { Account } from "../api/account";
 import { Api } from "../api";
 import { Order } from "../api/order";
 import { Router } from "aurelia-router";
-import { Digit, ENTER, ESCAPE, COMMA, BACKSPACE } from "../keys";
 
 @autoinject()
 export class AccountPayment {
@@ -96,7 +97,7 @@ export class AccountPayment {
     }
 
     async cancel() {
-        await this.api.deleteOrder(this.order.id);
+        await this.api.deleteOrder(this.order.id).send();
 
         this.router.navigate("/sale");
     }

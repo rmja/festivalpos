@@ -3,9 +3,7 @@ import { Store, connectTo } from "aurelia-store";
 import { autoinject, bindable, computedFrom } from "aurelia-framework";
 
 import { Api } from "../api";
-import { Order } from "../api/order";
 import { Router } from "aurelia-router";
-import { Sumup } from "../sumup";
 
 @autoinject()
 @connectTo()
@@ -26,7 +24,7 @@ export class PayButtonCustomElement {
         }
     }
 
-    constructor(private api: Api, private store: Store<State>, private sumup: Sumup, private router: Router) {
+    constructor(private api: Api, private store: Store<State>, private router: Router) {
     }
 
     async doConfirm(method: "card" | "cash" | "account") {
@@ -50,9 +48,11 @@ export class PayButtonCustomElement {
 
         await this.store.dispatch(resetOrder);
 
-        if (method === "card") {
-            await this.sumup.redirectToApp(order);
-        } else {
+        // TODO: Include if serving
+        if (order.lines.find(x => x.receiveable)) {
+            this.router.navigate(`/checkout/orders/${order.id}/tag?paymentMethod=${method}`);
+        }
+        else {
             this.router.navigate(`/checkout/orders/${order.id}/pay/${method}`);
         }
     }
