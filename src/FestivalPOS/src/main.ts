@@ -1,11 +1,13 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "./styles.css";
 import "bootstrap/dist/js/bootstrap.js";
+
 import { Aurelia, PLATFORM } from "aurelia-framework";
-import { HttpClient } from "aurelia-fetch-client";
-import { Http } from "ur-http";
-import { initialState } from "./state";
+
 import { DialogConfiguration } from "aurelia-dialog";
+import { Http } from "ur-http";
+import { HttpClient } from "aurelia-fetch-client";
+import { initialState } from "./state";
 
 if ('serviceWorker' in navigator && window.location.protocol.startsWith('https')) {
     window.addEventListener('load', async () => {

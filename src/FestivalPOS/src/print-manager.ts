@@ -17,6 +17,7 @@ export class PrintManager {
     private terminalId!: number;
     private stateSubscription!: Subscription;
     private disposables!: Disposable[];
+    private connected = false;
     private logger: Logger;
 
     constructor(private store: Store<State>, private printingHub: PrintingHub, private api: Api, private eventAggregator: EventAggregator) {
@@ -24,8 +25,6 @@ export class PrintManager {
     }
 
     async setup() {
-        await this.printingHub.connect();
-
         this.printers = await this.api.getAllPrinters().transfer();
 
         this.stateSubscription = this.store.state.pipe(pluck("terminalId")).subscribe(terminalId => {
@@ -46,11 +45,21 @@ export class PrintManager {
 
         this.stateSubscription.unsubscribe();
 
-        await this.printingHub.disconnect();
+        if (this.connected) {
+            await this.printingHub.disconnect();
+        }
     }
 
-    private terminalIdChanged() {
-        return this.printingHub.hello(this.terminalId);
+    private async terminalIdChanged() {
+        if (!this.printers.find(x => x.terminalId === this.terminalId)) {
+            return;
+        }
+        
+        if (!this.connected) {
+            await this.printingHub.connect();
+        }
+
+        await this.printingHub.hello(this.terminalId);
     }
 
     private async print(event: PrintJobCreated) {

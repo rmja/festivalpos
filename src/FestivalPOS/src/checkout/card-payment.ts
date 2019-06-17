@@ -27,16 +27,6 @@ export class CardPayment {
 
         const callbackUrl = `${window.location.origin}/#/checkout/orders/${order.id}/pay/card-callback?amount=${order.amountDue}`;
 
-        if (confirm("Debug?")) {
-            if (confirm("Success?")) {
-                window.location.href = `${callbackUrl}&smp-status=success&smp-tx-code=123abc`;
-            }
-            else {
-                window.location.href = `${callbackUrl}&smp-status=failed&smp-failure-cause=testfejl&smp-message=fejlbesked&smp-tx-code=123abc`;
-            }
-        }
-        else {
-            window.location.href = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${title}&callback=${encodeURIComponent(callbackUrl)}`;
-        }
+        window.location.href = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${title}&callback=${encodeURIComponent(callbackUrl)}`;
     }
 }

@@ -1,5 +1,6 @@
-import { autoinject } from "aurelia-framework";
 import { CacheContext, TagEntry } from "./cache-context";
+
+import { autoinject } from "aurelia-framework";
 
 @autoinject()
 export class CacheControl {
