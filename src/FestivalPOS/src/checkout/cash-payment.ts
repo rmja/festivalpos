@@ -10,6 +10,7 @@ import { computedFrom } from "aurelia-binding";
 @autoinject()
 export class CashPayment {
     private order!: Order;
+    private tagNumber?: string;
     total!: Big;
     amountDue!: Big;
     received!: Big;
@@ -28,8 +29,9 @@ export class CashPayment {
         this.keyup = this.keyup.bind(this);
     }
 
-    async activate(params: {orderId: string}) {
+    async activate(params: { orderId: string, tagNumber?: string }) {
         const orderId = Number(params.orderId);
+        this.tagNumber = params.tagNumber;
         this.order = await this.api.getOrderById(orderId).transfer();
 
         this.total = this.order.total;
@@ -98,7 +100,8 @@ export class CashPayment {
         this.router.navigateToRoute("receipt", {
             orderId: payment.orderId,
             paymentId: payment.id,
-            change: this.received.minus(payment.amount).toFixed(2)
+            change: this.received.minus(payment.amount).toFixed(2),
+            tagNumber: this.tagNumber
         });
     }
 }

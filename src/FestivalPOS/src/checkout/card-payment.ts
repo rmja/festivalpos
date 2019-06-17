@@ -5,15 +5,18 @@ import { Api } from "../api";
 @noView()
 @autoinject()
 export class CardPayment {
+    private tagNumber?: string;
+
     constructor(private api: Api) {
     }
     
-    async canActivate(params: { orderId: string}) {
+    async canActivate(params: { orderId: string, tagNumber?: string }) {
         const orderId = Number(params.orderId);
-        return this.redirectToSumUpApp(orderId);
+        
+        return this.redirectToSumUpApp(orderId, params.tagNumber);
     }
 
-    private async redirectToSumUpApp(orderId: number) {
+    private async redirectToSumUpApp(orderId: number, tagNumber?: string) {
         const order = await this.api.getOrderById(orderId).transfer();
 
         const pos = await this.api.getPointOfSale(order.pointOfSaleId).transfer();
@@ -25,7 +28,11 @@ export class CardPayment {
         const total = order.amountDue.toFixed(2); // Has "." as decimal separator
         const title = `Kajfest ${pos.name}`;
 
-        const callbackUrl = `${window.location.origin}/#/checkout/orders/${order.id}/pay/card-callback?amount=${order.amountDue}`;
+        let callbackUrl = `${window.location.origin}/#/checkout/orders/${order.id}/pay/card-callback?amount=${order.amountDue}`;
+
+        if (tagNumber) {
+            callbackUrl += `&tagNumber=${tagNumber}`;
+        }
 
         window.location.href = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${title}&callback=${encodeURIComponent(callbackUrl)}`;
     }

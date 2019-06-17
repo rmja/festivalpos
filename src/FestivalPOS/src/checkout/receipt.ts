@@ -6,7 +6,7 @@ import { Router } from "aurelia-router";
 import { Serving } from "../api/serving";
 import { autoinject } from "aurelia-framework";
 
-interface Params { orderId: string, paymentId: string, change?: string };
+interface Params { orderId: string, paymentId: string, change?: string, tagNumber?: string };
 
 @autoinject()
 export class CashReceipt {
@@ -24,7 +24,10 @@ export class CashReceipt {
         this.orderId = Number(params.orderId);
         const paymentId = Number(params.paymentId);
         const order = await this.api.getOrderById(this.orderId).transfer();
-        this.servingId = order.servings.length && order.servings[0].id;
+        if (params.tagNumber) {
+            this.servingId = order.servings.length && order.servings[0].id;
+        }
+        
         const payment = order.payments.find(x => x.id === paymentId);
 
         if (!payment) {

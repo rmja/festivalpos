@@ -10,6 +10,7 @@ import { Router } from "aurelia-router";
 @autoinject()
 export class AccountPayment {
     private order!: Order;
+    private tagNumber?: string;
     private accounts!: Account[];
     private account?: Account;
     total!: Big;
@@ -49,8 +50,9 @@ export class AccountPayment {
         this.keyup = this.keyup.bind(this);
     }
 
-    async activate(params: { orderId: string }) {
+    async activate(params: { orderId: string, tagNumber?: string }) {
         const orderId = Number(params.orderId);
+        this.tagNumber = params.tagNumber;
         this.order = await this.api.getOrderById(orderId).transfer();
         this.accounts = await this.api.getAllAccounts().transfer();
 
@@ -119,7 +121,8 @@ export class AccountPayment {
 
         this.router.navigateToRoute("receipt", {
             orderId: payment.orderId,
-            paymentId: payment.id
+            paymentId: payment.id,
+            tagNumber: this.tagNumber
         });
     }
 

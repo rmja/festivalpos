@@ -11,7 +11,7 @@ export class CardCallback {
     }
 
     // Example callback url: https://example.com/?smp-status=success&smp-message=Transaction%20successful.&smp-receipt-sent=false&smp-tx-code=TDT3L2XDGM#/checkout/orders/87/pay/card-callback?amount=40
-    async canActivate(params: { orderId: string, amount: string } & SumUpCallbackParams & {[key: string]: string}) {
+    async canActivate(params: { orderId: string, amount: string, tagNumber?: string } & SumUpCallbackParams & {[key: string]: string}) {
         const orderId = Number(params.orderId);
         const amount = new Big(params.amount);
         
@@ -32,6 +32,7 @@ export class CardCallback {
             return new RedirectToRoute("receipt", {
                 orderId: orderId,
                 paymentId: payment.id,
+                tagNumber: params.tagNumber
             }, {
                 replace: true
             });

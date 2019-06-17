@@ -86,7 +86,8 @@ export class Tag {
         }
 
         this.router.navigateToRoute(this.paymentMethod, {
-            orderId: this.orderId
+            orderId: this.orderId,
+            tagNumber
         });
     }
 }
