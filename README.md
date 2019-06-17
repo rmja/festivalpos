@@ -4,8 +4,8 @@ It is designed to be easy to use for non-technical volunteer staff, while suppor
 
 * Super fast and friction free transaction flow
 * Allow for multiple points of sale with individual statistics
-* Buy using predefined customer credit accounts, creditcard using SumUp (not working yet), and cash payments.
-* Ticket presale and printing
+* Buy using predefined customer credit accounts, creditcard using SumUp, and cash payments.
+* Receipt printing
 * Food order management
 * Easily message organizing staff in case of technical issues, supply outages, etc.
 
@@ -20,3 +20,7 @@ docker run -e SqlServerConnectionString="..." -e RedisConnectionString="..." -e 
 ```
 Update with a connection string to SqlServer, Redis and an Azure storage account.
 Then navigate to [localhost:5000]() to see the app running.
+
+## Build
+
+docker build -f src/FestivalPOS/Dockerfile -t rmjac/festivalpos .
