@@ -19,6 +19,7 @@ namespace FestivalPOS.Models
         public IList<OrderLine> Lines { get; set; } = new List<OrderLine>();
         public IList<Payment> Payments { get; set; } = new List<Payment>();
         public IList<OrderTag> Tags { get; set; }
+        public IList<Serving> Servings { get; set; } = new List<Serving>();
         public DateTimeOffset Created { get; set; }
     }
 }

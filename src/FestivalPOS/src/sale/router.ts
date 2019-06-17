@@ -12,7 +12,7 @@ const routes: RouteConfig[] = [
     { route: "misc", name: "misc", moduleId: PLATFORM.moduleName("./misc", "sale") },
     { route: "cart", name: "cart", moduleId: PLATFORM.moduleName("./cart", "sale") },
     { route: "orders/:orderId/process-presale", name: "process-presale", moduleId: PLATFORM.moduleName("./process-presale", "sale") },
-    { route: "orders/:orderId/process-presale-confirmation", name: "process-presale-confirmation", moduleId: PLATFORM.moduleName("./process-presale-confirmation", "sale") }
+    { route: "orders/:orderId/servings/:servingId/confirmation", name: "serving-confirmation", moduleId: PLATFORM.moduleName("./serving-confirmation", "sale") }
 ];
 
 @connectTo({

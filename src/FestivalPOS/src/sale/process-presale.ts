@@ -1,5 +1,4 @@
 import { Api } from './../api/index';
-import { HttpError } from 'ur-http';
 import { Router } from 'aurelia-router';
 import { State } from '../state';
 import { autoinject } from "aurelia-framework";
@@ -35,7 +34,7 @@ export class ProcessPresale {
         const products = await this.api.getProductsByPointOfSaleId(this.state.pointOfSaleId).transfer();
 
         for (const line of this.order.lines) {
-            line.canRedeem = !!(line.receiveable && line.productId && products.find(x => x.product.id === line.productId));
+            line.canRedeem = !!(line.receiveable && line.productId && products.find(x => x.product.id === line.productId && !x.presale));
             line.redeem = line.canRedeem;
         }
 
@@ -53,15 +52,27 @@ export class ProcessPresale {
     }
 
     async process() {
-        const redeem = this.order.lines.map(x => x.redeem ? x.receiveable : 0);
-        if (Math.max(...redeem) === 0) {
+        const lines = this.order.lines.filter(x => x.redeem).map(x => {
+            return {
+                orderLineId: x.id,
+                quantity: x.receiveable
+            };
+        });
+
+        if (lines.length === 0) {
             this.router.navigateToRoute("ticket");
+            return;
         }
 
-        await this.api.serve(this.order.id, this.state.pointOfSaleId, redeem).send();
+        const serving = await this.api.createServing(this.order.id, {
+            pointOfSaleId: this.state.pointOfSaleId,
+            lines: lines
+        }).transfer();
 
-        this.router.navigateToRoute("process-presale-confirmation", {
-            orderId: this.order.id
+        this.router.navigateToRoute("serving-confirmation", {
+            orderId: this.order.id,
+            servingId: serving.id,
+            tagNumber: this.tagNumber
         });
     }
 }
@@ -72,6 +83,7 @@ interface OrderViewModel {
 }
 
 interface OrderLineViewModel {
+    id: number;
     name?: string;
     quantity: number;
     productId?: number;

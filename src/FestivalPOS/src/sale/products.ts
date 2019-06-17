@@ -44,6 +44,7 @@ interface ProductViewModel {
         id: number;
         name: string;
         price: Big;
+        isServing: boolean;
         thumbnailImageUrl?: string;
     }
     presale: boolean;

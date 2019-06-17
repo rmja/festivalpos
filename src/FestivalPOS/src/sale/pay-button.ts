@@ -48,8 +48,7 @@ export class PayButtonCustomElement {
 
         await this.store.dispatch(resetOrder);
 
-        // TODO: Include if serving
-        if (order.lines.find(x => x.receiveable)) {
+        if (order.canHaveTag()) {
             this.router.navigate(`/checkout/orders/${order.id}/tag?paymentMethod=${method}`);
         }
         else {

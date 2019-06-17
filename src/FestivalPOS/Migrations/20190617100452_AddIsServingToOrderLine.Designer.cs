@@ -4,14 +4,16 @@ using FestivalPOS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FestivalPOS.Migrations
 {
     [DbContext(typeof(PosContext))]
-    partial class PosContextModelSnapshot : ModelSnapshot
+    [Migration("20190617100452_AddIsServingToOrderLine")]
+    partial class AddIsServingToOrderLine
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -305,61 +307,6 @@ namespace FestivalPOS.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("FestivalPOS.Models.Serving", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTimeOffset?>("Accepted");
-
-                    b.Property<DateTimeOffset?>("Completed");
-
-                    b.Property<DateTimeOffset>("Created");
-
-                    b.Property<int>("OrderId");
-
-                    b.Property<int>("PointOfSaleId");
-
-                    b.Property<int?>("StaffNumber");
-
-                    b.Property<int>("State");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("PointOfSaleId");
-
-                    b.ToTable("Servings");
-                });
-
-            modelBuilder.Entity("FestivalPOS.Models.ServingLine", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(100);
-
-                    b.Property<int>("OrderLineId");
-
-                    b.Property<int>("Position");
-
-                    b.Property<int>("Quantity");
-
-                    b.Property<int>("ServingId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderLineId");
-
-                    b.HasIndex("ServingId");
-
-                    b.ToTable("ServingLines");
-                });
-
             modelBuilder.Entity("FestivalPOS.Models.Terminal", b =>
                 {
                     b.Property<int>("Id")
@@ -443,8 +390,7 @@ namespace FestivalPOS.Migrations
                 {
                     b.HasOne("FestivalPOS.Models.Printer", "ReceiptPrinter")
                         .WithMany()
-                        .HasForeignKey("ReceiptPrinterId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("ReceiptPrinterId");
                 });
 
             modelBuilder.Entity("FestivalPOS.Models.PointOfSaleProduct", b =>
@@ -466,32 +412,6 @@ namespace FestivalPOS.Migrations
                         .WithMany("Printers")
                         .HasForeignKey("TerminalId")
                         .OnDelete(DeleteBehavior.SetNull);
-                });
-
-            modelBuilder.Entity("FestivalPOS.Models.Serving", b =>
-                {
-                    b.HasOne("FestivalPOS.Models.Order", "Order")
-                        .WithMany("Servings")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("FestivalPOS.Models.PointOfSale", "PointOfSale")
-                        .WithMany()
-                        .HasForeignKey("PointOfSaleId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("FestivalPOS.Models.ServingLine", b =>
-                {
-                    b.HasOne("FestivalPOS.Models.OrderLine", "OrderLine")
-                        .WithMany()
-                        .HasForeignKey("OrderLineId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("FestivalPOS.Models.Serving", "Serving")
-                        .WithMany("Lines")
-                        .HasForeignKey("ServingId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

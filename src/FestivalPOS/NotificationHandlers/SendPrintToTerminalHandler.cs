@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FestivalPOS.NotificationHandlers
 {
-    public class SendPrintToTerminalHandler : INotificationHandler<PrintJobCreated>
+    public class SendPrintToTerminalHandler : INotificationHandler<PrintJobCreatedNotification>
     {
         private readonly IHubContext<PrintingHub> _hub;
         private readonly PrintQueue _printQueue;
@@ -19,7 +19,7 @@ namespace FestivalPOS.NotificationHandlers
             _printQueue = printQueue;
         }
 
-        public async Task Handle(PrintJobCreated notification, CancellationToken cancellationToken)
+        public async Task Handle(PrintJobCreatedNotification notification, CancellationToken cancellationToken)
         {
             PrintJob job;
             while ((job = await _printQueue.DequeueAsync(notification.PrinterId)) != null)

@@ -4,14 +4,16 @@ using FestivalPOS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FestivalPOS.Migrations
 {
     [DbContext(typeof(PosContext))]
-    partial class PosContextModelSnapshot : ModelSnapshot
+    [Migration("20190617104149_AddServings")]
+    partial class AddServings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -343,8 +345,6 @@ namespace FestivalPOS.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(100);
 
-                    b.Property<int>("OrderLineId");
-
                     b.Property<int>("Position");
 
                     b.Property<int>("Quantity");
@@ -352,8 +352,6 @@ namespace FestivalPOS.Migrations
                     b.Property<int>("ServingId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderLineId");
 
                     b.HasIndex("ServingId");
 
@@ -471,7 +469,7 @@ namespace FestivalPOS.Migrations
             modelBuilder.Entity("FestivalPOS.Models.Serving", b =>
                 {
                     b.HasOne("FestivalPOS.Models.Order", "Order")
-                        .WithMany("Servings")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -483,11 +481,6 @@ namespace FestivalPOS.Migrations
 
             modelBuilder.Entity("FestivalPOS.Models.ServingLine", b =>
                 {
-                    b.HasOne("FestivalPOS.Models.OrderLine", "OrderLine")
-                        .WithMany()
-                        .HasForeignKey("OrderLineId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("FestivalPOS.Models.Serving", "Serving")
                         .WithMany("Lines")
                         .HasForeignKey("ServingId")

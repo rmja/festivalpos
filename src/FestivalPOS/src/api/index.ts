@@ -14,6 +14,7 @@ import { PointOfSale } from "./point-of-sale";
 import { PointOfSaleProduct } from './point-of-sale-product';
 import { Printer } from "./printer";
 import { Product } from "./product";
+import { Serving } from "./serving";
 import { Terminal } from "./terminal";
 import { autoinject } from "aurelia-framework";
 
@@ -128,7 +129,7 @@ export class Api {
         ]));
     }
 
-    createProduct(product: { name: string, price?: Big }) {
+    createProduct(product: { name: string, price?: Big, isServing?: boolean }) {
         return Http.post("/Products").withJson(product).expectJson(Product).onSent(this.bust([
             K.Products
         ]));
@@ -211,10 +212,6 @@ export class Api {
         return Http.post(`/Orders/${orderId}/Receipt`, { pointOfSaleId });
     }
 
-    serve(orderId: number, pointOfSaleId: number, redeem: number[]) {
-        return Http.post(`/Orders/${orderId}/Serve`, { pointOfSaleId, redeem })
-    }
-
     deleteOrder(orderId: number) {
         return Http.delete(`/Orders/${orderId}`).onSent(this.bust([
             K.Orders
@@ -231,6 +228,22 @@ export class Api {
     getAllPayments(filter?: { terminalId?: number, pointOfSaleId?: number, accountId?: number, from?: DateTime, to?: DateTime }) {
         return Http.get("/Payments", filter).expectJsonArray(Payment).onReceived(this.tag(result => [
             K.Payments,
+        ]));
+    }
+
+    createServing(orderId: number, serving: { pointOfSaleId: number, lines: { orderLineId: number, quantity: number }[] }) {
+        return Http.post(`/Orders/${orderId}/Servings`).withJson(serving).expectJson(Serving).onSent(this.bust([
+            K.Orders
+        ]));
+    }
+
+    getServingById(servingId: number) {
+        return Http.get(`/Servings/${servingId}`).expectJson(Serving);
+    }
+
+    updateServing(servingId: number, patch: Operation[]) {
+        return Http.patch(`/Servings/${servingId}`).withJson(patch).expectJson(Serving).onSent(this.bust([
+            K.Orders
         ]));
     }
 

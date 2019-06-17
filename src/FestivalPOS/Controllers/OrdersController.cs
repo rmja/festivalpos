@@ -48,6 +48,7 @@ namespace FestivalPOS.Controllers
             var order = await _db.Orders
                 .Include(x => x.Lines)
                 .Include(x => x.Payments)
+                .Include(x => x.Servings)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (order == null)
@@ -66,6 +67,7 @@ namespace FestivalPOS.Controllers
                 .Select(x => x.Order)
                 .Include(x => x.Lines)
                 .Include(x => x.Payments)
+                .Include(x => x.Servings)
                 .FirstOrDefaultAsync();
 
             if (order == null)
@@ -149,7 +151,7 @@ namespace FestivalPOS.Controllers
                 Name = $"Kvittering {order.Id}",
                 Data = data
             });
-            await _mediator.Publish(new PrintJobCreated(printerId.Value));
+            await _mediator.Publish(new PrintJobCreatedNotification(printerId.Value));
 
             return NoContent();
         }

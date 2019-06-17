@@ -25,7 +25,7 @@ export class Tag {
         this.paymentMethod = params.paymentMethod;
 
         const order = await this.api.getOrderById(this.orderId).transfer();
-        this.canSkip = !order.lines.find(x => x.receiveable);
+        this.canSkip = !order.mustHaveTag();
 
         document.addEventListener("keyup", this.keyup);
     }

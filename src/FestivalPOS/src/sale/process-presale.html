@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row" if.bind="tagNumber">
         <h3 class="col text-muted">Brik</h3>
         <h3 class="col text-right">${tagNumber}</h3>
     </div>
@@ -12,7 +12,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th></th>
+                    <th>Indløs</th>
                     <th>Vare</th>
                     <th>Til gode</th>
                 </tr>
@@ -25,7 +25,7 @@
                 </tr>
             </tbody>
         </table>
-        <button class="btn btn-primary btn-block fixed-bottom" click.delegate="process()">
+        <button class="btn btn-primary btn-block fixed-bottom" disabled.bind="totalQuantity === 0" click.delegate="process()">
             <font-awesome-icon icon="check"></font-awesome-icon> Servér ${totalQuantity} markerede
         </button>
     </div>

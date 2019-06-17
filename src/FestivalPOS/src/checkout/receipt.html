@@ -14,11 +14,19 @@
     </div>
     <div class="text-center">
         <font-awesome-icon icon="check-circle" class="text-success" size="8x"></font-awesome-icon>
+        <h4 if.bind="servingId">Servering er lagt i kø</h4>
     </div>
 
     <div class="text-center">
         <button type="button" class="btn btn-secondary" click.delegate="printReceipt()"><font-awesome-icon icon="print"></font-awesome-icon> Udskriv kvittering</button>
     </div>
 
-    <button type="button" class="btn btn-primary btn-lg btn-block fixed-bottom" click.delegate="complete()">Udført</button>
+    <div class="btn-group btn-block fixed-bottom">
+        <button type="button" class="btn btn-secondary btn-lg" if.bind="servingId" click.delegate="complete(true)">
+            <font-awesome-icon icon="check"></font-awesome-icon> Marker som færdigserveret
+        </button>
+        <button type="button" class="btn btn-primary btn-lg" click.delegate="complete()">
+            <font-awesome-icon icon="check"></font-awesome-icon> Udført
+        </button>
+    </div>
 </template>

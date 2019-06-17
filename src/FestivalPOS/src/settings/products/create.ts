@@ -1,5 +1,6 @@
-import { Api } from "../../api";
 import { autoinject, useView } from "aurelia-framework";
+
+import { Api } from "../../api";
 import { Big } from "big.js";
 import { Router } from "aurelia-router";
 
@@ -8,6 +9,7 @@ import { Router } from "aurelia-router";
 export class CreateProduct {
     name = "";
     price = "0";
+    isServing = false;
 
     get canSubmit() {
         return !!this.name.length;
@@ -17,7 +19,7 @@ export class CreateProduct {
     }
 
     async submit() {
-        const product = await this.api.createProduct({ name: this.name, price: new Big(this.price) }).transfer();
+        await this.api.createProduct({ name: this.name, price: new Big(this.price), isServing: this.isServing }).send();
         this.router.navigateToRoute("list");
     }
 }

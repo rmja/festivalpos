@@ -1,6 +1,7 @@
 import { Big } from "big.js";
 import { DateTime } from "luxon";
 import { Payment } from "./payment";
+import { Serving } from "./serving";
 import { bigConverter } from "./converters/big-converter";
 import { dateTimeConverter } from "./converters/date-time-converter";
 import { jsonProperty } from "ur-json";
@@ -25,6 +26,9 @@ export class OrderLine {
     receiveable!: number;
 
     @jsonProperty()
+    isServing!: boolean;
+
+    @jsonProperty()
     quantity!: number;
 
     @jsonProperty({ converter: bigConverter })
@@ -47,6 +51,9 @@ export class Order {
     @jsonProperty({ type: Payment })
     payments: Payment[] = [];
 
+    @jsonProperty({ type: Serving })
+    servings: Serving[] = [];
+
     @jsonProperty({ converter: dateTimeConverter })
     created!: DateTime;
 
@@ -64,5 +71,13 @@ export class Order {
 
     get amountDue() {
         return this.total.sub(this.totalPaid);
+    }
+
+    mustHaveTag() {
+        return !!this.lines.find(x => x.receiveable); 
+    }
+
+    canHaveTag() {
+        return !!this.lines.find(x => x.isServing) || !!this.lines.find(x => x.receiveable);
     }
 }

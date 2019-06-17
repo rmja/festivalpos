@@ -18,6 +18,7 @@ namespace FestivalPOS.Models
         public decimal Total { get; set; }
         public int? ProductId { get; set; }
         public int Receiveable { get; set; }
+        public bool IsServing { get; set; }
         [JsonIgnore]
         public Product Product { get; set; }
     }

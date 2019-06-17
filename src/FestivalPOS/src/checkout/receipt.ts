@@ -1,7 +1,9 @@
 import { Api } from "../api";
 import { Big } from "big.js";
+import { Patch } from "ur-jsonpatch";
 import { Payment } from "../api/payment";
 import { Router } from "aurelia-router";
+import { Serving } from "../api/serving";
 import { autoinject } from "aurelia-framework";
 
 interface Params { orderId: string, paymentId: string, change?: string };
@@ -10,6 +12,7 @@ interface Params { orderId: string, paymentId: string, change?: string };
 export class CashReceipt {
     private payment!: Payment
     orderId!: number;
+    servingId?: number;
     total!: Big;
     change?: Big;
 
@@ -21,6 +24,7 @@ export class CashReceipt {
         this.orderId = Number(params.orderId);
         const paymentId = Number(params.paymentId);
         const order = await this.api.getOrderById(this.orderId).transfer();
+        this.servingId = order.servings.length && order.servings[0].id;
         const payment = order.payments.find(x => x.id === paymentId);
 
         if (!payment) {
@@ -45,8 +49,6 @@ export class CashReceipt {
         removeEventListener("keyup", this.keyup);
     }
 
-
-
     private keyup(event: KeyboardEvent) {
         if (event.keyCode === 13) {
             return this.complete();
@@ -57,7 +59,14 @@ export class CashReceipt {
         return this.api.printReceipt(this.orderId).send();
     }
 
-    complete() {
+    async complete(markAsCompleted?: boolean) {
+        if (this.servingId && markAsCompleted) {
+            const patch = new Patch<Serving>()
+                .replace(x => x.state, "completed");
+
+            await this.api.updateServing(this.servingId, patch.operations).send();
+        }
+        
         this.router.navigate("/sale");
     }
 }
