@@ -10,11 +10,17 @@ export class CardCallback {
     constructor(private api: Api) {
     }
 
-    async canActivate(params: { orderId: string, amount: string } & SumUpCallbackParams) {
+    // Example callback url: https://example.com/?smp-status=success&smp-message=Transaction%20successful.&smp-receipt-sent=false&smp-tx-code=TDT3L2XDGM#/checkout/orders/87/pay/card-callback?amount=40
+    async canActivate(params: { orderId: string, amount: string } & SumUpCallbackParams & {[key: string]: string}) {
         const orderId = Number(params.orderId);
         const amount = new Big(params.amount);
-
-        alert(window.location.href);
+        
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.forEach((value, key) => {
+            if (!(key in params)) {
+                params[key] = value;
+            }
+        });
 
         if (params["smp-status"] === "success") {
             const payment = await this.api.createPayment(orderId, {

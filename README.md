@@ -24,3 +24,4 @@ Then navigate to [localhost:5000]() to see the app running.
 ## Build
 
 docker build -f src/FestivalPOS/Dockerfile -t rmjac/festivalpos .
+docker push rmjac/festivalpos
