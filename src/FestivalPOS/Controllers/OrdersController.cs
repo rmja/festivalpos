@@ -35,6 +35,12 @@ namespace FestivalPOS.Controllers
             order.AmountDue = order.Total - order.Payments.Sum(x => x.Amount);
             order.Created = LocalClock.Now;
 
+            var position = 0;
+            foreach (var line in order.Lines)
+            {
+                line.Position = position++;
+            }
+
             _db.Orders.Add(order);
 
             await _db.SaveChangesAsync();
@@ -56,6 +62,8 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
+            order.OnMaterialized();
+
             return order;
         }
 
@@ -74,6 +82,8 @@ namespace FestivalPOS.Controllers
             {
                 return NotFound();
             }
+
+            order.OnMaterialized();
 
             return order;
         }

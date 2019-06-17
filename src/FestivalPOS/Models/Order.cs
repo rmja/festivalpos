@@ -16,10 +16,15 @@ namespace FestivalPOS.Models
         public PointOfSale PointOfSale { get; set; }
         public decimal Total { get; set; }
         public decimal AmountDue { get; set; }
-        public IList<OrderLine> Lines { get; set; } = new List<OrderLine>();
+        public List<OrderLine> Lines { get; set; } = new List<OrderLine>();
         public IList<Payment> Payments { get; set; } = new List<Payment>();
         public IList<OrderTag> Tags { get; set; }
         public IList<Serving> Servings { get; set; } = new List<Serving>();
         public DateTimeOffset Created { get; set; }
+
+        public void OnMaterialized()
+        {
+            Lines.Sort((a, b) => a.Position.CompareTo(b.Position));
+        }
     }
 }

@@ -78,16 +78,9 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            return Ok(serving);
-        }
+            serving.OnMaterialized();
 
-        [HttpGet("/api/Orders/{orderId:int}/Servings")]
-        public Task<List<Serving>> GetAllByOrderId(int orderId)
-        {
-            return _db.Servings
-                .Include(x => x.Lines)
-                .Where(x => x.OrderId == orderId)
-                .ToListAsync();
+            return Ok(serving);
         }
 
         [HttpPatch("{id:int}")]
