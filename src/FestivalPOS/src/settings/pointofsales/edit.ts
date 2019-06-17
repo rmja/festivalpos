@@ -8,10 +8,9 @@ import { autoinject } from "aurelia-framework";
 export class EditPointOfSale {
     private pointOfSaleId!: number;
     name!: string;
+    noOfServingStaff!: number;
     printers!: PrinterViewModel[];
     receiptPrinter?: PrinterViewModel;
-    ticketPrinter?: PrinterViewModel;
-    servingPrinter?: PrinterViewModel;
 
     get canSubmit() {
         return !!this.name.length;
@@ -24,16 +23,16 @@ export class EditPointOfSale {
         this.pointOfSaleId = Number(params.pointOfSaleId);
         const pos = await this.api.getPointOfSale(this.pointOfSaleId).transfer();
         this.name = pos.name;
+        this.noOfServingStaff = pos.noOfServingStaff;
         this.printers = await this.api.getAllPrinters().transfer();
         this.receiptPrinter = this.printers.find(x => x.id === pos.receiptPrinterId);
-        this.ticketPrinter = this.printers.find(x => x.id === pos.ticketPrinterId);
-        this.servingPrinter = this.printers.find(x => x.id === pos.servingPrinterId);
     }
 
     async submit() {
         const patch = new Patch<PointOfSale>()
             .replace(x => x.name, this.name)
-            .replace(x => x.receiptPrinterId, this.receiptPrinter ? this.receiptPrinter.id : null)
+            .replace(x => x.noOfServingStaff, this.noOfServingStaff)
+            .replace(x => x.receiptPrinterId, this.receiptPrinter ? this.receiptPrinter.id : null);
 
         await this.api.updatePointOfSale(this.pointOfSaleId, patch.operations).transfer();
         this.router.navigateToRoute("details", { pointOfSaleId: this.pointOfSaleId });

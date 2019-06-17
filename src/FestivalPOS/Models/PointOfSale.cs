@@ -12,7 +12,7 @@ namespace FestivalPOS.Models
         public int? ReceiptPrinterId { get; set; }
         [JsonIgnore]
         public Printer ReceiptPrinter { get; set; }
-        public int NoOfServingStaffs { get; set; }
+        public int NoOfServingStaff { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

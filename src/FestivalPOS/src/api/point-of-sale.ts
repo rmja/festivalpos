@@ -8,6 +8,9 @@ export class PointOfSale {
     @jsonProperty()
     name!: string;
 
+    @jsonProperty()
+    noOfServingStaff!: number;
+
     @jsonProperty({ converter: transparentConverter })
     receiptPrinterId!: number | null;
 }
