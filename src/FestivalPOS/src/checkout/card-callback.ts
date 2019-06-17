@@ -1,7 +1,8 @@
-import { noView, autoinject } from "aurelia-framework";
-import { RedirectToRoute } from "aurelia-router";
+import { autoinject, noView } from "aurelia-framework";
+
 import { Api } from "../api";
 import { Big } from "big.js";
+import { RedirectToRoute } from "aurelia-router";
 
 @noView()
 @autoinject()
@@ -12,6 +13,8 @@ export class CardCallback {
     async canActivate(params: { orderId: string, amount: string } & SumUpCallbackParams) {
         const orderId = Number(params.orderId);
         const amount = new Big(params.amount);
+
+        alert(window.location.href);
 
         if (params["smp-status"] === "success") {
             const payment = await this.api.createPayment(orderId, {

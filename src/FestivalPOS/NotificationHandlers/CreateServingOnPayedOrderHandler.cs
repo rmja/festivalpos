@@ -23,7 +23,7 @@ namespace FestivalPOS.NotificationHandlers
                 .Include(x => x.Lines)
                 .FirstAsync(x => x.Id == notification.OrderId);
 
-            var orderLines = order.Lines
+            var servingLines = order.Lines
                 .OrderBy(x => x.Position)
                 .Where(x => x.IsServing)
                 .Select((line, index) => new ServingLine()
@@ -36,15 +36,20 @@ namespace FestivalPOS.NotificationHandlers
                 .Where(x => x.Quantity > 0)
                 .ToList();
 
-            if (orderLines.Count > 0)
+            if (servingLines.Count > 0)
             {
+                var newestTag = await _db.OrderTags
+                    .OrderByDescending(x => x.Attached)
+                    .FirstOrDefaultAsync(x => x.OrderId == order.Id && x.Detached == null);
+
                 var serving = new Serving()
                 {
                     OrderId = order.Id,
                     PointOfSaleId = order.PointOfSaleId,
                     State = ServingState.Pending,
                     Created = LocalClock.Now,
-                    Lines = orderLines.ToList()
+                    TagNumber = newestTag?.Number,
+                    Lines = servingLines.ToList()
                 };
 
                 _db.Servings.Add(serving);

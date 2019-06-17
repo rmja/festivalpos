@@ -27,15 +27,22 @@ namespace FestivalPOS.Controllers
         [HttpPost("/api/Orders/{orderId:int}/Servings")]
         public async Task<ActionResult<Serving>> Create(int orderId, Serving serving)
         {
-            var order = await _db.Orders.Include(x => x.Lines).FirstOrDefaultAsync(x => x.Id == orderId);
+            var order = await _db.Orders
+                .Include(x => x.Lines)
+                .FirstOrDefaultAsync(x => x.Id == orderId);
 
             if (order == null)
             {
                 return NotFound();
             }
 
+            var newestTag = await _db.OrderTags
+                .OrderByDescending(x => x.Attached)
+                .FirstOrDefaultAsync(x => x.OrderId == order.Id && x.Detached == null);
+
             serving.OrderId = orderId;
             serving.State = ServingState.Pending;
+            serving.TagNumber = newestTag?.Number;
             serving.Created = LocalClock.Now;
 
             var orderLinesById = order.Lines.ToDictionary(x => x.Id, x => x);
@@ -110,6 +117,28 @@ namespace FestivalPOS.Controllers
             await _mediator.Publish(new ServingUpdatedNotification(serving.Id));
 
             return serving;
+        }
+
+        [HttpGet("/api/PointsOfSale/{pointOfSaleId:int}/Servings")]
+        public async Task<List<Serving>> GetAllActiveByPointOfSaleId(int pointOfSaleId)
+        {
+            var completedThreshold = LocalClock.Now.AddMinutes(-10);
+
+            var servings = await _db.Servings
+                .Include(x => x.Lines)
+                .Where(x => x.PointOfSaleId == pointOfSaleId)
+                .Where(x => x.State == ServingState.Pending
+                         || x.State == ServingState.Ongoing
+                         || x.Completed >= completedThreshold)
+                .OrderBy(x => x.Created)
+                .ToListAsync();
+
+            foreach (var serving in servings)
+            {
+                serving.OnMaterialized();
+            }
+
+            return servings;
         }
     }
 }

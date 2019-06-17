@@ -32,7 +32,8 @@ namespace FestivalPOS
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<PosContext>();
 
-            services.AddSignalR();
+            services.AddSignalR()
+                .AddJsonProtocol(options => options.PayloadSerializerSettings.Converters.Add(new StringEnumConverter(camelCaseText: true)));
             services.AddMediatR(typeof(Startup).Assembly);
 
             services.AddSingleton(sp =>
@@ -67,8 +68,9 @@ namespace FestivalPOS
 
             app
                 .UseStaticFiles()
-                .UseSignalR(builder => builder.MapHub<AlarmsHub>("/alarms"))
-                .UseSignalR(builder => builder.MapHub<PrintingHub>("/printing"))
+                .UseSignalR(builder => builder.MapHub<AlarmsHub>("/Alarms"))
+                .UseSignalR(builder => builder.MapHub<PrintingHub>("/Printing"))
+                .UseSignalR(builder => builder.MapHub<ServingHub>("/Serving"))
                 .UseMvc();
         }
     }

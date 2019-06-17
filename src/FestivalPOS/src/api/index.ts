@@ -338,6 +338,10 @@ export class Api {
         ]));
     }
 
+    getAllServingsByPointOfSaleId(pointOfSaleId: number) {
+        return Http.get(`/PointsOfSale/${pointOfSaleId}/Servings`).expectJsonArray(Serving);
+    }
+
     private bust(tags: string[]) {
         return () => {
             return this.cache.bust(tags);

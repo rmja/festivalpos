@@ -1,24 +1,29 @@
 import { HubConnection, HubConnectionBuilder } from "@aspnet/signalr";
 
-import { AlarmEvent } from "./alarms";
 import { EventAggregator } from "aurelia-event-aggregator";
+import { Serving } from "./serving";
 import { autoinject } from "aurelia-framework";
 import { modelBind } from "ur-json";
 
 @autoinject()
-export class AlarmsHub {
+export class ServingHub {
     private connection: HubConnection;
     private connectPromise?: Promise<void>;
     private connectedUsers = 0;
     
     constructor(eventAggregator: EventAggregator) {
         this.connection = new HubConnectionBuilder()
-            .withUrl("/Alarms")
+            .withUrl("/Serving")
             .build();
 
-        this.connection.on("EventCreated", (event: any) => {
-            event = modelBind(AlarmEvent, event);
-            eventAggregator.publish(new EventCreated(event));
+        this.connection.on("ServingCreated", (serving: any) => {
+            serving = modelBind(Serving, serving);
+            eventAggregator.publish(new ServingCreated(serving));
+        });
+
+        this.connection.on("ServingUpdated", (serving: any) => {
+            serving = modelBind(Serving, serving);
+            eventAggregator.publish(new ServingUpdated(serving));
         });
     }
 
@@ -38,9 +43,18 @@ export class AlarmsHub {
             await this.connection.stop();
         }
     }
+
+    async hello(pointOfSaleId: number) {
+        await this.connection.invoke("Hello", pointOfSaleId);
+    }
 }
 
-export class EventCreated {
-    constructor(public event: AlarmEvent) {
+export class ServingCreated {
+    constructor(public serving: Serving) {
+    }
+}
+
+export class ServingUpdated {
+    constructor(public serving: Serving) {
     }
 }

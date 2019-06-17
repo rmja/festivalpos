@@ -24,7 +24,7 @@ namespace FestivalPOS.NotificationHandlers
             PrintJob job;
             while ((job = await _printQueue.DequeueAsync(notification.PrinterId)) != null)
             {
-                var clients = _hub.Clients.Group($"printers:{notification.PrinterId}");
+                var clients = _hub.Clients.Group($"Printers:{notification.PrinterId}");
                 await clients.SendAsync("Print", job);
             }
         }

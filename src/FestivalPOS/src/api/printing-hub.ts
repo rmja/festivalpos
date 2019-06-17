@@ -34,12 +34,13 @@ export class PrintingHub {
 
     async disconnect() {
         if (--this.connectedUsers === 0) {
+            delete this.connectPromise;
             await this.connection.stop();
         }
     }
 
     async hello(terminalId: number) {
-        await this.connection.invoke("hello", terminalId);
+        await this.connection.invoke("Hello", terminalId);
     }
 }
 
