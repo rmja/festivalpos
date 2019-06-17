@@ -3,6 +3,7 @@ import { Serving, ServingLine } from "../api/serving";
 import { ServingCreated, ServingHub, ServingUpdated } from "../api/serving-hub";
 
 import { Api } from "../api";
+import { DateTime } from "luxon";
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Patch } from "ur-jsonpatch";
 import { State } from "../state";
@@ -70,11 +71,9 @@ export class ServingDashboard {
         const index = this.servings.findIndex(x => x.id === serving.id);
 
         if (index >= 0) {
-            this.servings.splice(index, 1, serving);
+            this.servings.splice(index, 1);
         }
-        else {
-            this.servings.push(serving);
-        }
+        this.servings.push(serving);
     }
 }
 
@@ -86,7 +85,8 @@ interface ServingViewModel {
     lines: {
         quantity: number;
         name: string;
-    }[]
+    }[];
+    created: DateTime;
 }
 
 export class PendingValueConverter {
@@ -113,8 +113,14 @@ export class StaffNumberValueConverter {
     }
 }
 
-export class LimitValueConverter {
+export class LastValueConverter {
     toView(servings: ServingViewModel[], limit: number) {
-        return servings.slice(0, limit);
+        return servings.slice(-limit);
+    }
+}
+
+export class InverseValueConverter {
+    toView(servings: ServingViewModel[]) {
+        return servings.slice().reverse();
     }
 }
