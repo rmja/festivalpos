@@ -43,9 +43,7 @@ namespace FestivalPOS
 
             services.AddScoped<PrintDispatcher>()
                 .AddSingleton<PrintQueue>()
-                .AddSingleton<ReceiptPrintGenerator>()
-                .AddSingleton<TicketPrintGenerator>()
-                .AddSingleton<ServingPrintGenerator>();
+                .AddSingleton<ReceiptPrintGenerator>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceScopeFactory serviceScopeFactory)

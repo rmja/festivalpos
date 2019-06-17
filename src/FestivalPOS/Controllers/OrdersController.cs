@@ -17,16 +17,14 @@ namespace FestivalPOS.Controllers
         private readonly PosContext _db;
         private readonly PrintDispatcher _printDispatcher;
         private readonly ReceiptPrintGenerator _receiptPrintGenerator;
-        private readonly ServingPrintGenerator _servingPrintGenerator;
         private readonly PrintQueue _printQueue;
 
-        public OrdersController(IMediator mediator, PosContext db, PrintDispatcher printDispatcher, ReceiptPrintGenerator receiptPrintGenerator, ServingPrintGenerator servingPrintGenerator, PrintQueue printQueue)
+        public OrdersController(IMediator mediator, PosContext db, PrintDispatcher printDispatcher, ReceiptPrintGenerator receiptPrintGenerator, PrintQueue printQueue)
         {
             _mediator = mediator;
             _db = db;
             _printDispatcher = printDispatcher;
             _receiptPrintGenerator = receiptPrintGenerator;
-            _servingPrintGenerator = servingPrintGenerator;
             _printQueue = printQueue;
         }
 

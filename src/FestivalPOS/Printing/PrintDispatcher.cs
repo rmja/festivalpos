@@ -17,17 +17,5 @@ namespace FestivalPOS.Printing
             var pos = await _db.PointOfSales.FirstOrDefaultAsync(x => x.Id == pointOfSaleId);
             return pos?.ReceiptPrinterId;
         }
-
-        public async Task<int?> GetTicketPrinterAsync(int pointOfSaleId)
-        {
-            var pos = await _db.PointOfSales.FirstOrDefaultAsync(x => x.Id == pointOfSaleId);
-            return pos?.TicketPrinterId;
-        }
-
-        public async Task<int?> GetServingPrinterAsync(int pointOfSaleId)
-        {
-            var pos = await _db.PointOfSales.FirstOrDefaultAsync(x => x.Id == pointOfSaleId);
-            return pos?.ServingPrinterId;
-        }
     }
 }

@@ -34,8 +34,6 @@ export class EditPointOfSale {
         const patch = new Patch<PointOfSale>()
             .replace(x => x.name, this.name)
             .replace(x => x.receiptPrinterId, this.receiptPrinter ? this.receiptPrinter.id : null)
-            .replace(x => x.ticketPrinterId, this.ticketPrinter ? this.ticketPrinter.id : null)
-            .replace(x => x.servingPrinterId, this.servingPrinter ? this.servingPrinter.id : null)
 
         await this.api.updatePointOfSale(this.pointOfSaleId, patch.operations).transfer();
         this.router.navigateToRoute("details", { pointOfSaleId: this.pointOfSaleId });

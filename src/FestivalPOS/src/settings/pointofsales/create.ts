@@ -9,8 +9,6 @@ export class CreatePointOfSale {
     name = "";
     printers!: PrinterViewModel[];
     receiptPrinter?: PrinterViewModel;
-    ticketPrinter?: PrinterViewModel;
-    servingPrinter?: PrinterViewModel;
 
     get canSubmit() {
         return !!this.name.length;
@@ -27,8 +25,6 @@ export class CreatePointOfSale {
         const pos = await this.api.createPointOfSale({
             name: this.name,
             receiptPrinterId: this.receiptPrinter && this.receiptPrinter.id,
-            ticketPrinterId: this.ticketPrinter && this.ticketPrinter.id,
-            servingPrinterId: this.servingPrinter && this.servingPrinter.id
         }).transfer();
         this.router.navigateToRoute("details", {
             pointOfSaleId: pos.id

@@ -75,13 +75,11 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            var pointsOfSale = await _db.PointOfSales.Where(x => x.ReceiptPrinterId == printer.Id || x.TicketPrinterId == printer.Id || x.ServingPrinterId == printer.Id).ToListAsync();
+            var pointsOfSale = await _db.PointOfSales.Where(x => x.ReceiptPrinterId == printer.Id).ToListAsync();
 
             foreach (var pos in pointsOfSale)
             {
                 pos.ReceiptPrinterId = null;
-                pos.TicketPrinterId = null;
-                pos.ServingPrinterId = null;
             }
 
             _db.Printers.Remove(printer);

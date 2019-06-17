@@ -10,10 +10,4 @@ export class PointOfSale {
 
     @jsonProperty({ converter: transparentConverter })
     receiptPrinterId!: number | null;
-
-    @jsonProperty({ converter: transparentConverter })
-    ticketPrinterId!: number | null;
-
-    @jsonProperty({ converter: transparentConverter })
-    servingPrinterId!: number | null;
 }
