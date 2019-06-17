@@ -1,4 +1,8 @@
 <template>
+    <div class="row" if.bind="tagNumber">
+        <h3 class="col text-muted">Brik</h3>
+        <h3 class="col text-right">${tagNumber}</h3>
+    </div>
     <div class="row">
         <h3 class="col text-muted">Ordrenr.</h3>
         <h3 class="col text-right">${orderId}</h3>
@@ -23,7 +27,7 @@
 
     <div class="btn-group btn-block fixed-bottom">
         <button type="button" class="btn btn-secondary btn-lg" if.bind="servingId" click.delegate="complete(true)">
-            <font-awesome-icon icon="check"></font-awesome-icon> Marker som færdigserveret
+            <font-awesome-icon icon="check"></font-awesome-icon> Serveret
         </button>
         <button type="button" class="btn btn-primary btn-lg" click.delegate="complete()">
             <font-awesome-icon icon="check"></font-awesome-icon> Udført

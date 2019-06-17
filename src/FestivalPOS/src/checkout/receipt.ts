@@ -11,6 +11,7 @@ interface Params { orderId: string, paymentId: string, change?: string, tagNumbe
 @autoinject()
 export class CashReceipt {
     private payment!: Payment
+    tagNumber?: number;
     orderId!: number;
     servingId?: number;
     total!: Big;
@@ -25,6 +26,7 @@ export class CashReceipt {
         const paymentId = Number(params.paymentId);
         const order = await this.api.getOrderById(this.orderId).transfer();
         if (params.tagNumber) {
+            this.tagNumber = Number(params.tagNumber);
             this.servingId = order.servings.length && order.servings[0].id;
         }
         

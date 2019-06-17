@@ -1,9 +1,10 @@
 import { BACKSPACE, COMMA, Digit, ENTER } from "../keys";
 import { Big, RoundingMode } from "big.js";
+import { RedirectToRoute, Router } from "aurelia-router";
 
 import { Api } from "../api";
 import { HttpError } from "ur-http";
-import { Router } from "aurelia-router";
+import { Order } from "../api/order";
 import { autoinject } from "aurelia-framework";
 
 type PaymentMethod = "card" | "cash" | "account";
@@ -13,19 +14,32 @@ export class Tag {
     tagNumber!: Big;
     canSkip!: boolean;
     private orderId!: number;
-    private paymentMethod!: PaymentMethod; 
+    private order!: Order;
+    private paymentMethod!: PaymentMethod;
 
     constructor(private api: Api, private router: Router) {
         this.keyup = this.keyup.bind(this);
     }
 
-    async activate(params: {orderId: string, paymentMethod: PaymentMethod}) {
-        this.tagNumber = new Big(0);
-        this.orderId = Number(params.orderId);
-        this.paymentMethod = params.paymentMethod;
+    async canActivate(params: { orderId: string, paymentMethod: PaymentMethod }) {
+        if (params.paymentMethod === "account") {
+            return new RedirectToRoute("account", {
+                orderId: params.orderId
+            });
+        }
+        else {
+            this.orderId = Number(params.orderId);
+            this.order = await this.api.getOrderById(this.orderId).transfer();
+            this.paymentMethod = params.paymentMethod;
 
-        const order = await this.api.getOrderById(this.orderId).transfer();
-        this.canSkip = !order.mustHaveTag();
+            return true;
+        }
+    }
+
+    activate() {
+        this.tagNumber = new Big(0);
+        
+        this.canSkip = !this.order.mustHaveTag();
 
         document.addEventListener("keyup", this.keyup);
     }
