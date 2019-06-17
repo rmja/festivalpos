@@ -10,10 +10,12 @@ namespace FestivalPOS.NotificationHandlers
 {
     public class CreateServingOnPayedOrderHandler : INotificationHandler<OrderPayedNotification>
     {
+        private readonly IMediator _mediator;
         private readonly PosContext _db;
 
-        public CreateServingOnPayedOrderHandler(PosContext db)
+        public CreateServingOnPayedOrderHandler(IMediator mediator, PosContext db)
         {
+            _mediator = mediator;
             _db = db;
         }
 
@@ -55,6 +57,8 @@ namespace FestivalPOS.NotificationHandlers
                 _db.Servings.Add(serving);
 
                 await _db.SaveChangesAsync();
+
+                await _mediator.Publish(new ServingCreatedNotification(serving.Id));
             }
         }
     }
