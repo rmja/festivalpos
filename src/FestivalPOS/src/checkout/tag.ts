@@ -38,7 +38,7 @@ export class Tag {
 
     activate() {
         this.tagNumber = new Big(0);
-        
+
         this.canSkip = !this.order.mustHaveTag();
 
         document.addEventListener("keyup", this.keyup);
@@ -75,6 +75,12 @@ export class Tag {
         else {
             this.tagNumber = this.tagNumber.mul(10).add(new Big(value));
         }
+    }
+
+    skip() {
+        this.router.navigateToRoute(this.paymentMethod, {
+            orderId: this.orderId
+        });
     }
 
     async submit() {
