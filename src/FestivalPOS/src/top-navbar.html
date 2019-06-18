@@ -18,6 +18,7 @@
         </div>
 
         <div class="navbar-collapse collapse" id="navbar">
+            <small style="color: #bbb">${pointOfSaleName}</small>
             <ul class="navbar-nav mr-auto">
                 <li repeat.for="nav of router.navigation" class="nav-item ${nav.active ? 'active' : ''} ${nav.settings.childRoutes ? 'dropdown' : ''}">
                     <template if.bind="nav.settings.childRoutes">
