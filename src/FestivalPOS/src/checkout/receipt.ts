@@ -4,18 +4,26 @@ import { Patch } from "ur-jsonpatch";
 import { Payment } from "../api/payment";
 import { Router } from "aurelia-router";
 import { Serving } from "../api/serving";
+import { State } from "../state";
 import { autoinject } from "aurelia-framework";
+import { connectTo } from "aurelia-store";
 
 interface Params { orderId: string, paymentId: string, change?: string, tagNumber?: string };
 
+@connectTo({
+    setup: "activate",
+    selector: store => store.state
+})
 @autoinject()
 export class CashReceipt {
+    private state!: State;
     private payment!: Payment
     tagNumber?: number;
     orderId!: number;
     servingId?: number;
     total!: Big;
     change?: Big;
+    canPrintReceipt = false;
 
     constructor(private api: Api, private router: Router) {
         this.keyup = this.keyup.bind(this);
@@ -47,6 +55,9 @@ export class CashReceipt {
             this.change = new Big(params.change);
         }
 
+        const post = await this.api.getPointOfSale(this.state.pointOfSaleId).transfer();
+        this.canPrintReceipt = !!post.receiptPrinterId;;
+
         addEventListener("keyup", this.keyup);
     }
 
@@ -64,14 +75,7 @@ export class CashReceipt {
         return this.api.printReceipt(this.orderId).send();
     }
 
-    async complete(markAsCompleted?: boolean) {
-        if (this.servingId && markAsCompleted) {
-            const patch = new Patch<Serving>()
-                .replace(x => x.state, "completed");
-
-            await this.api.updateServing(this.servingId, patch.operations).send();
-        }
-        
+    complete() {
         this.router.navigate("/sale");
     }
 }
