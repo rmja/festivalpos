@@ -1,17 +1,27 @@
 import { autoinject, noView } from "aurelia-framework";
 
 import { Api } from "../api";
+import { State } from "../state";
+import { connectTo } from "aurelia-store";
 
 @noView()
 @autoinject()
+@connectTo({
+    setup: "canActivate",
+    selector: store => store.state
+})
 export class CardPayment {
-    private tagNumber?: string;
+    private state!: State;
 
     constructor(private api: Api) {
     }
     
     async canActivate(params: { orderId: string, tagNumber?: string }) {
         const orderId = Number(params.orderId);
+
+        if (!this.state.sumupAffiliateKey) {
+            return false;
+        }
         
         return this.redirectToSumUpApp(orderId, params.tagNumber);
     }
@@ -23,7 +33,7 @@ export class CardPayment {
 
         // Example: <a href="sumupmerchant://pay/1.0?affiliate-key=7ca84f17-84a5-4140-8df6-6ebeed8540fc&app-id=com.example.myapp&total=1.23&currency=EUR&title=Taxi Ride&receipt-mobilephone=+3531234567890&receipt-email=customer@mail.com&callback=http://example.com/myapp/mycallback">Start SumUp Payment</a>
 
-        const affiliateKey = "7ca84f17-84a5-4140-8df6-6ebeed8540fc";
+        const affiliateKey = this.state.sumupAffiliateKey;
         const appId = "com.rmja.festivalpos";
         const total = order.amountDue.toFixed(2); // Has "." as decimal separator
         const title = `Kajfest ${pos.name}`;
@@ -34,6 +44,6 @@ export class CardPayment {
             callbackUrl += `&tagNumber=${tagNumber}`;
         }
 
-        window.location.href = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${title}&callback=${encodeURIComponent(callbackUrl)}`;
+        window.location.href = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${encodeURIComponent(title)}&callback=${encodeURIComponent(callbackUrl)}`;
     }
 }

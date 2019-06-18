@@ -15,6 +15,14 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label>SumUp Affiliate</label>
+                <select value.bind="affiliate" class="form-control">
+                    <option>[ingen]</option>
+                    <option repeat.for="affiliate of affiliates" model.bind="affiliate">${affiliate.name} ${affiliate.key}</option>
+                </select>
+            </div>
+
             <button type="submit" class="btn btn-primary btn-block fixed-bottom"><font-awesome-icon icon="save"></font-awesome-icon> Gem</button>
         </form>
         <div else>

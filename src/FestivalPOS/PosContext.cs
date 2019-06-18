@@ -22,6 +22,7 @@ namespace FestivalPOS
         public DbSet<Serving> Servings { get; set; }
         public DbSet<ServingLine> ServingLines { get; set; }
         public DbSet<Terminal> Terminals { get; set; }
+        public DbSet<SumUpAffiliate> SumUpAffiliates { get; set; }
 
         public PosContext(IOptions<PosOptions> options)
         {
@@ -67,6 +68,8 @@ namespace FestivalPOS
 
             modelBuilder.Entity<Serving>().HasOne(x => x.PointOfSale).WithMany().OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<ServingLine>().HasOne(x => x.OrderLine).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SumUpAffiliate>().HasKey(x => x.Key);
         }
     }
 }

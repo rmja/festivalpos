@@ -1,5 +1,5 @@
 import { AlarmEvent, AlarmFeed } from "./alarms";
-import { Http, HttpResponse, HttpResponseOfT } from "ur-http";
+import { Http, HttpResponseOfT } from "ur-http";
 import { HttpBuilderOfT, QueryString } from "ur-http";
 
 import { Account } from "./account";
@@ -15,6 +15,7 @@ import { PointOfSaleProduct } from './point-of-sale-product';
 import { Printer } from "./printer";
 import { Product } from "./product";
 import { Serving } from "./serving";
+import { SumUpAffiliate } from "./sumup-affiliate";
 import { Terminal } from "./terminal";
 import { autoinject } from "aurelia-framework";
 
@@ -28,6 +29,7 @@ enum K {
     Accounts = "acc",
     Alarms = "alarm",
     AlarmEvents = "event",
+    Affiliates = "aff"
 }
 
 @autoinject()
@@ -340,6 +342,24 @@ export class Api {
 
     getAllServingsByPointOfSaleId(pointOfSaleId: number) {
         return Http.get(`/PointsOfSale/${pointOfSaleId}/Servings`).expectJsonArray(Serving);
+    }
+
+    createSumupAffiliate(affiliate: {key: string, name?: string}) {
+        return Http.post("/SumUp/Affiliates").withJson(affiliate).expectJson(SumUpAffiliate).onSent(this.bust([
+            K.Affiliates
+        ]));
+    }
+
+    getAllSumupAffiliates() {
+        return Http.get("/SumUp/Affiliates").expectJsonArray(SumUpAffiliate).onReceived(this.tag(result => [
+            K.Affiliates
+        ]));
+    }
+
+    deleteSumupAffiliate(key: string) {
+        return Http.delete(`/SumUp/Affiliates/${key}`).onSent(this.bust([
+            K.Affiliates
+        ]));
     }
 
     private bust(tags: string[]) {

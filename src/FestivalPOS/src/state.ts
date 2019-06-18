@@ -2,7 +2,8 @@ import { Big } from "big.js";
 
 export interface State {
     terminalId: number;
-    pointOfSaleId: number
+    pointOfSaleId: number;
+    sumupAffiliateKey?: string;
     orderLines: OrderLineState[];
     currentMiscOrderLine: {
         total: Big;
@@ -36,11 +37,12 @@ export function ensureValidState(state: State) {
     return newState;
 }
 
-export function setup(state: State, terminalId: number, pointOfSaleId: number) {
+export function setup(state: State, terminalId: number, pointOfSaleId: number, sumupAffiliateKey?: string) {
     const newState = Object.assign({}, state);
 
     newState.terminalId = terminalId;
     newState.pointOfSaleId = pointOfSaleId;
+    newState.sumupAffiliateKey = sumupAffiliateKey
 
     return newState;
 }

@@ -9,6 +9,7 @@ import { Router } from "aurelia-router";
 @connectTo()
 export class PayButtonCustomElement {
     private state!: State;
+    cardEnabled!: boolean;
     @bindable() confirm?: () => void | Promise<void>;
 
     @computedFrom("state")
@@ -25,6 +26,10 @@ export class PayButtonCustomElement {
     }
 
     constructor(private api: Api, private store: Store<State>, private router: Router) {
+    }
+
+    bind() {
+        this.cardEnabled = !!this.state.sumupAffiliateKey;
     }
 
     async doConfirm(method: "card" | "cash" | "account") {

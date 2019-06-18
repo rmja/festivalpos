@@ -5,15 +5,21 @@ import { Api } from "./api";
 import { Router } from "aurelia-router";
 import { autoinject } from "aurelia-framework";
 
-@connectTo()
+@connectTo({
+    setup: "activate",
+    selector: store => store.state
+})
 @autoinject()
 export class Setup {
     private state!: State;
-    terminal?: Terminal;
-    terminals!: Terminal[];
+    terminal?: TerminalViewModel;
+    terminals!: TerminalViewModel[];
 
-    pointOfSale?: PointOfSale;
-    pointOfSales!: PointOfSale[];
+    pointOfSale?: PointOfSaleViewModel;
+    pointOfSales!: PointOfSaleViewModel[];
+
+    affiliate?: SumUpAffiliateViewModel;
+    affiliates!: SumUpAffiliateViewModel[];
 
     get canSubmit() {
         return this.terminal && this.pointOfSale;
@@ -22,16 +28,14 @@ export class Setup {
     constructor(private api: Api, private store: Store<State>, private router: Router) {
     }
 
-    async canActivate() {
+    async activate() {
         this.terminals = await this.api.getAllTerminals().transfer();
         this.pointOfSales = await this.api.getAllPointOfSales().transfer();
+        this.affiliates = await this.api.getAllSumupAffiliates().transfer();
 
-        return true;
-    }
-
-    bind() {
         this.terminal = this.terminals.find(x => x.id === this.state.terminalId);
         this.pointOfSale = this.pointOfSales.find(x => x.id === this.state.pointOfSaleId);
+        this.affiliate = this.affiliates.find(x => x.key === this.state.sumupAffiliateKey);
     }
 
     async createDefaults() {
@@ -44,18 +48,23 @@ export class Setup {
             throw new Error();
         }
 
-        await this.store.dispatch(setup, this.terminal.id, this.pointOfSale.id);
+        await this.store.dispatch(setup, this.terminal.id, this.pointOfSale.id, this.affiliate && this.affiliate.key);
 
         this.router.navigateToRoute("sale");
     }
 }
 
-interface Terminal {
+interface TerminalViewModel {
     id: number;
     name: string;
 }
 
-interface PointOfSale {
+interface PointOfSaleViewModel {
     id: number;
     name: string;
+}
+
+interface SumUpAffiliateViewModel {
+    key: string;
+    name?: string;
 }

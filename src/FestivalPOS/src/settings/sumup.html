@@ -1,0 +1,43 @@
+<template>
+    <top-navbar></top-navbar>
+    <page-body>
+        Applikations ID: <code>com.rmja.festivalpos</code>
+
+        <h2>Affiliate keys</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Navn</th>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr repeat.for="affiliate of affiliates">
+                    <td>${affiliate.key}</td>
+                    <td>${affiliate.name}</td>
+                    <td>
+                        <button class="btn btn-danger" click.delegate="delete($index)">
+                            <font-awesome-icon icon="trash"></font-awesome-icon>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Tilføj ny</h4>
+        <form submit.delegate="addAffiliate()">
+            <div class="form-group">
+                <label>Key</label>
+                <input type="text" class="form-control" value.bind="newKey">
+            </div>
+            <div class="form-group">
+                <label>Navn</label>
+                <input type="text" class="form-control" value.bind="newName">
+            </div>
+            <button type="submit" class="btn btn-secondary" disabled.bind="!canSubmit">
+                <font-awesome-icon icon="plus"></font-awesome-icon> Tilføj affiliate
+            </button>
+        </form>
+    </page-body>
+</template>

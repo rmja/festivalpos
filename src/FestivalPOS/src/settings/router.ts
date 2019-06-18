@@ -9,6 +9,7 @@ export const routes: RouteConfig[] = [
     { route: "terminals", name: "terminals", moduleId: PLATFORM.moduleName("./terminals/router", "settings"), nav: true, title: "Terminaler" },
     { route: "printers", name: "printers", moduleId: PLATFORM.moduleName("./printers/router", "settings"), nav: true, title: "Printere" },
     { route: "alarms", name: "alarms", moduleId: PLATFORM.moduleName("./alarms/router", "settings"), nav: true, title: "Alarmer" },
+    { route: "sumup", name: "sumup", moduleId: PLATFORM.moduleName("./sumup", "settings"), nav: true, title: "SumUp" },
 ]
 
 export class SettingsRouter {
