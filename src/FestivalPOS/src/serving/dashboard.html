@@ -1,55 +1,55 @@
 <template>
+    <require from="./serving-item"></require>
     <div class="row">
-        <div class="col">
-            <h3>Afventende</h3>
-
-            <ul class="list-group">
-                <li class="list-group-item list-group-item-secondary" repeat.for="serving of servings | pending">
-                    <h5>Brik ${serving.tagNumber || '(ingen)'}</h5>
-                </li>
-            </ul>
+        <div class="col-sm-2">
+            <h6>Afventende</h6>
+            <div class="list-group">
+                <button type="button" repeat.for="serving of servings | pending"
+                    class="list-group-item list-group-item-action ${serving === selectedServing ? 'active' : ''}"
+                    click.delegate="toggleSelected(serving)">
+                    <serving-item serving.bind="serving" now.bind="now"></serving-item>
+                </button>
+            </div>
+            ${selectedServing.thisIsNeededAsAHackToTriggerTheActiveClass}
         </div>
-        <div class="col" repeat.for="staffIndex of noOfServingStaff">
-            <h3>#${staffIndex + 1}</h3>
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col" repeat.for="staffIndex of noOfServingStaff">
+                    <h6>#${staffIndex + 1}</h6>
 
-            <button type="button" class="btn btn-primary btn-block" click.delegate="acceptNextServing(staffIndex + 1)">
-                <font-awesome-icon icon="level-down-alt"></font-awesome-icon> Påbegynd næste
-            </button>
-
-            <h4>Igangværende</h4>
-            <ul class="list-group">
-                <li class="list-group-item" repeat.for="serving of servings | staffNumber: staffIndex + 1 | ongoing">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">Brik ${serving.tagNumber || '(ingen)'}</h5>
-                        <!-- <small>${serving.created}</small> -->
-                    </div>
-                    <table class="table">
-                        <tr repeat.for="line of serving.lines">
-                            <td>${line.quantity}</td>
-                            <td style="width: 100%">${line.name}</td>
-                        </tr>
-                    </table>
-                    <button type="button" class="btn btn-secondary btn-block" click.delegate="complete(serving)">
-                        <font-awesome-icon icon="long-arrow-alt-down"></font-awesome-icon> Færdig
+                    <button type="button" class="btn btn-primary btn-block"
+                        click.delegate="acceptNextServing(staffIndex + 1)">
+                        <font-awesome-icon icon="level-down-alt"></font-awesome-icon> Påbegynd
                     </button>
-                </li>
-            </ul>
-
-            <h4>Senest afsluttede</h4>
-            <ul class="list-group">
-                <li class="list-group-item list-group-item-light disabled" repeat.for="serving of servings | staffNumber: staffIndex + 1 | completed | last: 2 | inverse">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">Brik ${serving.tagNumber || '(ingen)'}</h5>
-                        <!-- <small>${serving.created}</small> -->
-                    </div>
-                    <table class="table">
-                        <tr repeat.for="line of serving.lines">
-                            <td>${line.quantity}</td>
-                            <td style="width: 100%">${line.name}</td>
-                        </tr>
-                    </table>
-                </li>
-            </ul>
+                </div>
+            </div>
+            <h6>Påbegyndte</h6>
+            <div class="row">
+                <div class="col" repeat.for="staffIndex of noOfServingStaff">
+                    <ul class="list-group">
+                        <li class="list-group-item"
+                            repeat.for="serving of servings | staffNumber: staffIndex + 1 | ongoing">
+                            <serving-item serving.bind="serving" now.bind="now">
+                                <button type="button" class="btn btn-secondary btn-block"
+                                    click.delegate="complete(serving)">
+                                    <font-awesome-icon icon="long-arrow-alt-down"></font-awesome-icon> Færdig
+                                </button>
+                            </serving-item>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <h6>Senest afsluttede</h6>
+            <div class="row">
+                <div class="col" repeat.for="staffIndex of noOfServingStaff">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-light disabled"
+                            repeat.for="serving of servings | staffNumber: staffIndex + 1 | completed | last: 2 | inverse">
+                            <serving-item serving.bind="serving"></serving-item>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </template>

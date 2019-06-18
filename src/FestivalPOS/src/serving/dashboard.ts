@@ -1,11 +1,11 @@
 import { Disposable, autoinject } from "aurelia-framework";
-import { Serving, ServingLine } from "../api/serving";
 import { ServingCreated, ServingHub, ServingUpdated } from "../api/serving-hub";
 
 import { Api } from "../api";
 import { DateTime } from "luxon";
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Patch } from "ur-jsonpatch";
+import { Serving } from "../api/serving";
 import { State } from "../state";
 import { connectTo } from "aurelia-store";
 
@@ -18,7 +18,12 @@ export class ServingDashboard {
     private state!: State;
     noOfServingStaff!: number;
     servings: ServingViewModel[] = [];
+    selectedServing?: ServingViewModel;
+    private intervalHandle!: number;
+    private timeoutHandles: number[] = [];
     private disposables!: Disposable[];
+
+    now = DateTime.local();
 
     constructor(private api: Api, private hub: ServingHub, private eventAggregator: EventAggregator) {
     }
@@ -34,6 +39,8 @@ export class ServingDashboard {
         await this.hub.connect();
         await this.hub.hello(this.state.pointOfSaleId);
 
+        this.intervalHandle = window.setInterval(() => this.now = DateTime.local(), 500);
+
         this.disposables = [
             this.eventAggregator.subscribe(ServingCreated, (event: ServingCreated) => this.addOrUpdateServing(event.serving)),
             this.eventAggregator.subscribe(ServingUpdated, (event: ServingUpdated) => this.addOrUpdateServing(event.serving)),
@@ -43,13 +50,29 @@ export class ServingDashboard {
     async deactivate() {
         await this.hub.disconnect();
 
+        clearInterval(this.intervalHandle);
+
+        for (const handle of this.timeoutHandles) {
+            clearTimeout(handle);
+        }
+
         for (const disposable of this.disposables) {
             disposable.dispose();
         }
     }
 
+    toggleSelected(serving: ServingViewModel) {
+        if (serving === this.selectedServing) {
+            this.selectedServing = undefined;
+        }
+        else {
+            this.selectedServing = serving;
+        }
+    }
+
     async acceptNextServing(staffNumber: number) {
-        const serving = this.servings.find(x => x.state === "pending");
+        const serving = this.selectedServing || this.servings.find(x => x.state === "pending");
+        this.selectedServing = undefined;
 
         if (serving) {
             const patch = new Patch<Serving>()
@@ -74,10 +97,20 @@ export class ServingDashboard {
             this.servings.splice(index, 1);
         }
         this.servings.push(serving);
+
+        if (serving.state === "completed") {
+            this.timeoutHandles.push(window.setTimeout(() => {
+                const index = this.servings.indexOf(serving);
+
+                if (index >= 0) {
+                    this.servings.splice(index);
+                }
+            }, 10 * 60 * 1000));
+        }
     }
 }
 
-interface ServingViewModel {
+export interface ServingViewModel {
     id: number;
     state: "pending" | "ongoing" | "completed";
     tagNumber?: number;
