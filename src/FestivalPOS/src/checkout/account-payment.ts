@@ -111,13 +111,13 @@ export class AccountPayment {
             throw new Error();
         }
 
+        await this.api.assignOrderTag(this.order.id, this.account.number, true).send();
+
         const payment = await this.api.createPayment(this.order.id, {
             method: "account",
             amount: this.total,
             accountId: this.account.id
         }).transfer();
-
-        await this.api.assignOrderTag(this.order.id, this.account.number, true).send();
 
         this.router.navigateToRoute("receipt", {
             orderId: payment.orderId,
