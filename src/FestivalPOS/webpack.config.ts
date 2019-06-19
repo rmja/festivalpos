@@ -3,9 +3,9 @@ import * as autoprefixer from 'autoprefixer';
 import * as tsNameof from 'ts-nameof';
 
 import { Configuration, DefinePlugin, Loader, ProvidePlugin } from 'webpack';
-import { GenerateSW } from 'workbox-webpack-plugin';
 
 import { AureliaPlugin } from 'aurelia-webpack-plugin';
+import { GenerateSW } from 'workbox-webpack-plugin';
 import { resolve } from 'path';
 
 const config = (_env: any, argv?: { mode?: "production" | "development" }): Configuration => {
