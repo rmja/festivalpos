@@ -13,9 +13,7 @@ export class Misc {
     
     @computedFrom("state")
     get amount() {
-        if (this.state) {
-            return this.state.currentMiscOrderLine.total;
-        }
+        return this.state && this.state.currentMiscOrderLine.total;
     }
 
     set amount(value: Big) {
@@ -27,7 +25,7 @@ export class Misc {
     constructor(private store: Store<State>) {
     }
 
-    async activate() {
+    activate() {
         this.amount = new Big(0);
     }
 
