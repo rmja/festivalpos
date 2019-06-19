@@ -1,7 +1,9 @@
-import { autoinject } from "aurelia-framework";
 import { Api } from "../api";
-import { connectTo } from "aurelia-store";
+import { ProgressService } from "../resources/progress-service";
 import { State } from "../state";
+import { autoinject } from "aurelia-framework";
+import { connectTo } from "aurelia-store";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 
 @connectTo({
     selector: store => store.state,
@@ -12,12 +14,24 @@ export class Alarms {
     private state!: State;
     feeds!: AlarmFeedViewModel[];
 
-    constructor(private api: Api) {
+    constructor(private api: Api, private progress: ProgressService) {
     }
 
     async activate() {
         this.feeds = await this.api.getAllAlarmFeeds().transfer();
-        const events = await this.api.getAllPendingAlarmEvents({ pointOfSaleId: this.state.pointOfSaleId }).bypassCache().transfer();
+
+        try {
+            this.progress.busy("Henter alarmer", faBell);
+
+            var events = await this.api.getAllPendingAlarmEvents({ pointOfSaleId: this.state.pointOfSaleId }).bypassCache().transfer();
+
+            this.progress.done();
+        }
+        catch (error) {
+            this.progress.error("Fejl ved hentning af alarmer", error);
+            return;
+        }
+        
         if (events.length) {
             for (const event of events) {
                 for (const feed of this.feeds) {
