@@ -5,6 +5,7 @@ import * as tsNameof from 'ts-nameof';
 import { Configuration, DefinePlugin, Loader, ProvidePlugin } from 'webpack';
 
 import { AureliaPlugin } from 'aurelia-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { GenerateSW } from 'workbox-webpack-plugin';
 import { resolve } from 'path';
 
@@ -82,7 +83,12 @@ const config = (_env: any, argv?: { mode?: "production" | "development" }): Conf
             symlinks: false
         },
         plugins: [
-            new AureliaPlugin({ noHtmlLoader: true }),
+            new AureliaPlugin({ noHtmlLoader: true, features: {
+                ie: false,
+                svg: false,
+                polyfills: "esnext"
+            }}),
+            new BundleAnalyzerPlugin({ analyzerMode: "static", reportFilename: "report.html", openAnalyzer: false }),
             new MiniCssExtractPlugin(),
             new DefinePlugin({
                 "__DEBUG__": JSON.stringify(!isRelease)
