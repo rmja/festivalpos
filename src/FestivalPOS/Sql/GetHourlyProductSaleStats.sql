@@ -6,8 +6,8 @@ SELECT
 	 MIN(o.Created) EarliestOrderCreated
 	,l.ProductId
 	,p.Name AS ProductName
-	,COUNT(o.Id) Orders
-	,SUM(l.Quantity) Quantity
+	,SUM(l.Quantity) ProductQuantity
+	,COUNT(o.Id) OrderCount
 	,SUM(l.Total) Total
 FROM
 	Orders o

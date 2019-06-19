@@ -5,12 +5,22 @@ namespace FestivalPOS.Models
 {
     public class OrderStats
     {
-        internal DateTimeOffset EarliestOrderCreated { get; set; }
-        public DateTimeOffset PeriodStart => EarliestOrderCreated.AddTicks(-(EarliestOrderCreated.Ticks % TimeSpan.TicksPerHour));
-        public int Orders { get; set; }
+        private DateTimeOffset _earliestOrderCreated;
+        internal DateTimeOffset EarliestOrderCreated
+        {
+            get => _earliestOrderCreated;
+            set
+            {
+                _earliestOrderCreated = value;
+                PeriodStart = EarliestOrderCreated.AddTicks(-(EarliestOrderCreated.Ticks % TimeSpan.TicksPerHour));
+            }
+        }
+        public DateTimeOffset PeriodStart { get; set; }
+        public int OrderCount { get; set; }
         public decimal Total { get; set; }
         public List<PaymentStats> Payments { get; set; }
-        public List<ProductStats> Products { get; set; }
+        public List<ProductSaleStats> ProductSales { get; set; }
+        public List<ProductServingStats> ProductServings { get; set; }
     }
 
     public class PaymentStats
@@ -22,14 +32,24 @@ namespace FestivalPOS.Models
         public decimal Total { get; set; }
     }
 
-    public class ProductStats
+    public class ProductSaleStats
     {
         internal DateTimeOffset EarliestOrderCreated { get; set; }
         internal DateTimeOffset PeriodStart => EarliestOrderCreated.AddTicks(-(EarliestOrderCreated.Ticks % TimeSpan.TicksPerHour));
         public int ProductId { get; set; }
         public string ProductName { get; set; }
-        public int Orders { get; set; }
-        public int Quantity { get; set; }
+        public int ProductQuantity { get; set; }
+        public int OrderCount { get; set; }
         public decimal Total { get; set; }
+    }
+
+    public class ProductServingStats
+    {
+        internal DateTimeOffset EarliestServingCreated { get; set; }
+        internal DateTimeOffset PeriodStart => EarliestServingCreated.AddTicks(-(EarliestServingCreated.Ticks % TimeSpan.TicksPerHour));
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public int ProductQuantity { get; set; }
+        public int ServingCount { get; set; }
     }
 }

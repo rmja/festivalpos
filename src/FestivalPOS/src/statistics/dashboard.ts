@@ -1,7 +1,7 @@
-import { autoinject } from "aurelia-framework";
 import { Api } from "../api";
-import { DateTime } from "luxon";
 import { Big } from "big.js";
+import { DateTime } from "luxon";
+import { autoinject } from "aurelia-framework";
 
 @autoinject()
 export class StatisticsDashboard {
@@ -44,18 +44,24 @@ export class StatisticsDashboard {
 
 export interface StatsViewModel {
     periodStart: DateTime;
-    orders: number;
+    orderCount: number;
     total: Big;
     payments: {
         method: "card" | "cash" | "account"
         payments: number;
         total: Big;
     }[];
-    products: {
+    productSales: {
         productId: number;
         productName: string;
-        orders: number;
-        quantity: number;
+        productQuantity: number;
+        orderCount: number;
         total: Big;
+    }[];
+    productServings: {
+        productId: number;
+        productName: string;
+        productQuantity: number;
+        servingCount: number;
     }[];
 }

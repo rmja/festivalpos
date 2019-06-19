@@ -1,6 +1,7 @@
-import { PaymentMethod } from "../api/payment";
-import { faCreditCard, faMoneyBillAlt, IconDefinition, faFileInvoiceDollar } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faCreditCard, faFileInvoiceDollar, faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
 import { bindable, bindingMode } from "aurelia-framework";
+
+import { PaymentMethod } from "../api/payment";
 import { StatsViewModel } from "./dashboard";
 
 const icons: {[id in PaymentMethod]: IconDefinition} = {

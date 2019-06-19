@@ -40,17 +40,33 @@ namespace FestivalPOS.Controllers
                 sql: await SqlScript.GetAsync("GetHourlyPaymentStats.sql"),
                 param: param);
 
-            var productStats = await connection.QueryAsync<ProductStats>(
-                sql: await SqlScript.GetAsync("GetHourlyProductStats.sql"),
+            var productSaleStats = await connection.QueryAsync<ProductSaleStats>(
+                sql: await SqlScript.GetAsync("GetHourlyProductSaleStats.sql"),
                 param: param);
 
-            foreach (var order in orderStats)
+            var productServingStats = await connection.QueryAsync<ProductServingStats>(
+                sql: await SqlScript.GetAsync("GetHourlyProductServingStats.sql"),
+                param: param);
+
+            var periodStarts = orderStats.Select(x => x.PeriodStart)
+                .Union(productServingStats.Select(x => x.PeriodStart))
+                .OrderBy(x => x)
+                .ToList();
+
+            var result = new List<OrderStats>(periodStarts.Count);
+
+            foreach (var periodStart in periodStarts)
             {
+                var order = orderStats.FirstOrDefault(x => x.PeriodStart == periodStart) ?? new OrderStats() { PeriodStart = periodStart };
+
                 order.Payments = paymentStats.Where(x => x.PeriodStart == order.PeriodStart).ToList();
-                order.Products = productStats.Where(x => x.PeriodStart == order.PeriodStart).ToList();
+                order.ProductSales = productSaleStats.Where(x => x.PeriodStart == order.PeriodStart).ToList();
+                order.ProductServings = productServingStats.Where(x => x.PeriodStart == order.PeriodStart).ToList();
+
+                result.Add(order);
             }
 
-            return orderStats.AsList();
+            return result;
         }
     }
 }

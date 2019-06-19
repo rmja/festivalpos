@@ -11,11 +11,13 @@
   <ItemGroup>
     <None Remove="Sql\GetHourlyOrderStats.sql" />
     <None Remove="Sql\GetHourlyPaymentStats.sql" />
-    <None Remove="Sql\GetHourlyProductStats.sql" />
+    <None Remove="Sql\GetHourlyProductSaleStats.sql" />
+    <None Remove="Sql\GetHourlyProductServingStats.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Sql\GetHourlyProductStats.sql" />
+    <EmbeddedResource Include="Sql\GetHourlyProductServingStats.sql" />
+    <EmbeddedResource Include="Sql\GetHourlyProductSaleStats.sql" />
     <EmbeddedResource Include="Sql\GetHourlyOrderStats.sql" />
     <EmbeddedResource Include="Sql\GetHourlyPaymentStats.sql" />
   </ItemGroup>

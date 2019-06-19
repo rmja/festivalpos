@@ -1,9 +1,9 @@
-import { DateTime } from "luxon";
-import { jsonProperty } from "ur-json";
-import { dateTimeConverter } from "./converters/date-time-converter";
-import { bigConverter } from "./converters/big-converter";
 import { Big } from "big.js";
+import { DateTime } from "luxon";
 import { PaymentMethod } from "./payment";
+import { bigConverter } from "./converters/big-converter";
+import { dateTimeConverter } from "./converters/date-time-converter";
+import { jsonProperty } from "ur-json";
 
 class PaymentStats {
     @jsonProperty()
@@ -16,7 +16,7 @@ class PaymentStats {
     total!: Big;
 }
 
-class ProductStats {
+class ProductSaleStats {
     @jsonProperty()
     productId!: number;
 
@@ -24,13 +24,27 @@ class ProductStats {
     productName!: string;
 
     @jsonProperty()
-    orders!: number;
+    productQuantity!: number;
 
     @jsonProperty()
-    quantity!: number;
+    orderCount!: number;
 
     @jsonProperty({ converter: bigConverter })
     total!: Big;
+}
+
+class ProductServingStats {
+    @jsonProperty()
+    productId!: number;
+
+    @jsonProperty()
+    productName!: string;
+
+    @jsonProperty()
+    productQuantity!: number;
+
+    @jsonProperty()
+    servingCount!: number;
 }
 
 export class OrderStats {
@@ -38,14 +52,17 @@ export class OrderStats {
     periodStart!: DateTime;
 
     @jsonProperty()
-    orders!: number;
+    orderCount!: number;
 
     @jsonProperty({ converter: bigConverter })
     total!: Big;
 
-    @jsonProperty({type: PaymentStats})
+    @jsonProperty({ type: PaymentStats })
     payments!: PaymentStats[];
 
-    @jsonProperty({type: ProductStats})
-    products!: ProductStats[];
+    @jsonProperty({ type: ProductSaleStats })
+    productSales!: ProductSaleStats[];
+
+    @jsonProperty({ type: ProductServingStats })
+    productServings!: ProductServingStats[];
 }

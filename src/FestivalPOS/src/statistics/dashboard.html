@@ -2,7 +2,7 @@
     <require from="./stats-widget"></require>
     <h2>Salgsstatistik</h2>
     <div class="row">
-        <stats-widget class="col-12" value.bind="hourStats"></stats-widget>
+        <stats-widget class="col-12" title="Samlet ${year}" value.bind="hourStats"></stats-widget>
     </div>
     <h2>Salgsstedsstatistik</h2>
     <div repeat.for="pos of posStats" class="row">

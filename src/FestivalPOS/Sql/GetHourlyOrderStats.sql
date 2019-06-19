@@ -4,7 +4,7 @@
 
 SELECT
 	 MIN(o.Created) EarliestOrderCreated
-	,COUNT(o.Id) Orders
+	,COUNT(o.Id) OrderCount
 	,SUM(o.Total) Total
 FROM
 	Orders o
