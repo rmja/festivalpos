@@ -33,7 +33,9 @@ export async function configure(aurelia: Aurelia) {
         .globalResources(PLATFORM.moduleName("empty-hint.html"))
         .globalResources(PLATFORM.moduleName("resources/date-time-format"))
         .globalResources(PLATFORM.moduleName("resources/money-format"))
-        .globalResources(PLATFORM.moduleName("resources/number-format"));
+        .globalResources(PLATFORM.moduleName("resources/number-format"))
+        .globalResources(PLATFORM.moduleName("resources/keypad-display"))
+        .globalResources(PLATFORM.moduleName("resources/keypad-input"));
 
     if (__DEBUG__) {
         aurelia.use.developmentLogging();

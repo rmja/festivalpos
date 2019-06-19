@@ -1,22 +1,12 @@
 <template>
     <form submit.delegate="submit()">
-        <div class="row">
-            <h6 class="col-12 text-center text-muted">Brik</h6>
-            <h1 class="offset-2 col-8 text-center">${tagNumber}</h1>
-            <button class="col-2 btn btn-light" click.delegate="backspace()"><font-awesome-icon icon="backspace" size="2x"></font-awesome-icon></button>
-        </div>
+        <keypad-display title="Brik" value.bind="tagNumber"></keypad-display>
 
-        <div class="keypad row no-gutters">
-            <div repeat.for="number of [1, 2, 3, 4, 5, 6, 7, 8, 9, '00', 0]" class="col-4">
-                <button type="button" class="btn btn-light" click.delegate="pushKey(number)">
-                    <h5>${number}</h5>
-                </button>
-            </div>
-        </div>
+        <keypad-input value.bind="tagNumber"></keypad-input>
 
         <div class="btn-group btn-block fixed-bottom">
             <button class="btn btn-secondary btn-lg" if.bind="canSkip" click.delegate="skip()"><font-awesome-icon icon="times"></font-awesome-icon> Spring over</button>
-            <button type="submit" class="btn btn-success btn-lg"><font-awesome-icon icon="ticket-alt"></font-awesome-icon> Angiv brik</button>
+            <button type="submit" class="btn btn-success btn-lg" disabled.bind="tagNumber.eq(0)"><font-awesome-icon icon="ticket-alt"></font-awesome-icon> Angiv brik</button>
         </div>
     </form>
 </template>

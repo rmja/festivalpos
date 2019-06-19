@@ -1,15 +1,3 @@
-.keypad {
-    position: fixed;
-    right: 15px;
-    bottom: 63px;
-    left: 15px;
-}
-
-.keypad button {
-    height: 70px;
-    width: 100%;
-}
-
 .wrapper {
     margin-top: 10px;
 }

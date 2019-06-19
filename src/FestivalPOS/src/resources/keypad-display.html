@@ -1,0 +1,8 @@
+<template>
+    <div class="row">
+        <h6 class="col-12 text-center text-muted">${title}</h6>
+        <h1 class="offset-2 col-8 text-center" if.bind="money">${value | money} kr.</h1>
+        <h1 class="offset-2 col-8 text-center" else>${value}</h1>
+        <button class="col-2 btn btn-light" click.delegate="backspace()"><font-awesome-icon icon="backspace" size="2x"></font-awesome-icon></button>
+    </div>
+</template>

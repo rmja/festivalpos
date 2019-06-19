@@ -1,9 +1,8 @@
-import { BACKSPACE, COMMA, Digit, ENTER, ESCAPE } from "../keys";
-import { Big, RoundingMode } from "big.js";
 import { autoinject, computedFrom, observable } from "aurelia-framework";
 
 import { Account } from "../api/account";
 import { Api } from "../api";
+import { Big } from "big.js";
 import { Order } from "../api/order";
 import { Router } from "aurelia-router";
 
@@ -46,7 +45,6 @@ export class AccountPayment {
     }
 
     constructor(private api: Api, private router: Router) {
-        this.keyup = this.keyup.bind(this);
     }
 
     async activate(params: { orderId: string }) {
@@ -56,44 +54,6 @@ export class AccountPayment {
 
         this.total = this.order.total;
         this.accountNumber = new Big(0);
-
-        document.addEventListener("keyup", this.keyup);
-    }
-
-    deactivate() {
-        document.removeEventListener("keyup", this.keyup);
-    }
-
-    private keyup(event: KeyboardEvent) {
-        if (event.key >= "0" && event.key <= "9") {
-            const digit = Number(event.key) as Digit;
-            this.pushKey(digit);
-        }
-        else if (event.key === COMMA) {
-            this.pushKey("00");
-        }
-        else if (event.key === BACKSPACE) {
-            this.backspace();
-        }
-        else if (event.key === ENTER) {
-            return this.submit();
-        }
-        else if (event.key === ESCAPE) {
-            return this.cancel();
-        }
-    }
-
-    backspace() {
-        this.accountNumber = this.accountNumber.div(10).round(0, RoundingMode.RoundDown);
-    }
-
-    pushKey(value: Digit | "00") {
-        if (value === "00") {
-            this.accountNumber = this.accountNumber.mul(100);
-        }
-        else {
-            this.accountNumber = this.accountNumber.mul(10).add(new Big(value));
-        }
     }
 
     async cancel() {
