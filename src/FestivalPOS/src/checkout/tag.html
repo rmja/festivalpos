@@ -5,8 +5,9 @@
         <keypad-input value.bind="tagNumber"></keypad-input>
 
         <div class="btn-group btn-block fixed-bottom">
-            <button class="btn btn-secondary btn-lg" if.bind="canSkip" click.delegate="skip()"><font-awesome-icon icon="times"></font-awesome-icon> Spring over</button>
-            <button type="submit" class="btn btn-success btn-lg" disabled.bind="tagNumber.eq(0)"><font-awesome-icon icon="ticket-alt"></font-awesome-icon> Angiv brik</button>
+            <button type="button" class="btn btn-danger btn-lg col-4" click.delegate="cancel()"><font-awesome-icon icon="times"></font-awesome-icon> Fortryd</button>
+            <button class="btn btn-secondary btn-lg col-4" if.bind="canSkip" click.delegate="skip()"><font-awesome-icon icon="times"></font-awesome-icon> Undlad</button>
+            <button type="submit" class="btn btn-success btn-lg ${canSkip ? 'col-4' : 'col-8'}" disabled.bind="tagNumber.eq(0)"><font-awesome-icon icon="ticket-alt"></font-awesome-icon> Brug</button>
         </div>
     </form>
 </template>

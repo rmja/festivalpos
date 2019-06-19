@@ -1,4 +1,5 @@
 import { RedirectToRoute, Router } from "aurelia-router";
+import { faTicketAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import { Api } from "../api";
 import { Big } from "big.js";
@@ -8,7 +9,6 @@ import { Order } from "../api/order";
 import { ProgressService } from "../resources/progress-service";
 import { TagOverwriteDialog } from "./tag-overwrite-dialog";
 import { autoinject } from "aurelia-framework";
-import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 
 type PaymentMethod = "card" | "cash" | "account";
 
@@ -42,6 +42,21 @@ export class Tag {
         this.tagNumber = new Big(0);
 
         this.canSkip = !this.order.mustHaveTag();
+    }
+
+    async cancel() {
+        try {
+            this.progress.busy("Sletter ordre", faTrash);
+
+            await this.api.deleteOrder(this.order.id).send();
+
+            this.progress.done();
+
+            this.router.navigate("/sale");
+        }
+        catch (error) {
+            await this.progress.error("Ordren kunne ikke slettes", error);
+        }
     }
 
     skip() {
