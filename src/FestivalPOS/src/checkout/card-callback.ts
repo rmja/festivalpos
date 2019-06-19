@@ -2,12 +2,14 @@ import { autoinject, noView } from "aurelia-framework";
 
 import { Api } from "../api";
 import { Big } from "big.js";
+import { ProgressService } from "../resources/progress-service";
 import { RedirectToRoute } from "aurelia-router";
+import { faCashRegister } from "@fortawesome/free-solid-svg-icons";
 
 @noView()
 @autoinject()
 export class CardCallback {
-    constructor(private api: Api) {
+    constructor(private api: Api, private progress: ProgressService) {
     }
 
     // Example callback url: https://example.com/?smp-status=success&smp-message=Transaction%20successful.&smp-receipt-sent=false&smp-tx-code=TDT3L2XDGM#/checkout/orders/87/pay/card-callback?amount=40
@@ -23,19 +25,26 @@ export class CardCallback {
         });
 
         if (params["smp-status"] === "success") {
-            const payment = await this.api.createPayment(orderId, {
-                method: "card",
-                amount: amount,
-                transactionNumber: params["smp-tx-code"]
-            }).transfer();
+            this.progress.busy("Registrerer betaling", faCashRegister);
+            
+            try {
+                const payment = await this.api.createPayment(orderId, {
+                    method: "card",
+                    amount: amount,
+                    transactionNumber: params["smp-tx-code"]
+                }).transfer();
 
-            return new RedirectToRoute("receipt", {
-                orderId: orderId,
-                paymentId: payment.id,
-                tagNumber: params.tagNumber
-            }, {
-                replace: true
-            });
+                return new RedirectToRoute("receipt", {
+                    orderId: orderId,
+                    paymentId: payment.id,
+                    tagNumber: params.tagNumber
+                }, {
+                    replace: true
+                });
+            }
+            catch (error) {
+                await this.progress.error("Betalingen kunne ikke registreres");
+            }
         }
         else {
             return new RedirectToRoute("card-error", {

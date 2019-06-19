@@ -1,8 +1,10 @@
 import { autoinject, noView } from "aurelia-framework";
 
 import { Api } from "../api";
+import { ProgressService } from "../resources/progress-service";
 import { State } from "../state";
 import { connectTo } from "aurelia-store";
+import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 
 @noView()
 @autoinject()
@@ -13,7 +15,7 @@ import { connectTo } from "aurelia-store";
 export class CardPayment {
     private state!: State;
 
-    constructor(private api: Api) {
+    constructor(private api: Api, private progress: ProgressService) {
     }
     
     async canActivate(params: { orderId: string, tagNumber?: string }) {
@@ -27,23 +29,32 @@ export class CardPayment {
     }
 
     private async redirectToSumUpApp(orderId: number, tagNumber?: string) {
-        const order = await this.api.getOrderById(orderId).transfer();
+        try {
+            this.progress.busy("Viderestiller til kortbetaling", faCreditCard);
 
-        const pos = await this.api.getPointOfSale(order.pointOfSaleId).transfer();
+            const order = await this.api.getOrderById(orderId).transfer();
 
-        // Example: <a href="sumupmerchant://pay/1.0?affiliate-key=7ca84f17-84a5-4140-8df6-6ebeed8540fc&app-id=com.example.myapp&total=1.23&currency=EUR&title=Taxi Ride&receipt-mobilephone=+3531234567890&receipt-email=customer@mail.com&callback=http://example.com/myapp/mycallback">Start SumUp Payment</a>
+            const pos = await this.api.getPointOfSale(order.pointOfSaleId).transfer();
 
-        const affiliateKey = this.state.sumupAffiliateKey;
-        const appId = "com.rmja.festivalpos";
-        const total = order.amountDue.toFixed(2); // Has "." as decimal separator
-        const title = `Kajfest ${pos.name}`;
+            // Example: <a href="sumupmerchant://pay/1.0?affiliate-key=7ca84f17-84a5-4140-8df6-6ebeed8540fc&app-id=com.example.myapp&total=1.23&currency=EUR&title=Taxi Ride&receipt-mobilephone=+3531234567890&receipt-email=customer@mail.com&callback=http://example.com/myapp/mycallback">Start SumUp Payment</a>
 
-        let callbackUrl = `${window.location.origin}/#/checkout/orders/${order.id}/pay/card-callback?amount=${order.amountDue}`;
+            const affiliateKey = this.state.sumupAffiliateKey;
+            const appId = "com.rmja.festivalpos";
+            const total = order.amountDue.toFixed(2); // Has "." as decimal separator
+            const title = `Kajfest ${pos.name}`;
 
-        if (tagNumber) {
-            callbackUrl += `&tagNumber=${tagNumber}`;
+            let callbackUrl = `${window.location.origin}/#/checkout/orders/${order.id}/pay/card-callback?amount=${order.amountDue}`;
+
+            if (tagNumber) {
+                callbackUrl += `&tagNumber=${tagNumber}`;
+            }
+
+            this.progress.done();
+
+            window.location.href = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${encodeURIComponent(title)}&callback=${encodeURIComponent(callbackUrl)}`;
         }
-
-        window.location.href = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${encodeURIComponent(title)}&callback=${encodeURIComponent(callbackUrl)}`;
+        catch (error) {
+            await this.progress.error("Kortbetaling kunne ikke gennemføres");
+        }
     }
 }

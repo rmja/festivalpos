@@ -1,9 +1,7 @@
 import { Api } from "../api";
 import { Big } from "big.js";
-import { Patch } from "ur-jsonpatch";
 import { Payment } from "../api/payment";
 import { Router } from "aurelia-router";
-import { Serving } from "../api/serving";
 import { State } from "../state";
 import { autoinject } from "aurelia-framework";
 import { connectTo } from "aurelia-store";
@@ -26,7 +24,6 @@ export class CashReceipt {
     canPrintReceipt = false;
 
     constructor(private api: Api, private router: Router) {
-        this.keyup = this.keyup.bind(this);
     }
 
     async canActivate(params: Params) {
@@ -57,18 +54,6 @@ export class CashReceipt {
 
         const post = await this.api.getPointOfSale(this.state.pointOfSaleId).transfer();
         this.canPrintReceipt = !!post.receiptPrinterId;;
-
-        addEventListener("keyup", this.keyup);
-    }
-
-    deactivate() {
-        removeEventListener("keyup", this.keyup);
-    }
-
-    private keyup(event: KeyboardEvent) {
-        if (event.keyCode === 13) {
-            return this.complete();
-        }
     }
 
     printReceipt() {

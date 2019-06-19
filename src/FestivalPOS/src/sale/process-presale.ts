@@ -1,8 +1,10 @@
 import { Api } from './../api/index';
+import { ProgressService } from '../resources/progress-service';
 import { Router } from 'aurelia-router';
 import { State } from '../state';
 import { autoinject } from "aurelia-framework";
 import { connectTo } from 'aurelia-store';
+import { faUtensils } from '@fortawesome/free-solid-svg-icons';
 
 @autoinject()
 @connectTo({
@@ -21,8 +23,7 @@ export class ProcessPresale {
         }
     }
 
-    constructor(private api: Api, private router: Router) {
-        this.keyup = this.keyup.bind(this);
+    constructor(private api: Api, private router: Router, private progress: ProgressService) {
     }
 
     async activate(params: { orderId: string, tagNumber?: string }) {
@@ -36,18 +37,6 @@ export class ProcessPresale {
         for (const line of this.order.lines) {
             line.canRedeem = !!(line.receiveable && line.productId && products.find(x => x.product.id === line.productId && !x.presale));
             line.redeem = line.canRedeem;
-        }
-
-        addEventListener("keyup", this.keyup);
-    }
-
-    deactivate() {
-        removeEventListener("keyup", this.keyup);
-    }
-
-    private keyup(event: KeyboardEvent) {
-        if (event.keyCode === 13) {
-            return this.process();
         }
     }
 
@@ -64,16 +53,25 @@ export class ProcessPresale {
             return;
         }
 
-        const serving = await this.api.createServing(this.order.id, {
-            pointOfSaleId: this.state.pointOfSaleId,
-            lines: lines
-        }).transfer();
+        this.progress.busy("Opretter servering", faUtensils);
 
-        this.router.navigateToRoute("serving-confirmation", {
-            orderId: this.order.id,
-            servingId: serving.id,
-            tagNumber: this.tagNumber
-        });
+        try {
+            const serving = await this.api.createServing(this.order.id, {
+                pointOfSaleId: this.state.pointOfSaleId,
+                lines: lines
+            }).transfer();
+
+            this.progress.done();
+
+            this.router.navigateToRoute("serving-confirmation", {
+                orderId: this.order.id,
+                servingId: serving.id,
+                tagNumber: this.tagNumber
+            });
+        }
+        catch (error) {
+            await this.progress.error("Serveringen kunne ikke oprettes");
+        }
     }
 }
 

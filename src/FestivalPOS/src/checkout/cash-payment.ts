@@ -1,6 +1,9 @@
+import { faCashRegister, faTrash } from "@fortawesome/free-solid-svg-icons";
+
 import { Api } from "../api";
 import { Big } from "big.js";
 import { Order } from "../api/order";
+import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
 import { autoinject } from "aurelia-framework";
 import { computedFrom } from "aurelia-binding";
@@ -23,7 +26,7 @@ export class CashPayment {
         return this.amountDue.gt(0) && this.received.gte(this.amountDue);
     }
 
-    constructor(private api: Api, private router: Router) {
+    constructor(private api: Api, private router: Router, private progress: ProgressService) {
     }
 
     async activate(params: { orderId: string, tagNumber?: string }) {
@@ -41,9 +44,18 @@ export class CashPayment {
     }
 
     async cancel() {
-        await this.api.deleteOrder(this.order.id).send();
+        try {
+            this.progress.busy("Sletter ordre", faTrash);
 
-        this.router.navigate("/sale");
+            await this.api.deleteOrder(this.order.id).send();
+
+            this.progress.done();
+
+            this.router.navigate("/sale");
+        }
+        catch (error) {
+            await this.progress.error("Ordren kunne ikke slettes");
+        }
     }
 
     async submit() {
@@ -51,16 +63,25 @@ export class CashPayment {
             return;
         }
 
-        const payment = await this.api.createPayment(this.order.id, {
-            method: "cash",
-            amount: this.amountDue
-        }).transfer();
+        try {
+            this.progress.busy("Registrerer betaling", faCashRegister);
 
-        this.router.navigateToRoute("receipt", {
-            orderId: payment.orderId,
-            paymentId: payment.id,
-            change: this.received.minus(payment.amount).toFixed(2),
-            tagNumber: this.tagNumber
-        });
+            const payment = await this.api.createPayment(this.order.id, {
+                method: "cash",
+                amount: this.amountDue
+            }).transfer();
+
+            this.progress.done();
+
+            this.router.navigateToRoute("receipt", {
+                orderId: payment.orderId,
+                paymentId: payment.id,
+                change: this.received.minus(payment.amount).toFixed(2),
+                tagNumber: this.tagNumber
+            });
+        }
+        catch (error) {
+            await this.progress.error("Betalingen kunne ikke registreres");
+        }
     }
 }

@@ -3,7 +3,9 @@ import { Store, connectTo } from "aurelia-store";
 import { autoinject, bindable, computedFrom } from "aurelia-framework";
 
 import { Api } from "../api";
+import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
+import { faFileAlt } from "@fortawesome/free-solid-svg-icons";
 
 @autoinject()
 @connectTo()
@@ -25,7 +27,7 @@ export class PayButtonCustomElement {
         }
     }
 
-    constructor(private api: Api, private store: Store<State>, private router: Router) {
+    constructor(private api: Api, private store: Store<State>, private router: Router, private progress: ProgressService) {
     }
 
     bind() {
@@ -41,23 +43,32 @@ export class PayButtonCustomElement {
             await Promise.resolve(this.confirm());
         }
 
-        const order = await this.api.createOrder({
-            terminalId: this.state.terminalId,
-            pointOfSaleId: this.state.pointOfSaleId,
-            lines: this.state.orderLines.map(x => {
-                return Object.assign({}, x, {
-                    receiveable: x.presale ? x.quantity : 0
-                });
-            })
-        }).transfer();
+        this.progress.busy("Opretter ordre", faFileAlt);
 
-        await this.store.dispatch(resetOrder);
+        try {
+            const order = await this.api.createOrder({
+                terminalId: this.state.terminalId,
+                pointOfSaleId: this.state.pointOfSaleId,
+                lines: this.state.orderLines.map(x => {
+                    return Object.assign({}, x, {
+                        receiveable: x.presale ? x.quantity : 0
+                    });
+                })
+            }).transfer();
 
-        if (order.canHaveTag()) {
-            this.router.navigate(`/checkout/orders/${order.id}/tag?paymentMethod=${method}`);
+            await this.store.dispatch(resetOrder);
+
+            this.progress.done();
+
+            if (order.canHaveTag()) {
+                this.router.navigate(`/checkout/orders/${order.id}/tag?paymentMethod=${method}`);
+            }
+            else {
+                this.router.navigate(`/checkout/orders/${order.id}/pay/${method}`);
+            }
         }
-        else {
-            this.router.navigate(`/checkout/orders/${order.id}/pay/${method}`);
+        catch (error) {
+            await this.progress.error("Ordren kunne ikke oprettes");
         }
     }
 }

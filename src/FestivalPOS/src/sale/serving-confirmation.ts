@@ -1,15 +1,17 @@
 import { Api } from "../api";
 import { Patch } from "ur-jsonpatch";
+import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
 import { Serving } from "../api/serving";
 import { autoinject } from "aurelia-framework";
+import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 
 @autoinject()
 export class ServingConfirmation {
     orderId!: number;
     serving!: ServingViewModel;
 
-    constructor(private api: Api, private router: Router) {
+    constructor(private api: Api, private router: Router, private progress: ProgressService) {
         this.keyup = this.keyup.bind(this);
     }
 
@@ -35,7 +37,17 @@ export class ServingConfirmation {
             const patch = new Patch<Serving>()
                 .replace(x => x.state, "completed");
 
-            await this.api.updateServing(this.serving.id, patch.operations).send();
+            this.progress.busy("Færdiggør servering", faUtensils);
+
+            try {
+                await this.api.updateServing(this.serving.id, patch.operations).send();
+
+                this.progress.done();
+            }
+            catch (error) {
+                await this.progress.error("Serveringen kunne ikke færdiggøres");
+                return;
+            }
         }
 
         this.router.navigateToRoute("tag");

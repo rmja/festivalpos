@@ -3,7 +3,9 @@ import { AppRouter, Router } from "aurelia-router";
 import { Api } from "../api";
 import { Big } from "big.js";
 import { Order } from "../api/order";
+import { ProgressService } from "../resources/progress-service";
 import { autoinject } from "aurelia-framework";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 @autoinject()
 export class CardError {
@@ -13,7 +15,7 @@ export class CardError {
     message!: string;
     total!: Big;
 
-    constructor(private api: Api, private router: Router, private appRouter: AppRouter) {
+    constructor(private api: Api, private router: Router, private appRouter: AppRouter, private progress: ProgressService) {
     }
 
     async activate(params: { orderId: string, cause: string, message: string }) {
@@ -30,8 +32,18 @@ export class CardError {
             throw new Error();
         }
 
-        await this.api.deleteOrder(this.orderId).send();
-        this.appRouter.navigateToRoute("sale");
+        try {
+            this.progress.busy("Sletter ordre", faTrash);
+
+            await this.api.deleteOrder(this.orderId).send();
+
+            this.progress.done();
+
+            this.appRouter.navigateToRoute("sale");
+        }
+        catch (error) {
+            await this.progress.error("Ordren kunne ikke slettes");
+        }
     }
 
     doConfirm(method: "card" | "cash" | "account") {

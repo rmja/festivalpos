@@ -1,0 +1,13 @@
+<template>
+    <ux-dialog>
+        <ux-dialog-header>
+            <font-awesome-icon icon="exclamation-triangle" fixed-width="true"></font-awesome-icon> ${title}
+        </ux-dialog-header>
+        <ux-dialog-body class="text-center">
+            ${message}
+        </ux-dialog-body>
+        <ux-dialog-footer>
+            <button type="button" class="btn btn-primary" click.delegate="close()">Ok</button>
+        </ux-dialog-footer>
+    </ux-dialog>
+</template>

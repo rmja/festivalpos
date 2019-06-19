@@ -4,7 +4,9 @@ import { Account } from "../api/account";
 import { Api } from "../api";
 import { Big } from "big.js";
 import { Order } from "../api/order";
+import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
+import { faCashRegister } from "@fortawesome/free-solid-svg-icons";
 
 @autoinject()
 export class AccountPayment {
@@ -44,7 +46,7 @@ export class AccountPayment {
         return this.account && this.remainingCredit && this.remainingCredit.gte(this.total);
     }
 
-    constructor(private api: Api, private router: Router) {
+    constructor(private api: Api, private router: Router, private progress: ProgressService) {
     }
 
     async activate(params: { orderId: string }) {
@@ -71,19 +73,28 @@ export class AccountPayment {
             throw new Error();
         }
 
-        await this.api.assignOrderTag(this.order.id, this.account.number, true).send();
+        try {
+            this.progress.busy("Registrerer betaling", faCashRegister);
 
-        const payment = await this.api.createPayment(this.order.id, {
-            method: "account",
-            amount: this.total,
-            accountId: this.account.id
-        }).transfer();
+            await this.api.assignOrderTag(this.order.id, this.account.number, true).send();
 
-        this.router.navigateToRoute("receipt", {
-            orderId: payment.orderId,
-            paymentId: payment.id,
-            tagNumber: this.account.number
-        });
+            const payment = await this.api.createPayment(this.order.id, {
+                method: "account",
+                amount: this.total,
+                accountId: this.account.id
+            }).transfer();
+
+            this.progress.done();
+
+            this.router.navigateToRoute("receipt", {
+                orderId: payment.orderId,
+                paymentId: payment.id,
+                tagNumber: this.account.number
+            });
+        }
+        catch (error) {
+            await this.progress.error("Betalingen kunne ikke registreres");
+        }
     }
 
     protected accountNumberChanged() {
