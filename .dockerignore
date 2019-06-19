@@ -2,10 +2,10 @@
 .env
 .git
 .gitignore
-.vs
 .vscode
-*/bin
-*/obj
 **/.toolstarget
+**/.vs
+**/bin
+**/obj
 **/node_modules
-*/wwwroot/dist
+**/wwwroot/dist
