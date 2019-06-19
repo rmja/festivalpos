@@ -31,7 +31,7 @@ export class KeypadInput {
 
     private keyup(event: KeyboardEvent) {
         const target = event.target as HTMLElement;
-        if (!target || target.tagName !== "BODY") {
+        if (target && target.tagName === "INPUT" || target.tagName === "SELECT" || target.tagName === "TEXTAREA") {
             return;
         }
 
