@@ -1,0 +1,14 @@
+<template>
+    <ux-dialog>
+        <ux-dialog-header>
+            <font-awesome-icon icon="exclamation-triangle" class="text-warning"></font-awesome-icon> Brikken er allerede i brug
+        </ux-dialog-header>
+        <ux-dialog-body>
+            Er briknummeret <strong>${tagNumber}</strong> korrekt?
+        </ux-dialog-body>
+        <ux-dialog-footer>
+            <button type="button" class="btn btn-secondary" click.delegate="cancel()"> Nej, tilbage</button>
+            <button type="button" class="btn btn-warning" click.delegate="overwrite()">Ja, brug nummeret</button>
+        </ux-dialog-footer>
+    </ux-dialog>
+</template>

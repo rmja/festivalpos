@@ -2,9 +2,11 @@ import { RedirectToRoute, Router } from "aurelia-router";
 
 import { Api } from "../api";
 import { Big } from "big.js";
+import { DialogService } from "aurelia-dialog";
 import { HttpError } from "ur-http";
 import { Order } from "../api/order";
 import { ProgressService } from "../resources/progress-service";
+import { TagOverwriteDialog } from "./tag-overwrite-dialog";
 import { autoinject } from "aurelia-framework";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 
@@ -18,7 +20,7 @@ export class Tag {
     private order!: Order;
     private paymentMethod!: PaymentMethod;
 
-    constructor(private api: Api, private router: Router, private progress: ProgressService) {
+    constructor(private api: Api, private router: Router, private dialog: DialogService, private progress: ProgressService) {
     }
 
     async canActivate(params: { orderId: string, paymentMethod: PaymentMethod }) {
@@ -62,7 +64,9 @@ export class Tag {
         catch (error) {
             if (error instanceof HttpError && error.statusCode === 409) { // Conflict
                 this.progress.done();
-                if (confirm(`Brik ${this.tagNumber} er allerede i brug, skal den virkelig bruges?`)) {
+                const result = await this.dialog.open({ viewModel: TagOverwriteDialog, model: tagNumber }).whenClosed();
+
+                if (!result.wasCancelled) {
                     forceAssign = true;
                 }
                 else {
