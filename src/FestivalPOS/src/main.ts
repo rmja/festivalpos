@@ -46,6 +46,7 @@ export async function configure(aurelia: Aurelia) {
     const httpClient = aurelia.container.get(HttpClient) as HttpClient;
     httpClient.configure(config => config.withBaseUrl("api"));
     Http.defaults.fetch = httpClient.fetch.bind(httpClient);
+    Http.defaults.timeout = 5000;
 
     // const oidc = aurelia.container.get(OpenIdConnect) as OpenIdConnect;
     // httpClient.configure(config => config.withInterceptor(new AuthInterceptor(oidc, aurelia)));

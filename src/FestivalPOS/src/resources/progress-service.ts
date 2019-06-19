@@ -1,6 +1,7 @@
 import { DialogService } from "aurelia-dialog";
 import { ProgressBusy } from "./progress-busy";
 import { ProgressError } from "./progress-error";
+import { TimeoutError } from "ur-http";
 import { autoinject } from "aurelia-framework";
 
 @autoinject()
@@ -41,6 +42,9 @@ export class ProgressService {
         }
         else if (error instanceof TypeError && error.message === "Failed to fetch") {
             message = "Der kunne ikke oprettes forbindelse til serveren";
+        }
+        else if (error instanceof TimeoutError) {
+            message = "Intet svar indenfor tidsgrænsen";
         }
         else {
             message = error.message;
