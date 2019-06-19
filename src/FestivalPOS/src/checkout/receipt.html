@@ -26,6 +26,9 @@
     </div>
 
     <div class="btn-group btn-block fixed-bottom">
+        <button type="button" class="btn btn-secondary btn-lg" if.bind="servingId" click.delegate="complete(true)">
+            <font-awesome-icon icon="check"></font-awesome-icon> Serveret
+        </button>
         <button type="button" class="btn btn-primary btn-lg" click.delegate="complete()">
             <font-awesome-icon icon="check"></font-awesome-icon> Udført
         </button>

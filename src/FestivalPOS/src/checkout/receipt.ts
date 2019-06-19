@@ -1,10 +1,14 @@
 import { Api } from "../api";
 import { Big } from "big.js";
+import { Patch } from "ur-jsonpatch";
 import { Payment } from "../api/payment";
+import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
+import { Serving } from "../api/serving";
 import { State } from "../state";
 import { autoinject } from "aurelia-framework";
 import { connectTo } from "aurelia-store";
+import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 
 interface Params { orderId: string, paymentId: string, change?: string, tagNumber?: string };
 
@@ -23,7 +27,7 @@ export class CashReceipt {
     change?: Big;
     canPrintReceipt = false;
 
-    constructor(private api: Api, private router: Router) {
+    constructor(private api: Api, private router: Router, private progress: ProgressService) {
     }
 
     async canActivate(params: Params) {
@@ -32,8 +36,8 @@ export class CashReceipt {
         const order = await this.api.getOrderById(this.orderId).transfer();
         if (params.tagNumber) {
             this.tagNumber = Number(params.tagNumber);
-            this.servingId = order.servings.length && order.servings[0].id;
         }
+        this.servingId = order.servings.length && order.servings[0].id;
         
         const payment = order.payments.find(x => x.id === paymentId);
 
@@ -60,7 +64,23 @@ export class CashReceipt {
         return this.api.printReceipt(this.orderId).send();
     }
 
-    complete() {
+    async complete(markAsCompleted?: boolean) {
+        if (markAsCompleted && this.servingId) {
+            const patch = new Patch<Serving>()
+                .replace(x => x.state, "completed");
+
+            try {
+                this.progress.busy("Færdiggør servering", faUtensils);
+
+                await this.api.updateServing(this.servingId, patch.operations).send();
+
+                this.progress.done();
+            }
+            catch (error) {
+                await this.progress.error("Serveringen kunne ikke færdiggøres", error);
+                return;
+            }
+        }
         this.router.navigate("/sale");
     }
 }
