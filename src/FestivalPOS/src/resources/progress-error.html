@@ -1,9 +1,9 @@
 <template>
     <ux-dialog>
         <ux-dialog-header>
-            <font-awesome-icon icon="exclamation-triangle" fixed-width="true"></font-awesome-icon> ${title}
+            <font-awesome-icon icon="exclamation-triangle" fixed-width="true" class="text-warning"></font-awesome-icon> ${title}
         </ux-dialog-header>
-        <ux-dialog-body class="text-center">
+        <ux-dialog-body if.bind="message">
             ${message}
         </ux-dialog-body>
         <ux-dialog-footer>

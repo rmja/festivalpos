@@ -53,9 +53,9 @@ export class ProcessPresale {
             return;
         }
 
-        this.progress.busy("Opretter servering", faUtensils);
-
         try {
+            this.progress.busy("Opretter servering", faUtensils);
+
             const serving = await this.api.createServing(this.order.id, {
                 pointOfSaleId: this.state.pointOfSaleId,
                 lines: lines
@@ -70,7 +70,7 @@ export class ProcessPresale {
             });
         }
         catch (error) {
-            await this.progress.error("Serveringen kunne ikke oprettes");
+            await this.progress.error("Serveringen kunne ikke oprettes", error);
         }
     }
 }

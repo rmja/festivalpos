@@ -54,7 +54,7 @@ export class CashPayment {
             this.router.navigate("/sale");
         }
         catch (error) {
-            await this.progress.error("Ordren kunne ikke slettes");
+            await this.progress.error("Ordren kunne ikke slettes", error);
         }
     }
 
@@ -81,7 +81,7 @@ export class CashPayment {
             });
         }
         catch (error) {
-            await this.progress.error("Betalingen kunne ikke registreres");
+            await this.progress.error("Betalingen kunne ikke registreres", error);
         }
     }
 }

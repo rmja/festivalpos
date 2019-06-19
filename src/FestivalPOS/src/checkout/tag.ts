@@ -70,7 +70,7 @@ export class Tag {
                 }
             }
             else {
-                await this.progress.error("Brikken kunne ikke registreres");
+                await this.progress.error("Brikken kunne ikke registreres", error);
                 return;
             }
         }
@@ -80,7 +80,7 @@ export class Tag {
                 await this.api.assignOrderTag(this.orderId, tagNumber, true).send();
             }
             catch (error) {
-                await this.progress.error("Brikken kunne ikke registreres");
+                await this.progress.error("Brikken kunne ikke registreres", error);
                 return;
             }
         }

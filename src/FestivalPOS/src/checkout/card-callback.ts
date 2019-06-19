@@ -25,14 +25,16 @@ export class CardCallback {
         });
 
         if (params["smp-status"] === "success") {
-            this.progress.busy("Registrerer betaling", faCashRegister);
-            
             try {
+                this.progress.busy("Registrerer betaling", faCashRegister);
+
                 const payment = await this.api.createPayment(orderId, {
                     method: "card",
                     amount: amount,
                     transactionNumber: params["smp-tx-code"]
                 }).transfer();
+
+                this.progress.done();
 
                 return new RedirectToRoute("receipt", {
                     orderId: orderId,
@@ -43,7 +45,7 @@ export class CardCallback {
                 });
             }
             catch (error) {
-                await this.progress.error("Betalingen kunne ikke registreres");
+                await this.progress.error("Betalingen kunne ikke registreres", error);
             }
         }
         else {

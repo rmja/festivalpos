@@ -5,7 +5,7 @@ import { Big } from "big.js";
 import { HttpError } from "ur-http";
 import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
-import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 @autoinject()
 export class Tag {
@@ -28,7 +28,7 @@ export class Tag {
         const tagNumber = Number(this.tagNumber.toFixed());
 
         try {
-            this.progress.busy("Registrerer brik", faTicketAlt);
+            this.progress.busy("Søger efter ordre", faSearch);
             
             var order = await this.api.getCurrentOrderByTag(tagNumber).transfer();
 
@@ -36,10 +36,11 @@ export class Tag {
         }
         catch (error) {
             if (error instanceof HttpError && error.statusCode === 404) {
+                this.progress.done();
                 this.notFound = true;
             }
             else {
-                await this.progress.error("Brikken kunne ikke registreres");
+                await this.progress.error("Ordren kunne ikke findes", error);
             }
 
             return;

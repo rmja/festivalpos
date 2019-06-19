@@ -93,7 +93,7 @@ export class AccountPayment {
             });
         }
         catch (error) {
-            await this.progress.error("Betalingen kunne ikke registreres");
+            await this.progress.error("Betalingen kunne ikke registreres", error);
         }
     }
 

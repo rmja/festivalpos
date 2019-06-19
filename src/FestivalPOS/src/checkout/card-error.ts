@@ -42,7 +42,7 @@ export class CardError {
             this.appRouter.navigateToRoute("sale");
         }
         catch (error) {
-            await this.progress.error("Ordren kunne ikke slettes");
+            await this.progress.error("Ordren kunne ikke slettes", error);
         }
     }
 

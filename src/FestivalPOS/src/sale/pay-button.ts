@@ -43,9 +43,9 @@ export class PayButtonCustomElement {
             await Promise.resolve(this.confirm());
         }
 
-        this.progress.busy("Opretter ordre", faFileAlt);
-
         try {
+            this.progress.busy("Opretter ordre", faFileAlt);
+
             const order = await this.api.createOrder({
                 terminalId: this.state.terminalId,
                 pointOfSaleId: this.state.pointOfSaleId,
@@ -68,7 +68,7 @@ export class PayButtonCustomElement {
             }
         }
         catch (error) {
-            await this.progress.error("Ordren kunne ikke oprettes");
+            await this.progress.error("Ordren kunne ikke oprettes", error);
         }
     }
 }

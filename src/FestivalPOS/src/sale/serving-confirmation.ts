@@ -37,15 +37,15 @@ export class ServingConfirmation {
             const patch = new Patch<Serving>()
                 .replace(x => x.state, "completed");
 
-            this.progress.busy("Færdiggør servering", faUtensils);
-
             try {
+                this.progress.busy("Færdiggør servering", faUtensils);
+
                 await this.api.updateServing(this.serving.id, patch.operations).send();
 
                 this.progress.done();
             }
             catch (error) {
-                await this.progress.error("Serveringen kunne ikke færdiggøres");
+                await this.progress.error("Serveringen kunne ikke færdiggøres", error);
                 return;
             }
         }
