@@ -18,7 +18,7 @@ FestivalPOS is a PWA (Progressive Web App) and is available as a docker containe
 ```
 docker run -e SqlServerConnectionString="..." -e RedisConnectionString="..." -e StorageConnectionString="..." -p 5000:80 rmjac/festivalpos
 ```
-Update with a connection string to SqlServer, Redis and an Azure storage account.
+Update with a connection string to SqlServer, Redis and an Azure storage account. Redis is only needed for printing.
 Then navigate to [localhost:5000]() to see the app running.
 
 ## Build
