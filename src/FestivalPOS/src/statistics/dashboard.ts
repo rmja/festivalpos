@@ -17,7 +17,7 @@ export class StatisticsDashboard {
     pointsOfSale!: PointOfSaleViewModel[];
     @observable({ changeHandler: "changeHandler" }) terminal?: TerminalViewModel;
     terminals!: TerminalViewModel[];
-    firstYear = 2018;
+    firstYear = 2019;
     currentYear = DateTime.local().year;
     activated = false;
 

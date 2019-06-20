@@ -14,9 +14,9 @@ const icons: { [id in PaymentMethod]: IconDefinition } = {
 }
 
 const names: { [id in PaymentMethod]: string } = {
-    "card": "Kortoms.",
-    "cash": "Kontantoms.",
-    "account": "Kontooms."
+    "card": "Kortomsætning",
+    "cash": "Kontantomsætning",
+    "account": "Kontoomsætning"
 };
 
 @autoinject()

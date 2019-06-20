@@ -1,6 +1,6 @@
 <template>
     <require from="./stats-widget"></require>
-    <h2>Salgsstatistik</h2>
+    <h2>Statistik</h2>
 
     <nav>
         <ol class="breadcrumb">
@@ -24,15 +24,19 @@
         </ol>
     </nav>
 
-    <select class="form-control" value.bind="pointOfSale">
-        <option>Alle salgssteder</option>
-        <option repeat.for="pos of pointsOfSale" model.bind="pos">${pos.name}</option>
-    </select>
-
-    <select class="form-control" value.bind="terminal">
-        <option>Alle terminaler</option>
-        <option repeat.for="terminal of terminals" model.bind="terminal">${terminal.name}</option>
-    </select>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><font-awesome-icon icon="filter"></font-awesome-icon></span>
+        </div>
+        <select class="custom-select" value.bind="pointOfSale">
+            <option>Alle salgssteder</option>
+            <option repeat.for="pos of pointsOfSale" model.bind="pos">${pos.name}</option>
+        </select>
+        <select class="custom-select" value.bind="terminal">
+            <option>Alle terminaler</option>
+            <option repeat.for="terminal of terminals" model.bind="terminal">${terminal.name}</option>
+        </select>
+    </div>
 
     <div class="row">
         <stats-widget class="col-12" value.bind="stats"></stats-widget>
