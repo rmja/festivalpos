@@ -16,38 +16,33 @@ class PaymentStats {
     total!: Big;
 }
 
-class ProductSaleStats {
+class ProductStats {
     @jsonProperty()
     productId!: number;
 
     @jsonProperty()
     productName!: string;
-
-    @jsonProperty()
-    productQuantity!: number;
 
     @jsonProperty()
     orderCount!: number;
 
+    @jsonProperty()
+    saleQuantity!: number;
+
     @jsonProperty({ converter: bigConverter })
-    total!: Big;
-}
-
-class ProductServingStats {
-    @jsonProperty()
-    productId!: number;
-
-    @jsonProperty()
-    productName!: string;
-
-    @jsonProperty()
-    productQuantity!: number;
+    saleTotal!: Big;
 
     @jsonProperty()
     servingCount!: number;
+
+    @jsonProperty()
+    servingQuantity!: number;
 }
 
 export class OrderStats {
+    @jsonProperty()
+    kind!: "yearly" | "monthly" | "daily" | "hourly";
+    
     @jsonProperty({ converter: dateTimeConverter })
     periodStart!: DateTime;
 
@@ -60,9 +55,6 @@ export class OrderStats {
     @jsonProperty({ type: PaymentStats })
     payments!: PaymentStats[];
 
-    @jsonProperty({ type: ProductSaleStats })
-    productSales!: ProductSaleStats[];
-
-    @jsonProperty({ type: ProductServingStats })
-    productServings!: ProductServingStats[];
+    @jsonProperty({ type: ProductStats })
+    products!: ProductStats[];
 }

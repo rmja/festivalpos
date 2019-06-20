@@ -249,8 +249,8 @@ export class Api {
         ]));
     }
 
-    getHourlyStats(filter: { year: number, terminalId?: number, pointOfSaleId?: number }) {
-        return Http.get("/Stats/Hourly", filter).expectJsonArray(OrderStats);
+    getStats(periodStart: DateTime, periodEnd: DateTime, kind: "yearly" | "monthly" | "daily" | "hourly", filter: { terminalId?: number, pointOfSaleId?: number }) {
+        return Http.get(`/Stats/${periodStart}/${periodEnd}/${kind}`, filter).expectJsonArray(OrderStats);
     }
 
     createAlarmFeed(feed: { name: string, subscriberEmail?: string }) {

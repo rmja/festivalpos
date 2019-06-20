@@ -9,17 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Sql\GetHourlyOrderStats.sql" />
-    <None Remove="Sql\GetHourlyPaymentStats.sql" />
-    <None Remove="Sql\GetHourlyProductSaleStats.sql" />
-    <None Remove="Sql\GetHourlyProductServingStats.sql" />
+    <None Remove="Sql\GetOrderStats.sql" />
+    <None Remove="Sql\GetPaymentStats.sql" />
+    <None Remove="Sql\GetProductSaleStats.sql" />
+    <None Remove="Sql\GetProductServingStats.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Sql\GetHourlyProductServingStats.sql" />
-    <EmbeddedResource Include="Sql\GetHourlyProductSaleStats.sql" />
-    <EmbeddedResource Include="Sql\GetHourlyOrderStats.sql" />
-    <EmbeddedResource Include="Sql\GetHourlyPaymentStats.sql" />
+    <EmbeddedResource Include="Sql\GetProductServingStats.sql" />
+    <EmbeddedResource Include="Sql\GetProductSaleStats.sql" />
+    <EmbeddedResource Include="Sql\GetOrderStats.sql" />
+    <EmbeddedResource Include="Sql\GetPaymentStats.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +29,7 @@
     <PackageReference Include="Microsoft.Azure.Storage.Blob" Version="10.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.7.2" />
+    <PackageReference Include="NodaTime" Version="2.4.5" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0006" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
   </ItemGroup>

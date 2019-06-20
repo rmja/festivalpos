@@ -1,11 +1,40 @@
 <template>
     <require from="./stats-widget"></require>
     <h2>Salgsstatistik</h2>
+
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item ${month ? '' : 'active'}">
+                <div class="dropdown">
+                    <a if.bind="month" route-href="route: year; params.bind: { year: year }">${year}</a>
+                    <span else>${year}</span>
+                    <a href class="dropdown-toggle" data-toggle="dropdown"></a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" repeat.for="offset of currentYear - firstYear + 1" route-href="route: year; params.bind: { year: firstYear + offset }">${firstYear + offset}</a>
+                    </div>
+                </div>
+            </li>
+            <li class="breadcrumb-item ${day ? '' : 'active'}" if.bind="month">
+                <a if.bind="day" route-href="route: month; params.bind: { year: year, month: month }">${periodStart | monthName}</a>
+                <span else>${periodStart | monthName}</span>
+            </li>
+            <li class="breadcrumb-item active" if.bind="day">
+                <span>${periodStart | dayName}</span>
+            </li>
+        </ol>
+    </nav>
+
+    <select class="form-control" value.bind="pointOfSale">
+        <option>Alle salgssteder</option>
+        <option repeat.for="pos of pointsOfSale" model.bind="pos">${pos.name}</option>
+    </select>
+
+    <select class="form-control" value.bind="terminal">
+        <option>Alle terminaler</option>
+        <option repeat.for="terminal of terminals" model.bind="terminal">${terminal.name}</option>
+    </select>
+
     <div class="row">
-        <stats-widget class="col-12" title="Samlet ${year}" value.bind="hourStats"></stats-widget>
-    </div>
-    <h2>Salgsstedsstatistik</h2>
-    <div repeat.for="pos of posStats" class="row">
-        <stats-widget class="col-12" title.bind="pos.name" value.bind="pos.hourStats"></stats-widget>
+        <stats-widget class="col-12" value.bind="stats"></stats-widget>
     </div>
 </template>
