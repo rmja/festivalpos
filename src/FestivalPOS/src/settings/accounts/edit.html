@@ -14,6 +14,12 @@
                 <label>Kreditmaks</label>
                 <input type="number" class="form-control" value.bind="maxCredit" placeholder="Kreditmaks">
             </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" checked.bind="highPriorityServing">
+                    Højprioitetsserving (spring køen over ved servering)
+                </label>
+            </div>
             <button type="submit" class="btn btn-primary btn-block fixed-bottom" disabled.bind="!canSubmit"><font-awesome-icon icon="save"></font-awesome-icon> Gem</button>
         </form>
     </page-body>

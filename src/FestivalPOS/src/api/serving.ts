@@ -30,6 +30,9 @@ export class Serving {
     state!: "pending" | "ongoing" | "completed";
 
     @jsonProperty()
+    highPriority!: boolean;
+
+    @jsonProperty()
     tagNumber?: number;
 
     @jsonProperty({ converter: dateTimeConverter })

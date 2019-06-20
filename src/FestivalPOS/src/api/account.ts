@@ -1,6 +1,6 @@
 import { Big } from "big.js";
-import { jsonProperty } from "ur-json";
 import { bigConverter } from "./converters/big-converter";
+import { jsonProperty } from "ur-json";
 
 export class Account {
     @jsonProperty()
@@ -17,4 +17,7 @@ export class Account {
 
     @jsonProperty({ converter: bigConverter })
     remainingCredit!: Big;
+
+    @jsonProperty()
+    highPriorityServing!: boolean;
 }

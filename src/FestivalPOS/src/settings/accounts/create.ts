@@ -1,8 +1,9 @@
 import { autoinject, useView } from "aurelia-framework";
-import { Api } from "../../api";
-import { Router } from "aurelia-router";
-import { Big } from "big.js";
+
 import { Account } from "../../api/account";
+import { Api } from "../../api";
+import { Big } from "big.js";
+import { Router } from "aurelia-router";
 
 @autoinject()
 @useView("./edit.html")
@@ -11,6 +12,7 @@ export class CreateAccount {
     number = 0;
     name = "";
     maxCredit = "0";
+    highPriorityServing = false;
 
     get canSubmit() {
         return this.number > 0 && !!this.name.length && this.accounts && this.accounts.findIndex(x => x.number === this.number) === -1;
@@ -24,7 +26,13 @@ export class CreateAccount {
     }
 
     async submit() {
-        const account = await this.api.createAccount({ number: this.number, name: this.name, maxCredit: new Big(this.maxCredit) }).transfer();
+        const account = await this.api.createAccount({
+            number: this.number,
+            name: this.name,
+            maxCredit: new Big(this.maxCredit),
+            highPriorityServing: this.highPriorityServing
+        }).transfer();
+        
         this.router.navigateToRoute("details", {
             accountId: account.id
         });

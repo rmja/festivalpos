@@ -14,6 +14,7 @@ namespace FestivalPOS.Models
         [JsonIgnore]
         public PointOfSale PointOfSale { get; set; }
         public ServingState State { get; set; }
+        public bool HighPriority { get; set; }
         public int? TagNumber { get; set; }
         public DateTimeOffset Created { get; set; }
         public int? StaffNumber { get; set; }

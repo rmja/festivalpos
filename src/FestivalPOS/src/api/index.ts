@@ -233,7 +233,7 @@ export class Api {
         ]));
     }
 
-    createServing(orderId: number, serving: { pointOfSaleId: number, lines: { orderLineId: number, quantity: number }[] }) {
+    createServing(orderId: number, serving: { pointOfSaleId: number, highPriorityServing?: boolean, lines: { orderLineId: number, quantity: number }[] }) {
         return Http.post(`/Orders/${orderId}/Servings`).withJson(serving).expectJson(Serving).onSent(this.bust([
             K.Orders
         ]));
@@ -301,7 +301,7 @@ export class Api {
         ]));
     }
 
-    createAccount(account: { number: number; name: string, maxCredit: Big }) {
+    createAccount(account: { number: number; name: string, maxCredit: Big, highPriorityServing?: boolean }) {
         return Http.post("/Accounts").withJson(account).expectJson(Account).onSent(this.bust([
             K.Accounts
         ]));

@@ -61,7 +61,7 @@ namespace FestivalPOS.Controllers
 
             if (order.AmountDue == 0)
             {
-                await _mediator.Publish(new OrderPayedNotification(order.Id));
+                await _mediator.Publish(new OrderPayedNotification(order.Id, payment.Id));
             }
 
             return payment;

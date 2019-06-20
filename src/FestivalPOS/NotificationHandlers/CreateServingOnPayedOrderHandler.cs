@@ -24,6 +24,11 @@ namespace FestivalPOS.NotificationHandlers
             var order = await _db.Orders
                 .Include(x => x.Lines)
                 .FirstAsync(x => x.Id == notification.OrderId);
+            var payment = await _db.Payments
+                .Include(x => x.Account)
+                .FirstAsync(x => x.Id == notification.PaymentId);
+
+            var highPriority = payment.Method == PaymentMethod.Account && payment.Account.HighPriorityServing;
 
             var servingLines = order.Lines
                 .OrderBy(x => x.Position)
@@ -49,6 +54,7 @@ namespace FestivalPOS.NotificationHandlers
                     OrderId = order.Id,
                     PointOfSaleId = order.PointOfSaleId,
                     State = ServingState.Pending,
+                    HighPriority = highPriority,
                     Created = LocalClock.Now,
                     TagNumber = newestTag?.Number,
                     Lines = servingLines.ToList()

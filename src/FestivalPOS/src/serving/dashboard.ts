@@ -71,7 +71,7 @@ export class ServingDashboard {
     }
 
     async acceptNextServing(staffNumber: number) {
-        const serving = this.selectedServing || this.servings.find(x => x.state === "pending");
+        const serving = this.selectedServing || this.servings.find(x => x.state === "pending" && x.highPriority) || this.servings.find(x => x.state === "pending");
         this.selectedServing = undefined;
 
         if (serving) {
@@ -113,6 +113,7 @@ export class ServingDashboard {
 export interface ServingViewModel {
     id: number;
     state: "pending" | "ongoing" | "completed";
+    highPriority: boolean;
     tagNumber?: number;
     staffNumber?: number;
     lines: {
