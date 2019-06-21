@@ -30,7 +30,7 @@
             <font-awesome-icon icon="check"></font-awesome-icon> Serveret
         </button>
         <button type="button" class="btn btn-primary btn-lg" click.delegate="complete()">
-            <font-awesome-icon icon="check"></font-awesome-icon> Udført
+            <font-awesome-icon icon="check"></font-awesome-icon> Udført <span if.bind="secondsToAutocomplete">(${secondsToAutocomplete})</span>
         </button>
     </div>
 </template>

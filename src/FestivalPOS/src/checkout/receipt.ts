@@ -26,6 +26,8 @@ export class CashReceipt {
     total!: Big;
     change?: Big;
     canPrintReceipt = false;
+    secondsToAutocomplete = 0;
+    private autocompleteHandle?: number;
 
     constructor(private api: Api, private router: Router, private progress: ProgressService) {
     }
@@ -56,8 +58,26 @@ export class CashReceipt {
             this.change = new Big(params.change);
         }
 
+        if (!this.servingId) {
+            this.secondsToAutocomplete = 3;
+            this.autocompleteHandle = window.setInterval(() => {
+                this.secondsToAutocomplete--;
+
+                if (this.secondsToAutocomplete === 0) {
+                    return this.complete();
+                }
+            }, 1000);
+        }
+
         const post = await this.api.getPointOfSale(this.state.pointOfSaleId).transfer();
         this.canPrintReceipt = !!post.receiptPrinterId;;
+    }
+
+    deactivate() {
+        if (this.autocompleteHandle) {
+            window.clearInterval(this.autocompleteHandle);
+            this.autocompleteHandle = undefined;
+        }
     }
 
     printReceipt() {
