@@ -25,9 +25,7 @@ export class ProgressService {
 
     done() {
         if (this.busyOpenPromise) {
-            this.busyOpenPromise.then(async () => {
-                await this.dialog.closeAll();
-            });
+            return this.busyOpenPromise.then(() => this.dialog.closeAll());
         }
         else {
             return this.dialog.closeAll();

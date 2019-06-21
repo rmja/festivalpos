@@ -49,7 +49,7 @@ export class CardPayment {
                 callbackUrl += `&tagNumber=${tagNumber}`;
             }
 
-            this.progress.done();
+            await this.progress.done();
 
             window.location.href = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${encodeURIComponent(title)}&callback=${encodeURIComponent(callbackUrl)}`;
         }
