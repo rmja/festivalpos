@@ -47,10 +47,10 @@ export class SaleRouter {
     }
 
     bind() {
-        this.hammer = new Manager(document);
+        this.hammer = new Manager(document.body);
         this.hammer.add(new Pan({ direction: Hammer.DIRECTION_HORIZONTAL }));
         this.hammer.on("panend", event => {
-            if (Math.abs(event.deltaX) > 2 * Math.abs(event.deltaY)) {
+            if (Math.abs(event.deltaX) > 2 * Math.abs(event.deltaY) && Math.abs(event.deltaX) > 0.20 * window.innerWidth) {
                 const index = routes.findIndex(x => x.name === this.router.currentInstruction.config.name);
 
                 if (index >= 0) {
