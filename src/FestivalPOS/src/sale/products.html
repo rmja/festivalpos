@@ -12,7 +12,8 @@
             position: absolute;
             bottom: 5px;
             right: 5px;
-            font-weight: bold
+            font-weight: bold;
+            opacity: 0.5;
         }
     </style>
 
@@ -21,11 +22,11 @@
             <div class="card div-link mb-3" style="width: 100%" click.delegate="addToCart(item)">
                 <div if.bind="item.product.thumbnailImageUrl" style="position: relative">
                     <img class="card-img-top" src.one-time="item.product.thumbnailImageUrl">
-                    <small class="price-badge">${item.product.price}</small>
+                    <small class="badge badge-secondary price-badge">${item.product.price}</small>
                 </div>
                 <div else class="card-body text-center" style="position: relative; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 70px;">
                     <strong class="text-muted">${item.product.name}</strong>
-                    <small class="price-badge">${item.product.price}</small>
+                    <small class="badge badge-secondary price-badge">${item.product.price}</small>
                 </div>
                 <span class="badge badge-info qty-badge" show.bind="item.qty">${item.qty}</span>
                 <div class="card-footer text-center" style="padding: 0; white-space: nowrap; overflow: hidden"><small>${item.product.name}</small><small class="text-muted" if.bind="item.presale">, forsalg</small></div>
