@@ -37,16 +37,20 @@ export class AccountTag {
                 this.progress.done();
             }
             else {
+                this.progress.done();
+
                 const result = await this.dialog.open({ viewModel: TagOverwriteDialog, model: tagNumber }).whenClosed();
 
                 if (!result.wasCancelled) {
                     // Overwrite current tag
+                    this.progress.busy("Overskriver brik", faTicketAlt);
+
                     await this.api.assignOrderTag(this.orderId, tagNumber, true).send();
+                    
                     this.progress.done();
                 }
                 else {
                     // Do not overwrite
-                    this.progress.done();
                     return;
                 }
             }
