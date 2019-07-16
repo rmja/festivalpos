@@ -3,6 +3,7 @@ import { autoinject, computedFrom, observable } from "aurelia-framework";
 import { Account } from "../api/account";
 import { Api } from "../api";
 import { Big } from "big.js";
+import { HttpError } from "ur-http";
 import { Order } from "../api/order";
 import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
@@ -76,7 +77,18 @@ export class AccountPayment {
         try {
             this.progress.busy("Registrerer betaling", faCashRegister);
 
-            await this.api.assignOrderTag(this.order.id, this.account.number, true).send();
+            let tagConflict = false;
+            try {
+                await this.api.assignOrderTag(this.order.id, this.account.number).send();
+            }
+            catch (error) {
+                if (error instanceof HttpError && error.statusCode === 409) { // Conflict
+                    tagConflict = true;
+                }
+                else {
+                    throw error;
+                }
+            }
 
             const payment = await this.api.createPayment(this.order.id, {
                 method: "account",
@@ -86,11 +98,20 @@ export class AccountPayment {
 
             this.progress.done();
 
-            this.router.navigateToRoute("receipt", {
-                orderId: payment.orderId,
-                paymentId: payment.id,
-                tagNumber: this.account.number
-            });
+            if (tagConflict) {
+                this.router.navigateToRoute("account-tag", {
+                    orderId: payment.orderId,
+                    paymentId: payment.id,
+                    accountNumber: this.account.number
+                });
+            }
+            else {
+                this.router.navigateToRoute("receipt", {
+                    orderId: payment.orderId,
+                    paymentId: payment.id,
+                    tagNumber: this.account.number
+                });
+            }
         }
         catch (error) {
             await this.progress.error("Betalingen kunne ikke registreres", error);

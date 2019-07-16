@@ -9,6 +9,7 @@ const routes: RouteConfig[] = [
     { route: "orders/:orderId/pay/card-error", name: "card-error", moduleId: PLATFORM.moduleName("./card-error", "checkout") },
     { route: "orders/:orderId/pay/cash", name: "cash", moduleId: PLATFORM.moduleName("./cash-payment", "checkout") },
     { route: "orders/:orderId/pay/account", name: "account", moduleId: PLATFORM.moduleName("./account-payment", "checkout") },
+    { route: "orders/:orderId/pay/account/tag", name: "account-tag", moduleId: PLATFORM.moduleName("./account-tag", "checkout") },
     { route: "orders/:orderId/payments/:paymentId/receipt", name: "receipt", moduleId: PLATFORM.moduleName("./receipt", "checkout") },
 ];
 

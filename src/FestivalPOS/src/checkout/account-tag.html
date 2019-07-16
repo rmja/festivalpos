@@ -1,0 +1,15 @@
+<template>
+    <form submit.delegate="submit()">
+        <div class="alert alert-warning">
+            <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon>
+            Der er allerede et igangværende salg registreret på kontrobrik ${accountNumber}. Tildel en ny serveringsbrik.
+        </div>
+        <keypad-display title="Ny Serveringsbrik" value.bind="tagNumber"></keypad-display>
+
+        <keypad-input value.bind="tagNumber"></keypad-input>
+
+        <div class="btn-group btn-block fixed-bottom">
+            <button type="submit" class="btn btn-success btn-lg" disabled.bind="tagNumber.eq(0)"><font-awesome-icon icon="ticket-alt"></font-awesome-icon> Brug</button>
+        </div>
+    </form>
+</template>
