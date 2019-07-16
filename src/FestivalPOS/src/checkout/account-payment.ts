@@ -78,15 +78,17 @@ export class AccountPayment {
             this.progress.busy("Registrerer betaling", faCashRegister);
 
             let tagConflict = false;
-            try {
-                await this.api.assignOrderTag(this.order.id, this.account.number).send();
-            }
-            catch (error) {
-                if (error instanceof HttpError && error.statusCode === 409) { // Conflict
-                    tagConflict = true;
+            if (this.order.canHaveTag()) {
+                try {
+                    await this.api.assignOrderTag(this.order.id, this.account.number).send();
                 }
-                else {
-                    throw error;
+                catch (error) {
+                    if (error instanceof HttpError && error.statusCode === 409) { // Conflict
+                        tagConflict = true;
+                    }
+                    else {
+                        throw error;
+                    }
                 }
             }
 

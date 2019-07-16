@@ -9,7 +9,8 @@
         <keypad-input value.bind="tagNumber"></keypad-input>
 
         <div class="btn-group btn-block fixed-bottom">
-            <button type="submit" class="btn btn-success btn-lg" disabled.bind="tagNumber.eq(0)"><font-awesome-icon icon="ticket-alt"></font-awesome-icon> Brug</button>
+            <button class="btn btn-secondary btn-lg col-4" if.bind="canSkip" click.delegate="skip()"><font-awesome-icon icon="times"></font-awesome-icon> Undlad</button>
+            <button type="submit" class="btn btn-success btn-lg ${canSkip ? 'col-8' : ''}" disabled.bind="tagNumber.eq(0)"><font-awesome-icon icon="ticket-alt"></font-awesome-icon> Brug</button>
         </div>
     </form>
 </template>

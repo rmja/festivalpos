@@ -12,6 +12,7 @@ import { autoinject } from "aurelia-framework";
 @autoinject()
 export class AccountTag {
     tagNumber!: Big;
+    canSkip!: boolean;
     private orderId!: number;
     private paymentId!: number;
     accountNumber!: number;
@@ -24,6 +25,16 @@ export class AccountTag {
         this.orderId = Number(params.orderId);
         this.paymentId = Number(params.paymentId);
         this.accountNumber = Number(params.accountNumber);
+
+        const order = await this.api.getOrderById(this.orderId).transfer();
+        this.canSkip = !order.mustHaveTag();
+    }
+
+    skip() {
+        this.router.navigateToRoute("receipt", {
+            orderId: this.orderId,
+            paymentId: this.paymentId
+        });
     }
 
     async submit() {
