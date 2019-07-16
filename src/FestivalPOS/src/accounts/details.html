@@ -2,11 +2,16 @@
     <h1>${name}</h1>
 
     <div class="row">
+        <h4 class="col text-muted">Kontonummer</h4>
+        <h4 class="col text-right">${number}</h4>
+    </div>
+
+    <div class="row">
         <h5 class="col text-muted">Kreditmaks</h5>
         <h5 class="col text-right">${maxCredit | money} kr.</h5>
     </div>
     <div class="row">
-        <h5 class="col text-muted">Tilbage</h5>
+        <h5 class="col text-muted">Saldo</h5>
         <h5 class="col text-right">${remainingCredit | money} kr.</h5>
     </div>
 
@@ -22,7 +27,8 @@
         </thead>
         <tr repeat.for="payment of payments | year: year">
             <td style="white-space: nowrap">${payment.created | dateTime}</td>
-            <td style="width: 100%">${payment.orderId}</td>
+            <td style="width: 100%">
+                <a href="#/orders/${payment.orderId}">${payment.orderId}</a></td>
             <td class="text-right">${payment.amount | money}</td>
         </tr>
     </table>

@@ -1,13 +1,14 @@
-import { autoinject } from "aurelia-framework";
-import { DateTime } from "luxon";
-import { Big } from "big.js";
 import { Api } from "../api";
+import { Big } from "big.js";
+import { DateTime } from "luxon";
+import { autoinject } from "aurelia-framework";
 
 const currentYear = DateTime.local().year;
 
 @autoinject()
 export class AccountDetails {
     name!: string;
+    number!: number;
     maxCredit!: Big;
     remainingCredit!: Big;
     payments!: PaymentViewModel[];
@@ -21,6 +22,7 @@ export class AccountDetails {
         const accountId = Number(params.accountId);
         const account = await this.api.getAccount(accountId).transfer();
         this.name = account.name;
+        this.number = account.number;
         this.maxCredit = account.maxCredit;
         this.remainingCredit = account.remainingCredit;
 
