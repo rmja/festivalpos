@@ -15,6 +15,12 @@
             font-weight: bold;
             opacity: 0.8;
         }
+        .presale-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            opacity: 0.8;
+        }
     </style>
 
     <div class="row pad-bottom" if.bind="products.length">
@@ -29,7 +35,10 @@
                     <small class="badge badge-secondary price-badge">${item.product.price}</small>
                 </div>
                 <span class="badge badge-info qty-badge" show.bind="item.qty">${item.qty}</span>
-                <div class="card-footer text-center" style="padding: 0; white-space: nowrap; overflow: hidden"><small>${item.product.name}</small><small class="text-muted" if.bind="item.presale">, forsalg</small></div>
+                <font-awesome-icon if.bind="item.presale" icon="stopwatch" class="presale-icon"></font-awesome-icon>
+                <div class="card-footer text-center" style="padding: 0; white-space: nowrap; overflow: hidden">
+                    <small>${item.product.name}</small><small class="text-muted" if.bind="item.presale">, forsalg</small>
+                </div>
             </div>
         </div>
     </div>
