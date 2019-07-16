@@ -118,6 +118,8 @@ namespace FestivalPOS.Controllers
 
             await _db.SaveChangesAsync();
 
+            await _mediator.Publish(new OrderTagAssignedNotification(id, tagNumber));
+
             return NoContent();
         }
 
