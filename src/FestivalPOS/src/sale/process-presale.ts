@@ -23,6 +23,10 @@ export class ProcessPresale {
         }
     }
 
+    get keepTag() {
+        return this.order && !!this.order.lines.find(x => !x.redeem);
+    }
+
     constructor(private api: Api, private router: Router, private progress: ProgressService) {
     }
 
