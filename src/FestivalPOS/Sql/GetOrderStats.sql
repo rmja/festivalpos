@@ -12,7 +12,8 @@ SELECT
 FROM
 	Orders o
 WHERE
-	o.AmountDue = 0
+	o.IsDeleted = 0
+	AND o.AmountDue = 0
 	AND o.Created >= @PeriodStart AND o.Created < @PeriodEnd
 	AND (@TerminalId IS NULL OR o.TerminalId = @TerminalId)
 	AND (@PointOfSaleId IS NULL OR o.PointOfSaleId = @PointOfSaleId)

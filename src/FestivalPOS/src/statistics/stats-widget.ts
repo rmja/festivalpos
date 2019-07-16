@@ -1,4 +1,4 @@
-import { IconDefinition, faCreditCard, faFileInvoiceDollar, faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faCoins, faCreditCard, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Kind, PaymentStatsViewModel, StatsViewModel } from "./dashboard";
 import { autoinject, bindable } from "aurelia-framework";
 
@@ -9,8 +9,8 @@ import { Router } from "aurelia-router";
 
 const icons: { [id in PaymentMethod]: IconDefinition } = {
     "card": faCreditCard,
-    "cash": faMoneyBillAlt,
-    "account": faFileInvoiceDollar
+    "cash": faCoins,
+    "account": faUser
 }
 
 const names: { [id in PaymentMethod]: string } = {

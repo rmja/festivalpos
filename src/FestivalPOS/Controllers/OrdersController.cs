@@ -4,6 +4,8 @@ using FestivalPOS.Printing;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,6 +48,24 @@ namespace FestivalPOS.Controllers
             await _db.SaveChangesAsync();
 
             return order;
+        }
+
+        [HttpGet]
+        public async Task<List<Order>> GetAll(int? terminalId, int? pointOfSaleId)
+        {
+            var orders = await _db.Orders
+                .Where(x => terminalId == null || x.TerminalId == terminalId)
+                .Where(x => pointOfSaleId == null || x.PointOfSaleId == pointOfSaleId)
+                .OrderByDescending(x => x.Created)
+                .Take(10)
+                .ToListAsync();
+
+            foreach (var order in orders)
+            {
+                order.OnMaterialized();
+            }
+
+            return orders;
         }
 
         [HttpGet("{id:int}")]
@@ -171,15 +191,17 @@ namespace FestivalPOS.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var order = await _db.Orders.FirstOrDefaultAsync(x => x.Id == id);
+            var order = await _db.Orders
+                .Include(x => x.Payments)
+                .Include(x => x.Servings)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (order == null)
             {
                 return NotFound();
             }
 
-            _db.Orders.Remove(order);
-
+            order.IsDeleted = true;
             await _db.SaveChangesAsync();
 
             return NoContent();

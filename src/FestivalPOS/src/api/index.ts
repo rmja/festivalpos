@@ -190,6 +190,12 @@ export class Api {
         ]));
     }
 
+    getAllOrders(filter: { terminalId?: number, pointOfSaleId?: number }) {
+        return Http.get("/Orders", filter).expectJsonArray(Order).onReceived(this.tag(result => [
+            K.Orders
+        ]));
+    }
+
     getOrderById(orderId: number) {
         return Http.get(`/Orders/${orderId}`).expectJson(Order).onReceived(this.tag(result => [
             K.Orders

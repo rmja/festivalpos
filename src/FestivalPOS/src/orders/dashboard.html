@@ -1,0 +1,41 @@
+<template>
+    <h2>Ordrehistorik</h2>
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><font-awesome-icon icon="filter"></font-awesome-icon></span>
+        </div>
+        <select class="custom-select" value.bind="pointOfSale">
+            <option>Alle salgssteder</option>
+            <option repeat.for="pos of pointsOfSale" model.bind="pos">${pos.name}</option>
+        </select>
+        <select class="custom-select" value.bind="terminal">
+            <option>Alle terminaler</option>
+            <option repeat.for="terminal of terminals" model.bind="terminal">${terminal.name}</option>
+        </select>
+    </div>
+
+    <h4>Seneste ordre</h4>
+    <table class="table table-sm">
+        <thead>
+            <th>&#x2116;</th>
+            <th>Oprettet</th>
+            <th>Salgssted</th>
+            <th>Terminal</th>
+        </thead>
+        <tbody>
+            <tr repeat.for="order of orders">
+                <td style="width: 100%">${order.id}</td>
+                <td style="white-space: nowrap">${order.created | dateTime}</td>
+                <td style="white-space: nowrap">${order.pointOfSaleName}</td>
+                <td style="white-space: nowrap">${order.terminalName}</td>
+                <td>
+                    <a route-href="route: details; params.bind: { orderId: order.id }" class="btn btn-light btn-sm">
+                        <font-awesome-icon icon="arrow-right"></font-awesome-icon>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</template>

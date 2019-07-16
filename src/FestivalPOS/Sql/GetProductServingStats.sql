@@ -22,7 +22,8 @@ JOIN
 JOIN
 	Products p ON ol.ProductId = p.Id
 WHERE
-	s.Created >= @PeriodStart AND s.Created < @PeriodEnd
+	o.IsDeleted = 0
+	AND s.Created >= @PeriodStart AND s.Created < @PeriodEnd
 	AND (@TerminalId IS NULL OR o.TerminalId = @TerminalId)
 	AND (@PointOfSaleId IS NULL OR o.PointOfSaleId = @PointOfSaleId)
 GROUP BY

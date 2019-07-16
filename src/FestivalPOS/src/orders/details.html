@@ -1,0 +1,56 @@
+<template>
+    <h2>Ordre ${orderId}</h2>
+
+    Oprettet ${created | dateTime}
+
+    <h5>Linjer</h5>
+    <table class="table">
+        <tr repeat.for="line of lines">
+            <td style="white-space: nowrap">${line.quantity}</td>
+            <td style="width: 100%">${line.name}</td>
+            <td style="white-space: nowrap">${line.total | money}</td>
+        </tr>
+    </table>
+
+    <h5>Betalinger</h5>
+    <table class="table">
+        <thead>
+            <th>Metode</th>
+            <th>Beløb</th>
+            <th>Transaktionsnr.</th>
+            <th>Konto</th>
+            <th>Oprettet</th>
+        </thead>
+        <tbody>
+            <tr repeat.for="payment of payments">
+                <td style="white-space: nowrap"><font-awesome-icon icon.bind="getPaymentMethodIcon(payment.method)"></font-awesome-icon></td>
+                <td style="white-space: nowrap">${payment.amount | money}</td>
+                <td style="white-space: nowrap">${payment.transactionNumber}</td>
+                <td style="width: 100%">
+                    <a href="#/accounts/${payment.accountId}">${payment.accountName}</a>
+                </td>
+                <td style="white-space: nowrap">${payment.created | dateTime}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5>Serveringer</h5>
+    <table class="table">
+        <thead>
+            <th>Stadie</th>
+            <th>Brik</th>
+            <th>Serveringssted</th>
+            <th>Oprettet</th>
+        </thead>
+        <tr repeat.for="serving of servings">
+            <td style="white-space: nowrap">${serving.state}</td>
+            <td style="white-space: nowrap">${serving.tagNumber}</td>
+            <td style="width: 100%">${serving.pointOfSaleName}</td>
+            <td style="white-space: nowrap">${serving.created | dateTime}</td>
+        </tr>
+    </table>
+
+    <button class="btn btn-danger btn-block" click.delegate="delete()">
+        <font-awesome-icon icon="trash-alt"></font-awesome-icon> Slet ordre
+    </button>
+</template>

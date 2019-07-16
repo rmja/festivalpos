@@ -48,6 +48,7 @@ namespace FestivalPOS
             modelBuilder.Entity<AlarmFeed>().HasQueryFilter(x => !x.IsDeleted);
 
             modelBuilder.Entity<Order>().HasIndex(x => x.AmountDue);
+            modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<OrderLine>().Property(x => x.Total).HasColumnType("decimal(9,2)");
             modelBuilder.Entity<Payment>().Property(x => x.Amount).HasColumnType("decimal(9,2)");
             modelBuilder.Entity<Order>().HasMany(x => x.Tags).WithOne(x => x.Order).OnDelete(DeleteBehavior.Cascade);

@@ -9,6 +9,7 @@ import { routes as settingsRoutes } from "./settings/router";
 const routes: RouteConfig[] = [
     { route: "", redirect: "sale" },
     { route: "sale", name: "sale", moduleId: PLATFORM.moduleName("./sale/router", "sale"), nav: true, title: "Salg" },
+    { route: "orders", name: "orders", moduleId: PLATFORM.moduleName("./orders/router", "orders" ), nav: true, title: "Ordrehistorik" },
     { route: "serving", name: "serving", moduleId: PLATFORM.moduleName("./serving/router", "serving"), nav: true, title: "Servering" },
     { route: "checkout", name: "checkout", moduleId: PLATFORM.moduleName("./checkout/router", "checkout"), title: "Betaling" },
     { route: "accounts", name: "accounts", moduleId: PLATFORM.moduleName("./accounts/router", "accounts"), nav: true, title: "Konti" },
