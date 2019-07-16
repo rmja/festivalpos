@@ -16,6 +16,8 @@ export class ServingLine {
     name!: string;
 }
 
+export type ServingState = "pending" | "ongoing" | "completed";
+
 export class Serving {
     @jsonProperty()
     id!: number;
@@ -27,7 +29,7 @@ export class Serving {
     pointOfSaleId!: number;
 
     @jsonProperty()
-    state!: "pending" | "ongoing" | "completed";
+    state!: ServingState;
 
     @jsonProperty()
     highPriority!: boolean;

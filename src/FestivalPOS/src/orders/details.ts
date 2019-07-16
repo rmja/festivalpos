@@ -1,4 +1,5 @@
-import { IconDefinition, faCoins, faCreditCard, faUser } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faCoins, faCreditCard, faRssSquare, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faCheckSquare, faSquare } from "@fortawesome/free-regular-svg-icons";
 
 import { Api } from "../api";
 import { Big } from "big.js";
@@ -6,13 +7,20 @@ import { DateTime } from "luxon";
 import { PaymentMethod } from "../api/payment";
 import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
+import { ServingState } from "../api/serving";
 import { autoinject } from "aurelia-framework";
 
-const icons: { [id in PaymentMethod]: IconDefinition } = {
+const paymentMethodIcons: { [id in PaymentMethod]: IconDefinition } = {
     "card": faCreditCard,
     "cash": faCoins,
     "account": faUser
-}
+};
+
+const servingStateIcons: { [id in ServingState]: IconDefinition } = {
+    "pending": faSquare,
+    "ongoing": faRssSquare,
+    "completed": faCheckSquare
+};
 
 @autoinject()
 export class OrderDetails {
@@ -41,7 +49,7 @@ export class OrderDetails {
         for (const payment of this.payments) {
             if (payment.accountId) {
                 const account = await this.api.getAccount(payment.accountId).transfer();
-                payment.accountName = account.name;
+                payment.accountNumber = account.number;
             }
         }
 
@@ -65,7 +73,11 @@ export class OrderDetails {
     }
 
     getPaymentMethodIcon(method: PaymentMethod) {
-        return icons[method];
+        return paymentMethodIcons[method];
+    }
+
+    getServingStateIcon(state: ServingState) {
+        return servingStateIcons[state];
     }
 }
 
@@ -80,12 +92,12 @@ interface PaymentViewModel {
     amount: Big;
     transactionNumber?: string;
     accountId?: number;
-    accountName?: string;
+    accountNumber?: number;
     created: DateTime;
 }
 
 interface ServingViewModel {
-    state: "pending" | "ongoing" | "completed";
+    state: ServingState;
     pointOfSaleId: number;
     pointOfSaleName?: string;
     tagNumber?: number;

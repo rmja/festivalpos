@@ -19,16 +19,17 @@
     <table class="table table-sm">
         <thead>
             <th>&#x2116;</th>
+            <th><span class="d-none d-sm-block">Terminal</span></th>
+            <th><span class="d-none d-sm-block">Salgssted</span></th>
             <th>Oprettet</th>
-            <th>Salgssted</th>
-            <th>Terminal</th>
+            <th></th>
         </thead>
         <tbody>
             <tr repeat.for="order of orders">
                 <td style="width: 100%">${order.id}</td>
+                <td style="white-space: nowrap"><span class="d-none d-sm-block">${order.pointOfSaleName}</span></td>
+                <td style="white-space: nowrap"><span class="d-none d-sm-block">${order.terminalName}</span></td>
                 <td style="white-space: nowrap">${order.created | dateTime}</td>
-                <td style="white-space: nowrap">${order.pointOfSaleName}</td>
-                <td style="white-space: nowrap">${order.terminalName}</td>
                 <td>
                     <a route-href="route: details; params.bind: { orderId: order.id }" class="btn btn-light btn-sm">
                         <font-awesome-icon icon="arrow-right"></font-awesome-icon>
