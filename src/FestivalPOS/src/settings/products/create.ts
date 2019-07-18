@@ -9,7 +9,6 @@ import { Router } from "aurelia-router";
 export class CreateProduct {
     name = "";
     price = "0";
-    isServing = false;
 
     get canSubmit() {
         return !!this.name.length;
@@ -19,7 +18,7 @@ export class CreateProduct {
     }
 
     async submit() {
-        await this.api.createProduct({ name: this.name, price: new Big(this.price), isServing: this.isServing }).send();
+        await this.api.createProduct({ name: this.name, price: new Big(this.price) }).send();
         this.router.navigateToRoute("list");
     }
 }

@@ -17,7 +17,4 @@ export class Product {
 
     @jsonProperty()
     thumbnailImageUrl?: string;
-
-    @jsonProperty()
-    isServing!: boolean;
 }

@@ -14,7 +14,6 @@ export class EditProduct {
     private productId!: number;
     name!: string;
     price!: string;
-    isServing!: boolean;
     imageUrl?: string;
 
     get canSubmit() {
@@ -29,7 +28,6 @@ export class EditProduct {
         const product = await this.api.getProduct(this.productId).transfer();
         this.name = product.name;
         this.price = product.price.toFixed(2);
-        this.isServing = product.isServing;
         this.imageUrl = product.previewImageUrl;
     }
 
@@ -88,8 +86,7 @@ export class EditProduct {
     async submit() {
         let patch = new Patch<Product>()
             .replace(x => x.name, this.name)
-            .replace(x => x.price, new Big(this.price))
-            .replace(x => x.isServing, this.isServing);
+            .replace(x => x.price, new Big(this.price));
 
         if (!this.imageUrl) {
             patch = patch.replace(nameof<Product>(x => x.previewImageUrl), null);

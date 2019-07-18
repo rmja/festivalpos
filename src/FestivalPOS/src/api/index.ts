@@ -131,7 +131,7 @@ export class Api {
         ]));
     }
 
-    createProduct(product: { name: string, price?: Big, isServing?: boolean }) {
+    createProduct(product: { name: string, price?: Big }) {
         return Http.post("/Products").withJson(product).expectJson(Product).onSent(this.bust([
             K.Products
         ]));

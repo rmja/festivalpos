@@ -7,4 +7,7 @@ export class PointOfSaleProduct {
 
     @jsonProperty()
     presale!: boolean;
+
+    @jsonProperty()
+    isServing!: boolean;
 }

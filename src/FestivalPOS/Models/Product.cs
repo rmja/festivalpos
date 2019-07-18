@@ -13,7 +13,6 @@ namespace FestivalPOS.Models
         public string PreviewImageUrl { get; set; }
         [MaxLength(300)]
         public string ThumbnailImageUrl { get; set; }
-        public bool IsServing { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

@@ -23,7 +23,7 @@ export class Products {
     }
 
     addToCart(item: ProductViewModel) {
-        return this.store.dispatch(addProductOrderLine, item.product, item.presale);
+        return this.store.dispatch(addProductOrderLine, item.product, item.presale, item.isServing);
     }
 
     stateChanged(newState: State) {
@@ -44,9 +44,9 @@ interface ProductViewModel {
         id: number;
         name: string;
         price: Big;
-        isServing: boolean;
         thumbnailImageUrl?: string;
     }
     presale: boolean;
+    isServing: boolean;
     qty?: number;
 }

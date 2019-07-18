@@ -1,4 +1,4 @@
-import { PLATFORM, autoinject, useView, viewStrategy } from "aurelia-framework";
+import { autoinject, observable, useView } from "aurelia-framework";
 
 import { Api } from "../../api";
 import { DialogController } from "aurelia-dialog";
@@ -10,7 +10,9 @@ import { Product } from "../../api/product";
 export class AddProductDialog {
     products!: ProductViewModel[];
     product!: ProductViewModel;
+    @observable()
     presale = false;
+    isServing = false;
 
     constructor(private controller: DialogController, private api: Api) {
     }
@@ -25,6 +27,12 @@ export class AddProductDialog {
         this.product = this.products[0];
     }
 
+    presaleChanged() {
+        if (this.presale) {
+            this.isServing = false;
+        }
+    }
+
     close() {
         this.controller.cancel();
     }
@@ -32,7 +40,8 @@ export class AddProductDialog {
     submit() {
         const output: PointOfSaleProduct = {
             product: this.product,
-            presale: this.presale
+            presale: this.presale,
+            isServing: this.isServing
         };
         this.controller.ok(output);
     }

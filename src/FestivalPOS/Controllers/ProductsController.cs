@@ -189,7 +189,8 @@ namespace FestivalPOS.Controllers
                     PointOfSaleId = item.PointOfSaleId,
                     ProductId = item.Product.Id,
                     Position = position,
-                    Presale = item.Presale
+                    Presale = item.Presale,
+                    IsServing = item.IsServing
                 });
             }
 

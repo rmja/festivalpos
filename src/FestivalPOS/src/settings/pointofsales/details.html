@@ -28,14 +28,19 @@
                             <tr>
                                 <th>Produkt</th>
                                 <th>Forsalg</th>
+                                <th>Servering</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody class="drag-source drop-target">
                             <tr repeat.for="item of products" data-index.bind="$index">
                                 <td style="width: 100%">${item.product.name}</td>
-                                <td>${item.presale}</td>
-                                <td style="white-space: nowrap"><button type="button" class="btn btn-danger btn-sm" click.delegate="removeProduct($index)"><font-awesome-icon icon="times"></font-awesome-icon> Fjern</button></td>
+                                <td><font-awesome-icon icon.bind="getBoolIcon(item.presale)"></font-awesome-icon></td>
+                                <td><font-awesome-icon icon.bind="getBoolIcon(item.isServing)"></font-awesome-icon></td>
+                                <td style="white-space: nowrap">
+                                    <button type="button" class="btn btn-secondary btn-sm" click.delegate="editProduct($index)"><font-awesome-icon icon="edit" fixed-width="true"></font-awesome-icon></button>
+                                    <button type="button" class="btn btn-danger btn-sm" click.delegate="removeProduct($index)"><font-awesome-icon icon="times" fixed-width="true"></font-awesome-icon></button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>

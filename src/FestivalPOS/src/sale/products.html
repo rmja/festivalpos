@@ -21,6 +21,12 @@
             left: 5px;
             opacity: 0.8;
         }
+        .serving-icon {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            opacity: 0.8;
+        }
     </style>
 
     <div class="row pad-bottom" if.bind="products.length">
@@ -29,10 +35,12 @@
                 <div if.bind="item.product.thumbnailImageUrl" style="position: relative">
                     <img class="card-img-top" src.one-time="item.product.thumbnailImageUrl">
                     <small class="badge badge-secondary price-badge">${item.product.price}</small>
+                    <font-awesome-icon if.bind="item.isServing" icon="utensils" class="serving-icon"></font-awesome-icon>
                 </div>
                 <div else class="card-body text-center" style="position: relative; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 70px;">
                     <strong class="text-muted">${item.product.name}</strong>
                     <small class="badge badge-secondary price-badge">${item.product.price}</small>
+                    <font-awesome-icon if.bind="item.isServing" icon="utensils" class="serving-icon"></font-awesome-icon>
                 </div>
                 <span class="badge badge-info qty-badge" show.bind="item.qty">${item.qty}</span>
                 <font-awesome-icon if.bind="item.presale" icon="stopwatch" class="presale-icon"></font-awesome-icon>

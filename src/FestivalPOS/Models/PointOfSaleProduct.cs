@@ -8,5 +8,6 @@
         public Product Product { get; set; }
         public int Position { get; set; }
         public bool Presale { get; set; }
+        public bool IsServing { get; set; }
     }
 }

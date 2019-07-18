@@ -1,6 +1,9 @@
+import { faCheckSquare, faSquare } from "@fortawesome/free-regular-svg-icons";
+
 import { AddProductDialog } from "./add-product-dialog";
 import { Api } from "../../api";
 import { DialogService } from "aurelia-dialog";
+import { EditProductDialog } from "./edit-product-dialog";
 import { PointOfSale } from "../../api/point-of-sale";
 import { PointOfSaleProduct } from './../../api/point-of-sale-product';
 import { Router } from "aurelia-router";
@@ -44,6 +47,16 @@ export class PointOfSaleDetails {
         }
     }
 
+    async editProduct(index: number) {
+        const product = this.products[index];
+        const result = await this.dialog.open({ viewModel: EditProductDialog, model: product}).whenClosed();
+
+        if (!result.wasCancelled) {
+            const item = result.output as PointOfSaleProduct;
+            this.products.splice(index, 1, item);
+        }
+    }
+
     removeProduct(index: number) {
         this.products.splice(index, 1);
     }
@@ -52,6 +65,10 @@ export class PointOfSaleDetails {
         const item = this.products[Number(itemElement.dataset.index)];
         const sibling = siblingElement ? this.products[Number(siblingElement.dataset.index)] : undefined;
         moveBefore(this.products, x => x === item, x => x === sibling);
+    }
+
+    getBoolIcon(value: boolean) {
+        return value ? faCheckSquare : faSquare;
     }
 
     async submit() {
@@ -70,4 +87,5 @@ type PointOfSaleProductViewModel = PointOfSaleProduct & {
     };
 
     presale: boolean;
+    isServing: boolean;
 }
