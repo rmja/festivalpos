@@ -68,7 +68,7 @@ export function updateCurrentMisc(state: State, amount: Big) {
     return newState;
 }
 
-export function addProductOrderLine(state: State, product: { id: number, name: string, price: Big, isServing: boolean }, presale: boolean) {
+export function addProductOrderLine(state: State, product: { id: number, name: string, price: Big }, presale: boolean, isServing: boolean) {
     const newState = Object.assign({}, state);
     const index = state.orderLines.findIndex(x => x.productId === product.id);
     const orderLine = state.orderLines[index];
@@ -80,7 +80,7 @@ export function addProductOrderLine(state: State, product: { id: number, name: s
             presale: presale,
             quantity: 1,
             total: product.price.plus(0),
-            isServing: product.isServing
+            isServing: isServing
         }];
     }
     else {
@@ -95,7 +95,7 @@ export function addProductOrderLine(state: State, product: { id: number, name: s
                 presale: presale,
                 quantity: newQuantity,
                 total: newTotal,
-                isServing: product.isServing
+                isServing: isServing
             },
             ...state.orderLines.slice(index + 1)
         ];
