@@ -3,10 +3,11 @@
 --DECLARE @TerminalId int = null
 --DECLARE @PointOfSaleId int = null
 --DECLARE @Kind int = 4
+--DECLARE @HourOffset int = 2
 
 SELECT
 	@Kind AS Kind
-	,MIN(s.Created) EarliestServingCreated
+	,MIN(DATEADD(hour, @HourOffset, s.Created)) EarliestServingCreated
 	,ol.ProductId
 	,p.Name AS ProductName
 	,SUM(sl.Quantity) ProductQuantity
@@ -23,14 +24,14 @@ JOIN
 	Products p ON ol.ProductId = p.Id
 WHERE
 	o.IsDeleted = 0
-	AND s.Created >= @PeriodStart AND s.Created < @PeriodEnd
+	AND DATEADD(hour, @HourOffset, s.Created) >= @PeriodStart AND DATEADD(hour, @HourOffset, s.Created) < @PeriodEnd
 	AND (@TerminalId IS NULL OR o.TerminalId = @TerminalId)
 	AND (@PointOfSaleId IS NULL OR o.PointOfSaleId = @PointOfSaleId)
 GROUP BY
-	 DATEPART(year, s.Created)
-	,CASE WHEN @Kind >= 2 THEN DATEPART(month, s.Created) END
-	,CASE WHEN @Kind >= 3 THEN DATEPART(day, s.Created) END
-	,CASE WHEN @Kind >= 4 THEN DATEPART(hour, s.Created) END
+	 DATEPART(year, DATEADD(hour, @HourOffset, s.Created))
+	,CASE WHEN @Kind >= 2 THEN DATEPART(month, DATEADD(hour, @HourOffset, s.Created)) END
+	,CASE WHEN @Kind >= 3 THEN DATEPART(day, DATEADD(hour, @HourOffset, s.Created)) END
+	,CASE WHEN @Kind >= 4 THEN DATEPART(hour, DATEADD(hour, @HourOffset, s.Created)) END
 	,ol.ProductId
 	,p.Name
 ORDER BY

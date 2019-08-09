@@ -60,7 +60,7 @@ namespace FestivalPOS
             modelBuilder.Entity<PointOfSale>().HasOne(x => x.ReceiptPrinter).WithMany().OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<PointOfSaleProduct>().HasKey(x => new { x.PointOfSaleId, x.ProductId });
 
-            modelBuilder.Entity<Printer>().HasOne(x => x.Terminal).WithMany(x => x.Printers).OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Printer>().HasOne(x => x.Terminal).WithMany(x => x.Printers).OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Product>().Property(x => x.Price).HasColumnType("decimal(9,2)");
             modelBuilder.Entity<Product>().HasQueryFilter(x => !x.IsDeleted);

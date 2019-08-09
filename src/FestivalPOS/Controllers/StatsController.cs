@@ -22,7 +22,8 @@ namespace FestivalPOS.Controllers
         }
 
         [HttpGet("{periodStart}/{periodEnd}/{kind}")]
-        public async Task<List<OrderStats>> GetHourlyStats(DateTimeOffset periodStart, DateTimeOffset periodEnd, StatsKind kind, int? terminalId, int? pointOfSaleId)
+        [HttpGet("{periodStart}/{periodEnd}/{kind}-{offset}")]
+        public async Task<List<OrderStats>> GetHourlyStats(DateTimeOffset periodStart, DateTimeOffset periodEnd, StatsKind kind, TimeSpan offset, int? terminalId, int? pointOfSaleId)
         {
             var connection = _db.Database.GetDbConnection();
 
@@ -32,7 +33,8 @@ namespace FestivalPOS.Controllers
                 periodEnd,
                 kind,
                 terminalId,
-                pointOfSaleId
+                pointOfSaleId,
+                hourOffset = -(int)offset.TotalHours
             };
 
             var orderStats = await connection.QueryAsync<OrderStats>(

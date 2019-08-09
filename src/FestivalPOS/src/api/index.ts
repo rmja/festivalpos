@@ -1,11 +1,11 @@
 import { AlarmEvent, AlarmFeed } from "./alarms";
+import { DateTime, Duration } from "luxon";
 import { Http, HttpResponseOfT } from "ur-http";
 import { HttpBuilderOfT, QueryString } from "ur-http";
 
 import { Account } from "./account";
 import { Big } from "big.js";
 import { CacheControl } from "./cache-control";
-import { DateTime } from "luxon";
 import { Operation } from "ur-jsonpatch";
 import { Order } from "./order";
 import { OrderStats } from "./order-stats";
@@ -255,8 +255,9 @@ export class Api {
         ]));
     }
 
-    getStats(periodStart: DateTime, periodEnd: DateTime, kind: "yearly" | "monthly" | "daily" | "hourly", filter: { terminalId?: number, pointOfSaleId?: number }) {
-        return Http.get(`/Stats/${periodStart}/${periodEnd}/${kind}`, filter).expectJsonArray(OrderStats);
+    getStats(periodStart: DateTime, periodEnd: DateTime, kind: "yearly" | "monthly" | "daily" | "hourly", offset: Duration, filter: { terminalId?: number, pointOfSaleId?: number }) {
+        const shifted = offset.shiftTo("hours", "minutes");
+        return Http.get(`/Stats/${periodStart}/${periodEnd}/${kind}${shifted.valueOf() !== 0 ? shifted.toFormat("hh:mm") : ""}`, filter).expectJsonArray(OrderStats);
     }
 
     createAlarmFeed(feed: { name: string, subscriberEmail?: string }) {

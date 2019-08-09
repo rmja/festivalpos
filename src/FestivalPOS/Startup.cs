@@ -2,6 +2,7 @@ using FestivalPOS.Hubs;
 using FestivalPOS.Printing;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Azure.Storage;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Converters;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FestivalPOS
 {
@@ -27,13 +29,13 @@ namespace FestivalPOS
             services.Configure<PosOptions>(Configuration);
 
             services.AddMvc()
-                .AddJsonOptions(options => options.SerializerSettings.Converters.Add(new StringEnumConverter(camelCaseText: true)));
+                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)));
 
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<PosContext>();
 
             services.AddSignalR()
-                .AddJsonProtocol(options => options.PayloadSerializerSettings.Converters.Add(new StringEnumConverter(camelCaseText: true)));
+                .AddJsonProtocol(options => options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)));
             services.AddMediatR(typeof(Startup).Assembly);
 
             services.AddSingleton(sp =>
@@ -47,7 +49,7 @@ namespace FestivalPOS
                 .AddSingleton<ReceiptPrintGenerator>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceScopeFactory serviceScopeFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceScopeFactory serviceScopeFactory)
         {
             using (var scope = serviceScopeFactory.CreateScope())
             {
@@ -68,10 +70,15 @@ namespace FestivalPOS
 
             app
                 .UseStaticFiles()
-                .UseSignalR(builder => builder.MapHub<AlarmsHub>("/Alarms"))
-                .UseSignalR(builder => builder.MapHub<PrintingHub>("/Printing"))
-                .UseSignalR(builder => builder.MapHub<ServingHub>("/Serving"))
-                .UseMvc();
+                .UseRouting()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapHub<AlarmsHub>("/Alarms");
+                    endpoints.MapHub<PrintingHub>("/Printing");
+                    endpoints.MapHub<ServingHub>("/Serving");
+                    endpoints.MapControllers();
+                    endpoints.MapRazorPages();
+                });
         }
     }
 }

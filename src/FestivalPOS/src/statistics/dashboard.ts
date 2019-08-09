@@ -1,8 +1,8 @@
+import { DateTime, Duration } from "luxon";
 import { autoinject, observable } from "aurelia-framework";
 
 import { Api } from "../api";
 import { Big } from "big.js";
-import { DateTime } from "luxon";
 
 @autoinject()
 export class StatisticsDashboard {
@@ -65,10 +65,20 @@ export class StatisticsDashboard {
     }
 
     private async fetch() {
-        this.stats = await this.api.getStats(this.periodStart, this.periodEnd, this.kind, {
-            pointOfSaleId: this.pointOfSale && this.pointOfSale.id,
-            terminalId: this.terminal && this.terminal.id
-        }).bypassCache().transfer();
+        if (this.kind === "daily" || this.kind === "monthly" || this.kind == "yearly") {
+            const offset = Duration.fromObject({ hours: -4 });
+            this.stats = await this.api.getStats(this.periodStart, this.periodEnd, this.kind, offset, {
+                pointOfSaleId: this.pointOfSale && this.pointOfSale.id,
+                terminalId: this.terminal && this.terminal.id
+            }).bypassCache().transfer();
+        }
+        else {
+            const offset = Duration.fromObject({ hours: 4 });
+            this.stats = await this.api.getStats(this.periodStart.plus(offset), this.periodEnd.plus(offset), this.kind, Duration.fromMillis(0), {
+                pointOfSaleId: this.pointOfSale && this.pointOfSale.id,
+                terminalId: this.terminal && this.terminal.id
+            }).bypassCache().transfer();
+        }
     }
 }
 
