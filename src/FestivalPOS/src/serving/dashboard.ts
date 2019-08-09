@@ -34,7 +34,10 @@ export class ServingDashboard {
             this.api.getAllServingsByPointOfSaleId(this.state.pointOfSaleId).bypassCache().transfer()
         ]);
         this.noOfServingStaff = pos.noOfServingStaff;
-        this.servings.push(...servings);
+
+        for (const serving of servings) {
+            this.addOrUpdateServing(serving);
+        }
         
         await this.hub.connect();
         await this.hub.hello(this.state.pointOfSaleId);
@@ -101,12 +104,12 @@ export class ServingDashboard {
 
         if (serving.state === "completed") {
             this.timeoutHandles.push(window.setTimeout(() => {
-                const index = this.servings.indexOf(serving);
+                const index = this.servings.findIndex(x => x.id === serving.id);
 
                 if (index >= 0) {
-                    this.servings.splice(index);
+                    this.servings.splice(index, 1);
                 }
-            }, 10 * 60 * 1000));
+            }, 60 * 1000));
         }
     }
 }
