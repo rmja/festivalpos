@@ -12,14 +12,16 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Indløs</th>
-                    <th>Vare</th>
-                    <th>Til gode</th>
+                    <th></th>
+                    <th></th>
+                    <th style="width: 100%">Vare</th>
+                    <th style="white-space: nowrap">Til gode</th>
                 </tr>
             </thead>
             <tbody>
                 <tr repeat.for="line of order.lines">
                     <td><input type="checkbox" disabled.bind="!line.canRedeem" checked.bind="line.redeem"></td>
+                    <td>${line.quantity}</td>
                     <td>${line.name}</td>
                     <td>${line.receiveable}</td>
                 </tr>
