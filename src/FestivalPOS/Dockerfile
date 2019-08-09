@@ -1,4 +1,4 @@
-FROM node:11 AS webpack
+FROM node:12 AS webpack
 ARG WEBPACK_MODE=production
 WORKDIR /src
 COPY ["src/FestivalPOS/package*.json", "./"]
@@ -8,12 +8,12 @@ COPY ["src/FestivalPOS/typings", "./typings"]
 COPY ["src/FestivalPOS/src", "./src"]
 RUN node_modules/.bin/webpack --mode ${WEBPACK_MODE}
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
 WORKDIR /src
 COPY ["src/FestivalPOS/FestivalPOS.csproj", "src/FestivalPOS/"]
 RUN dotnet restore "src/FestivalPOS/FestivalPOS.csproj"
