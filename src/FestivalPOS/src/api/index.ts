@@ -58,7 +58,7 @@ export class Api {
     }
 
     updatePointOfSale(pointOfSaleId: number, patch: Operation[]) {
-        return Http.patch(`/PointOfSales/${pointOfSaleId}`).withJson(patch).expectJson(PointOfSale).onSent(this.bust([
+        return Http.patch(`/PointOfSales/${pointOfSaleId}`).withJsonPatch(patch).expectJson(PointOfSale).onSent(this.bust([
             `${K.PointOfSales}:${pointOfSaleId}`
         ]));
     }
@@ -89,7 +89,7 @@ export class Api {
     }
 
     updateTerminal(terminalId: number, patch: Operation[]) {
-        return Http.patch(`/Terminals/${terminalId}`).withJson(patch).expectJson(Terminal).onSent(this.bust([
+        return Http.patch(`/Terminals/${terminalId}`).withJsonPatch(patch).expectJson(Terminal).onSent(this.bust([
             `${K.Terminals}:${terminalId}`
         ]));
     }
@@ -120,7 +120,7 @@ export class Api {
     }
 
     updatePrinter(printerId: number, patch: Operation[]) {
-        return Http.patch(`/Printers/${printerId}`).withJson(patch).expectJson(Printer).onSent(this.bust([
+        return Http.patch(`/Printers/${printerId}`).withJsonPatch(patch).expectJson(Printer).onSent(this.bust([
             `${K.Printers}:${printerId}`
         ]));
     }
@@ -151,7 +151,7 @@ export class Api {
     }
 
     updateProduct(productId: number, patch: Operation[]) {
-        return Http.patch(`/Products/${productId}`).withJson(patch).expectJson(Product).onSent(this.bust([
+        return Http.patch(`/Products/${productId}`).withJsonPatch(patch).expectJson(Product).onSent(this.bust([
             `${K.Products}:${productId}`
         ]));
     }
@@ -179,7 +179,7 @@ export class Api {
     }
 
     updateProductsByPointOfSaleId(pointOfSaleId: number, patch: Operation[]) {
-        return Http.patch(`/PointOfSales/${pointOfSaleId}/Products`).withJson(patch).expectJsonArray(PointOfSaleProduct).onSent(this.bust([
+        return Http.patch(`/PointOfSales/${pointOfSaleId}/Products`).withJsonPatch(patch).expectJsonArray(PointOfSaleProduct).onSent(this.bust([
             K.Products
         ]));
     }
@@ -250,7 +250,7 @@ export class Api {
     }
 
     updateServing(servingId: number, patch: Operation[]) {
-        return Http.patch(`/Servings/${servingId}`).withJson(patch).expectJson(Serving).onSent(this.bust([
+        return Http.patch(`/Servings/${servingId}`).withJsonPatch(patch).expectJson(Serving).onSent(this.bust([
             K.Orders
         ]));
     }
@@ -279,7 +279,7 @@ export class Api {
     }
 
     updateAlarmFeed(alarmFeedId: number, patch: Operation[]) {
-        return Http.patch(`/Alarms/Feeds/${alarmFeedId}`).withJson(patch).expectJson(AlarmFeed).onSent(this.bust([
+        return Http.patch(`/Alarms/Feeds/${alarmFeedId}`).withJsonPatch(patch).expectJson(AlarmFeed).onSent(this.bust([
             K.Alarms
         ]));
     }
@@ -330,7 +330,7 @@ export class Api {
     }
 
     updateAccount(accountId: number, patch: Operation[]) {
-        return Http.patch(`/Accounts/${accountId}`).withJson(patch).expectJson(Account).onSent(this.bust([
+        return Http.patch(`/Accounts/${accountId}`).withJsonPatch(patch).expectJson(Account).onSent(this.bust([
             `${K.Accounts}:${accountId}`
         ]));
     }

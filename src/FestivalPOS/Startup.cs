@@ -1,8 +1,10 @@
+using FestivalPOS.Converters;
 using FestivalPOS.Hubs;
 using FestivalPOS.Printing;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Azure.Storage;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -28,14 +31,35 @@ namespace FestivalPOS
         {
             services.Configure<PosOptions>(Configuration);
 
-            services.AddMvc()
-                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)));
+            var fakeServiceProvider = new ServiceCollection();
+            fakeServiceProvider
+                .AddLogging()
+                .AddMvc()
+                .AddNewtonsoftJson();
+
+            var fakeMvcOptions = fakeServiceProvider.BuildServiceProvider().GetRequiredService<IOptions<MvcOptions>>().Value;
+
+            services.AddMvc(options =>
+                {
+                    var jsonPatchInputFormatter = fakeMvcOptions.InputFormatters.OfType<Microsoft.AspNetCore.Mvc.Formatters.NewtonsoftJsonPatchInputFormatter>().Single();
+                    options.InputFormatters.Insert(0, jsonPatchInputFormatter);
+                })
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                    options.JsonSerializerOptions.Converters.Add(new DecimalConverter());
+                });
 
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<PosContext>();
 
             services.AddSignalR()
-                .AddJsonProtocol(options => options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)));
+                .AddJsonProtocol(options =>
+                {
+                    options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                    options.PayloadSerializerOptions.Converters.Add(new DecimalConverter());
+                });
+
             services.AddMediatR(typeof(Startup).Assembly);
 
             services.AddSingleton(sp =>
