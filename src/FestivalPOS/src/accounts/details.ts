@@ -1,6 +1,7 @@
 import { Api } from "../api";
 import { Big } from "big.js";
 import { DateTime } from "luxon";
+import { Router } from "aurelia-router";
 import { autoinject } from "aurelia-framework";
 
 const currentYear = DateTime.local().year;
@@ -15,7 +16,7 @@ export class AccountDetails {
     years!: number[];
     year = currentYear;
 
-    constructor(private api: Api) {
+    constructor(private api: Api, protected router: Router) {
     }
 
     async activate(params: { accountId: string }) {

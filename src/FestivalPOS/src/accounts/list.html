@@ -1,23 +1,26 @@
 <template>
-    <table class="table table-sm" if.bind="accounts.length">
-        <thead>
-            <th>&#x2116;</th>
-            <th>Navn</th>
-            <th>Maks</th>
-            <th>Rest</th>
-            <th></th>
-        </thead>
-        <tr repeat.for="account of accounts">
-            <td>${account.number}</td>
-            <td style="width: 100%">${account.name}</td>
-            <td class="text-right" style="white-space: nowrap">${account.maxCredit | money}</td>
-            <td class="text-right" style="white-space: nowrap">${account.remainingCredit | money}</td>
-            <td>
-                <a route-href="route: details; params.bind: { accountId: account.id }" class="btn btn-light btn-sm"><font-awesome-icon icon="arrow-right"></font-awesome-icon></a>
-            </td>
-        </tr>
-    </table>
-    <empty-hint else>
-        Der er ingen konti
-    </empty-hint>
+    <top-navbar></top-navbar>
+    <page-body>
+        <table class="table table-sm" if.bind="accounts.length">
+            <thead>
+                <th>&#x2116;</th>
+                <th>Navn</th>
+                <th>Maks</th>
+                <th>Rest</th>
+                <th></th>
+            </thead>
+            <tr repeat.for="account of accounts">
+                <td>${account.number}</td>
+                <td style="width: 100%">${account.name}</td>
+                <td class="text-right" style="white-space: nowrap">${account.maxCredit | money}</td>
+                <td class="text-right" style="white-space: nowrap">${account.remainingCredit | money}</td>
+                <td>
+                    <a route-href="route: account; params.bind: { accountId: account.id }" class="btn btn-light btn-sm"><font-awesome-icon icon="arrow-right"></font-awesome-icon></a>
+                </td>
+            </tr>
+        </table>
+        <empty-hint else>
+            Der er ingen konti
+        </empty-hint>
+    </page-body>
 </template>

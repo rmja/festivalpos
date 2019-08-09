@@ -1,38 +1,16 @@
-import { RouteConfig, RouterConfiguration, RedirectToRoute } from "aurelia-router";
+import { RouteConfig, RouterConfiguration } from "aurelia-router";
+
 import { PLATFORM } from "aurelia-pal";
-import { autoinject, computedFrom } from "aurelia-framework";
-import { State, getOrderQuantityTotal, isSetup } from "../state";
-import { connectTo } from "aurelia-store";
+import { autoinject } from "aurelia-framework";
 
 const routes: RouteConfig[] = [
     { route: "", name: "list", moduleId: PLATFORM.moduleName("./list", "accounts") },
-    { route: ":accountId", name: "details", moduleId: PLATFORM.moduleName("./details", "accounts") },
+    { route: ":accountId", name: "account", moduleId: PLATFORM.moduleName("./account-router", "accounts") },
 ];
 
 @autoinject()
-@connectTo({
-    selector: store => store.state,
-    setup: "canActivate"
-})
-export class SaleRouter {
-    private state!: State;
-
-    @computedFrom("state")
-    get totalQuantity() {
-        if (this.state) {
-            return getOrderQuantityTotal(this.state);
-        }
-    }
-
+export class AccountsRouter {
     configureRouter(config: RouterConfiguration) {
         config.map(routes);
-    }
-
-    canActivate() {
-        if (!isSetup(this.state)) {
-            return new RedirectToRoute("setup");
-        }
-
-        return true;
     }
 }

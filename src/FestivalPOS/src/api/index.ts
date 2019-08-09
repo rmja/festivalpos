@@ -233,6 +233,12 @@ export class Api {
         ]));
     }
 
+    depositAccount(accountId: number, amount: Big) {
+        return Http.post(`/Accounts/${accountId}/Deposit`, { amount: amount.toFixed() }).expectJson(Payment).onSent(this.bust([
+            K.Payments
+        ]));
+    }
+
     getAllPayments(filter?: { terminalId?: number, pointOfSaleId?: number, accountId?: number, from?: DateTime, to?: DateTime }) {
         return Http.get("/Payments", filter).expectJsonArray(Payment).onReceived(this.tag(result => [
             K.Payments,
@@ -351,7 +357,7 @@ export class Api {
         return Http.get(`/PointsOfSale/${pointOfSaleId}/Servings`).expectJsonArray(Serving);
     }
 
-    createSumupAffiliate(affiliate: {key: string, name?: string}) {
+    createSumupAffiliate(affiliate: { key: string, name?: string }) {
         return Http.post("/SumUp/Affiliates").withJson(affiliate).expectJson(SumUpAffiliate).onSent(this.bust([
             K.Affiliates
         ]));

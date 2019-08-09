@@ -24,7 +24,7 @@ namespace FestivalPOS.Controllers
         }
 
         [HttpPost("/api/Orders/{orderId:int}/Payments")]
-        public async Task<ActionResult<Payment>> Create(int orderId, Payment payment)
+        public async Task<ActionResult<Payment>> CreateOnOrder(int orderId, Payment payment)
         {
             var order = await _db.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
 
@@ -63,6 +63,32 @@ namespace FestivalPOS.Controllers
             {
                 await _mediator.Publish(new OrderPayedNotification(order.Id, payment.Id));
             }
+
+            return payment;
+        }
+
+        [HttpPost("/api/Accounts/{accountId:int}/Deposit")]
+        public async Task<ActionResult<Payment>> DepositOnAccount(int accountId, decimal amount)
+        {
+            var account = await _db.Accounts.FirstOrDefaultAsync(x => x.Id == accountId);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            account.RemainingCredit += amount;
+
+            var payment = new Payment()
+            {
+                Method = PaymentMethod.Deposit,
+                Amount = -amount,
+                AccountId = account.Id,
+                Created = LocalClock.Now
+            };
+
+            _db.Payments.Add(payment);
+            await _db.SaveChangesAsync();
 
             return payment;
         }
