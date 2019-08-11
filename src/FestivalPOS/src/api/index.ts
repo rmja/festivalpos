@@ -38,7 +38,7 @@ export class Api {
         this.bust = this.bust.bind(this);
     }
 
-    createPointOfSale(pos: { name: string, noOfServingStaff?: number, receiptPrinterId?: number }) {
+    createPointOfSale(pos: { name: string, servingStaff?: { name?: string }[], receiptPrinterId?: number }) {
         return Http.post("/PointOfSales").withJson(pos).expectJson(PointOfSale).onSent(this.bust([
             K.PointOfSales
         ]));

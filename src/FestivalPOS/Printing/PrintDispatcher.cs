@@ -15,6 +15,8 @@ namespace FestivalPOS.Printing
         public async Task<int?> GetReceiptPrinterAsync(int pointOfSaleId)
         {
             var pos = await _db.PointOfSales.FirstOrDefaultAsync(x => x.Id == pointOfSaleId);
+            pos.OnMaterialized();
+
             return pos?.ReceiptPrinterId;
         }
     }

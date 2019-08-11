@@ -1,17 +1,13 @@
-import { ServingStaff } from './serving-staff';
 import { jsonProperty } from "ur-json";
 import { transparentConverter } from "./converters/transparent-converter";
 
-export class PointOfSale {
+export class ServingStaff {
     @jsonProperty()
     id!: number;
 
     @jsonProperty()
-    name!: string;
-
-    @jsonProperty({ type: ServingStaff })
-    servingStaff!: ServingStaff[];
+    number!: number;
 
     @jsonProperty({ converter: transparentConverter })
-    receiptPrinterId!: number | null;
+    name!: string | null;
 }

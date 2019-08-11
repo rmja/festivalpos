@@ -79,6 +79,7 @@ namespace FestivalPOS.Controllers
 
             foreach (var pos in pointsOfSale)
             {
+                pos.OnMaterialized();
                 pos.ReceiptPrinterId = null;
             }
 

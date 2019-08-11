@@ -1,11 +1,15 @@
-import { Disposable, autoinject } from "aurelia-framework";
+import { Disposable, PLATFORM, autoinject } from "aurelia-framework";
 import { ServingCreated, ServingHub, ServingUpdated } from "../api/serving-hub";
 
+import { AddServerDialog } from './add-server-dialog';
 import { Api } from "../api";
 import { DateTime } from "luxon";
+import { DialogService } from 'aurelia-dialog';
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Patch } from "ur-jsonpatch";
+import { PointOfSaleUpdated } from './../api/serving-hub';
 import { Serving } from "../api/serving";
+import { ServingStaff } from '../api/serving-staff';
 import { State } from "../state";
 import { connectTo } from "aurelia-store";
 
@@ -16,7 +20,8 @@ import { connectTo } from "aurelia-store";
 @autoinject()
 export class ServingDashboard {
     private state!: State;
-    noOfServingStaff!: number;
+    private beam!: boolean;
+    servingStaff!: ServingStaffViewModel[];
     servings: ServingViewModel[] = [];
     selectedServing?: ServingViewModel;
     private intervalHandle!: number;
@@ -25,20 +30,25 @@ export class ServingDashboard {
 
     now = DateTime.local();
 
-    constructor(private api: Api, private hub: ServingHub, private eventAggregator: EventAggregator) {
+    get pendingServings() {
+        return this.servings.filter(x => x.state === "pending");
     }
 
-    async activate() {
+    constructor(private api: Api, private hub: ServingHub, private eventAggregator: EventAggregator, private dialog: DialogService) {
+    }
+
+    async activate(params: { beam?: true }) {
+        this.beam = !!params.beam;
         const [pos, servings] = await Promise.all([
             this.api.getPointOfSale(this.state.pointOfSaleId).transfer(),
             this.api.getAllServingsByPointOfSaleId(this.state.pointOfSaleId).bypassCache().transfer()
         ]);
-        this.noOfServingStaff = pos.noOfServingStaff;
+        this.servingStaff = pos.servingStaff.map(x => new ServingStaffViewModel(this, x));
 
         for (const serving of servings) {
             this.addOrUpdateServing(serving);
         }
-        
+
         await this.hub.connect();
         await this.hub.hello(this.state.pointOfSaleId);
 
@@ -47,6 +57,7 @@ export class ServingDashboard {
         this.disposables = [
             this.eventAggregator.subscribe(ServingCreated, (event: ServingCreated) => this.addOrUpdateServing(event.serving)),
             this.eventAggregator.subscribe(ServingUpdated, (event: ServingUpdated) => this.addOrUpdateServing(event.serving)),
+            this.eventAggregator.subscribe(PointOfSaleUpdated, (event: PointOfSaleUpdated) => this.servingStaff = event.pos.servingStaff.map(x => new ServingStaffViewModel(this, x))),
         ];
     }
 
@@ -62,6 +73,28 @@ export class ServingDashboard {
         for (const disposable of this.disposables) {
             disposable.dispose();
         }
+    }
+
+    getViewStrategy() {
+        return this.beam ? PLATFORM.moduleName("./dashboard-beam.html") : PLATFORM.moduleName("./dashboard.html");
+    }
+
+    async addServer() {
+        const result = await this.dialog.open({ viewModel: AddServerDialog }).whenClosed();
+
+        if (!result.wasCancelled) {
+            const output: Partial<ServingStaff> = result.output;
+
+            await this.api.updatePointOfSale(this.state.pointOfSaleId, [
+                { op: "add", path: "/servingStaff/-", value: { name: output.name } }
+            ]).send();
+        }
+    }
+
+    removeServer(index: number) {
+        return this.api.updatePointOfSale(this.state.pointOfSaleId, [
+            { op: "remove", path: `/servingStaff/${index}` }
+        ]).send();
     }
 
     toggleSelected(serving: ServingViewModel) {
@@ -127,27 +160,21 @@ export interface ServingViewModel {
     created: DateTime;
 }
 
-export class PendingValueConverter {
-    toView(servings: ServingViewModel[]) {
-        return servings.filter(x => x.state === "pending");
-    }
-}
+class ServingStaffViewModel {
+    number: number;
+    name: string | null;
 
-export class OngoingValueConverter {
-    toView(servings: ServingViewModel[]) {
-        return servings.filter(x => x.state === "ongoing");
+    get ongoingServings() {
+        return this.dashboard.servings.filter(x => x.staffNumber === this.number && x.state === "ongoing");
     }
-}
 
-export class CompletedValueConverter {
-    toView(servings: ServingViewModel[]) {
-        return servings.filter(x => x.state === "completed");
+    get completedServings() {
+        return this.dashboard.servings.filter(x => x.staffNumber === this.number && x.state === "completed")
     }
-}
 
-export class StaffNumberValueConverter {
-    toView(servings: ServingViewModel[], staffNumber: number) {
-        return servings.filter(x => x.staffNumber === staffNumber);
+    constructor(private dashboard: ServingDashboard, staff: ServingStaff) {
+        this.number = staff.number;
+        this.name = staff.name;
     }
 }
 

@@ -1,0 +1,36 @@
+<template>
+    <require from="./serving-item"></require>
+    <div class="container" style="width: 100%; max-width: 100%">
+        <div class="row">
+            <div class="col">
+                <h6>Kø</h6>
+                <p>
+                    <div class="list-group">
+                        <div repeat.for="serving of pendingServings" class="list-group-item list-group-item-warning">
+                            <serving-item serving.bind="serving" now.bind="now"></serving-item>
+                        </div>
+                    </div>
+                </p>
+            </div>
+            <div class="col" repeat.for="staff of servingStaff">
+                <h6>${staff.name || staff.number}</h6>
+                <p>
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-success"
+                            repeat.for="serving of staff.ongoingServings">
+                            <serving-item serving.bind="serving" now.bind="now"></serving-item>
+                        </li>
+                    </ul>
+                </p>
+                <p>
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-danger"
+                            repeat.for="serving of staff.completedServings | last: 2 | inverse">
+                            <serving-item serving.bind="serving"></serving-item>
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</template>

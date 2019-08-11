@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace FestivalPOS.Models
@@ -12,7 +13,13 @@ namespace FestivalPOS.Models
         public int? ReceiptPrinterId { get; set; }
         [JsonIgnore]
         public Printer ReceiptPrinter { get; set; }
-        public int NoOfServingStaff { get; set; }
         public bool IsDeleted { get; set; }
+
+        public List<ServingStaff> ServingStaff { get; set; } = new List<ServingStaff>();
+
+        public void OnMaterialized()
+        {
+            ServingStaff.Sort((a, b) => a.Number.CompareTo(b.Number));
+        }
     }
 }

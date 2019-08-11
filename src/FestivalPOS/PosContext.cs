@@ -21,6 +21,7 @@ namespace FestivalPOS
         public DbSet<Printer> Printers { get; set; }
         public DbSet<Serving> Servings { get; set; }
         public DbSet<ServingLine> ServingLines { get; set; }
+        public DbSet<ServingStaff> ServingStaff { get; set; }
         public DbSet<Terminal> Terminals { get; set; }
         public DbSet<SumUpAffiliate> SumUpAffiliates { get; set; }
 
@@ -58,6 +59,7 @@ namespace FestivalPOS
 
             modelBuilder.Entity<PointOfSale>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<PointOfSale>().HasOne(x => x.ReceiptPrinter).WithMany().OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<PointOfSale>().HasMany(x => x.ServingStaff).WithOne().OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<PointOfSaleProduct>().HasKey(x => new { x.PointOfSaleId, x.ProductId });
 
             modelBuilder.Entity<Printer>().HasOne(x => x.Terminal).WithMany(x => x.Printers).OnDelete(DeleteBehavior.Restrict);

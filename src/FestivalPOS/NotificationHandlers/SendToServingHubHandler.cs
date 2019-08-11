@@ -1,23 +1,22 @@
 ﻿using FestivalPOS.Hubs;
 using FestivalPOS.Notifications;
-using FestivalPOS.Printing;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace FestivalPOS.NotificationHandlers
 {
-    public class SendServingToHubHandler :
+    public class SendToServingHubHandler :
         INotificationHandler<ServingCreatedNotification>,
-        INotificationHandler<ServingUpdatedNotification>
+        INotificationHandler<ServingUpdatedNotification>,
+        INotificationHandler<PointOfSaleUpdatedNotification>
     {
         private readonly PosContext _db;
         private readonly IHubContext<ServingHub> _hub;
 
-        public SendServingToHubHandler(PosContext db, IHubContext<ServingHub> hub)
+        public SendToServingHubHandler(PosContext db, IHubContext<ServingHub> hub)
         {
             _db = db;
             _hub = hub;
@@ -47,6 +46,19 @@ namespace FestivalPOS.NotificationHandlers
             var clients = _hub.Clients.Group($"PointsOfSale:{serving.PointOfSaleId}");
 
             await clients.SendAsync("ServingUpdated", serving);
+        }
+
+        public async Task Handle(PointOfSaleUpdatedNotification notification, CancellationToken cancellationToken)
+        {
+            var pos = await _db.PointOfSales
+                .Include(x => x.ServingStaff)
+                .FirstAsync(x => x.Id == notification.PointOfSaleId);
+
+            pos.OnMaterialized();
+
+            var clients = _hub.Clients.Group($"PointsOfSale:{pos.Id}");
+
+            await clients.SendAsync("PointOfSaleUpdated", pos);
         }
     }
 }

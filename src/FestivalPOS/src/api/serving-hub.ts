@@ -1,6 +1,7 @@
 import { HubConnection, HubConnectionBuilder } from "@aspnet/signalr";
 
 import { EventAggregator } from "aurelia-event-aggregator";
+import { PointOfSale } from "./point-of-sale";
 import { Serving } from "./serving";
 import { autoinject } from "aurelia-framework";
 import { modelBind } from "ur-json";
@@ -25,6 +26,11 @@ export class ServingHub {
             serving = modelBind(Serving, serving);
             eventAggregator.publish(new ServingUpdated(serving));
         });
+
+        this.connection.on("PointOfSaleUpdated", (pos: any) => {
+            pos = modelBind(PointOfSale, pos);
+            eventAggregator.publish(new PointOfSaleUpdated(pos));
+        })
     }
 
     async connect() {
@@ -56,5 +62,10 @@ export class ServingCreated {
 
 export class ServingUpdated {
     constructor(public serving: Serving) {
+    }
+}
+
+export class PointOfSaleUpdated {
+    constructor(public pos: PointOfSale) {
     }
 }

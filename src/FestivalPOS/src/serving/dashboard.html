@@ -1,50 +1,63 @@
 <template>
     <require from="./serving-item"></require>
-    <div class="container" style="width: 100%; max-width: 100%">
-        <div class="row">
-            <div class="col-sm-2">
-                <h6>Kø</h6>
-                <div class="list-group">
-                    <button type="button" repeat.for="serving of servings | pending"
-                        class="list-group-item list-group-item-warning list-group-item-action ${serving === selectedServing ? 'active' : ''}"
-                        click.delegate="toggleSelected(serving)">
-                        <serving-item serving.bind="serving" now.bind="now"></serving-item>
-                    </button>
+    <top-navbar>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a href="#/serving/?beam" class="nav-link" target="_blank"><font-awesome-icon icon="tv" fixed-width="true"></font-awesome-icon></a>
+            </li>
+        </ul>
+    </top-navbar>
+    <div class="wrapper">
+        <div class="container" style="width: 100%; max-width: 100%">
+            <div class="row">
+                <div class="col-sm-2">
+                    <h6>Kø</h6>
+                    <div class="list-group">
+                        <button type="button" repeat.for="serving of pendingServings"
+                            class="list-group-item list-group-item-warning list-group-item-action ${serving === selectedServing ? 'active' : ''}"
+                            click.delegate="toggleSelected(serving)">
+                            <serving-item serving.bind="serving" now.bind="now"></serving-item>
+                        </button>
+                    </div>
+                    ${selectedServing.thisIsNeededAsAHackToTriggerTheActiveClass}
                 </div>
-                ${selectedServing.thisIsNeededAsAHackToTriggerTheActiveClass}
-            </div>
-            <div class="col-sm-10">
-                <div class="row">
-                    <div class="col" repeat.for="staffIndex of noOfServingStaff">
-                        <h6>#${staffIndex + 1}</h6>
+                <div class="col-sm-10">
+                    <button class="btn btn-link text-muted float-right p-0" click.delegate="addServer()"><font-awesome-icon icon="plus"></font-awesome-icon></button>
+                    <div class="row">
+                        <div class="col" repeat.for="staff of servingStaff">
+                            <div class="d-flex justify-content-between">
+                                <h6>${staff.name || staff.number}</h6>
 
-                        <p>
-                            <button type="button" class="btn btn-primary btn-block"
-                                click.delegate="acceptNextServing(staffIndex + 1)">
-                                <font-awesome-icon icon="level-down-alt"></font-awesome-icon> Påbegynd
-                            </button>
-                        </p>
-                        <p>
-                            <ul class="list-group">
-                                <li class="list-group-item list-group-item-success"
-                                    repeat.for="serving of servings | staffNumber: staffIndex + 1 | ongoing">
-                                    <serving-item serving.bind="serving" now.bind="now">
-                                        <button type="button" class="btn btn-secondary btn-block"
-                                            click.delegate="complete(serving)">
-                                            <font-awesome-icon icon="long-arrow-alt-down"></font-awesome-icon> Færdig
-                                        </button>
-                                    </serving-item>
-                                </li>
-                            </ul>
-                        </p>
-                        <p>
-                            <ul class="list-group">
-                                <li class="list-group-item list-group-item-danger"
-                                    repeat.for="serving of servings | staffNumber: staffIndex + 1 | completed | last: 2 | inverse">
-                                    <serving-item serving.bind="serving"></serving-item>
-                                </li>
-                            </ul>
-                        </p>
+                                <button class="btn btn-link text-danger p-0" click.delegate="removeServer($index)" disabled.bind="staff.ongoingServings.length"><font-awesome-icon icon="times"></font-awesome-icon></button>
+                            </div>
+                            <p>
+                                <button type="button" class="btn btn-primary btn-block"
+                                    click.delegate="acceptNextServing(staff.number)">
+                                    <font-awesome-icon icon="level-down-alt"></font-awesome-icon> Påbegynd
+                                </button>
+                            </p>
+                            <p>
+                                <ul class="list-group">
+                                    <li class="list-group-item list-group-item-success"
+                                        repeat.for="serving of staff.ongoingServings">
+                                        <serving-item serving.bind="serving" now.bind="now">
+                                            <button type="button" class="btn btn-secondary btn-block"
+                                                click.delegate="complete(serving)">
+                                                <font-awesome-icon icon="long-arrow-alt-down"></font-awesome-icon> Færdig
+                                            </button>
+                                        </serving-item>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p>
+                                <ul class="list-group">
+                                    <li class="list-group-item list-group-item-danger"
+                                        repeat.for="serving of staff.completedServings | last: 2 | inverse">
+                                        <serving-item serving.bind="serving"></serving-item>
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

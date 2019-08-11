@@ -8,7 +8,6 @@ import { Router } from "aurelia-router";
 @useView("./edit.html")
 export class CreatePointOfSale {
     name = "";
-    noOfServingStaff = 0;
     printers!: PrinterViewModel[];
     receiptPrinter?: PrinterViewModel;
 
@@ -26,7 +25,6 @@ export class CreatePointOfSale {
     async submit() {
         const pos = await this.api.createPointOfSale({
             name: this.name,
-            noOfServingStaff: this.noOfServingStaff,
             receiptPrinterId: this.receiptPrinter && this.receiptPrinter.id,
         }).transfer();
         this.router.navigateToRoute("details", {

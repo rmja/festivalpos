@@ -8,7 +8,6 @@ import { autoinject } from "aurelia-framework";
 export class EditPointOfSale {
     private pointOfSaleId!: number;
     name!: string;
-    noOfServingStaff!: number;
     printers!: PrinterViewModel[];
     receiptPrinter?: PrinterViewModel;
 
@@ -23,7 +22,6 @@ export class EditPointOfSale {
         this.pointOfSaleId = Number(params.pointOfSaleId);
         const pos = await this.api.getPointOfSale(this.pointOfSaleId).transfer();
         this.name = pos.name;
-        this.noOfServingStaff = pos.noOfServingStaff;
         this.printers = await this.api.getAllPrinters().transfer();
         this.receiptPrinter = this.printers.find(x => x.id === pos.receiptPrinterId);
     }
@@ -31,7 +29,6 @@ export class EditPointOfSale {
     async submit() {
         const patch = new Patch<PointOfSale>()
             .replace(x => x.name, this.name)
-            .replace(x => x.noOfServingStaff, this.noOfServingStaff)
             .replace(x => x.receiptPrinterId, this.receiptPrinter ? this.receiptPrinter.id : null);
 
         await this.api.updatePointOfSale(this.pointOfSaleId, patch.operations).transfer();

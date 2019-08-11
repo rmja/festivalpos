@@ -1,0 +1,19 @@
+<template>
+    <form submit.delegate="submit()">
+        <ux-dialog>
+            <ux-dialog-header>
+                <button type="button" class="close" click.delegate="close()"><font-awesome-icon icon="times"></font-awesome-icon></button>
+                Tilføj serveringspersonale
+            </ux-dialog-header>
+            <ux-dialog-body>
+                <div class="form-group">
+                    <label>Navn</label>
+                    <input type="text" class="form-control" value.bind="name">
+                </div>
+            </ux-dialog-body>
+            <ux-dialog-footer>
+                <button type="submit" class="btn btn-primary">Tilføj</button>
+            </ux-dialog-footer>
+        </ux-dialog>
+    </form>
+</template>

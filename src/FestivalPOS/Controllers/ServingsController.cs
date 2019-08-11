@@ -122,7 +122,7 @@ namespace FestivalPOS.Controllers
         [HttpGet("/api/PointsOfSale/{pointOfSaleId:int}/Servings")]
         public async Task<List<Serving>> GetAllActiveByPointOfSaleId(int pointOfSaleId)
         {
-            var completedThreshold = LocalClock.Now.AddMinutes(-10);
+            var completedThreshold = LocalClock.Now.AddSeconds(-60);
 
             var servings = await _db.Servings
                 .Include(x => x.Lines)
