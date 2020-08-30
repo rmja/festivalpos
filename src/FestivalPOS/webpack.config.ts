@@ -12,8 +12,8 @@ import { resolve } from 'path';
 const config = (_env: any, argv?: { mode?: "production" | "development" }): Configuration => {
     const mode = (argv || {}).mode || "development";
     const isRelease = mode === "production";
-    const cssLoader: Loader[] = [
-        { loader: 'css-loader' },
+    const cssLoader = (esModule: boolean): Loader[] => [
+        { loader: 'css-loader', options: { esModule } },
         { loader: 'postcss-loader', options: { plugins: [() => autoprefixer()] } }
     ];
 
@@ -45,12 +45,12 @@ const config = (_env: any, argv?: { mode?: "production" | "development" }): Conf
                     // https://github.com/aurelia/webpack-plugin/wiki/CSS-doesn't-load
                     test: /\.css$/,
                     issuer: /\.html$/,
-                    use: cssLoader
+                    use: cssLoader(false)
                 },
                 {
                     test: /\.css$/,
                     issuer: path => !/\.html$/.test(path),
-                    use: [MiniCssExtractPlugin.loader, ...cssLoader]
+                    use: [MiniCssExtractPlugin.loader, ...cssLoader(true)]
                 },
                 // {
                 //     test: /\.(sass|scss)$/,

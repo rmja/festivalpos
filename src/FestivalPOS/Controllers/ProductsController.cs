@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using FestivalPOS.Models;
+﻿using FestivalPOS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +6,12 @@ using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
 {
@@ -113,7 +112,7 @@ namespace FestivalPOS.Controllers
 
             return product;
 
-            async Task<string> UploadAsync(Image<Rgba32> image, string name)
+            async Task<string> UploadAsync(Image image, string name)
             {
                 var blob = container.GetBlockBlobReference(name);
 
