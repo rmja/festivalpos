@@ -1,9 +1,9 @@
-﻿using FestivalPOS.Models;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using FestivalPOS.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -20,10 +20,10 @@ namespace FestivalPOS.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly PosContext _db;
-        private readonly CloudStorageAccount _storageAccount;
+        private readonly BlobServiceClient _storageAccount;
         private static bool _productImagesContainerExists = false;
 
-        public ProductsController(PosContext db, CloudStorageAccount storageAccount)
+        public ProductsController(PosContext db, BlobServiceClient storageAccount)
         {
             _db = db;
             _storageAccount = storageAccount;
@@ -85,16 +85,12 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            var blobClient = _storageAccount.CreateCloudBlobClient();
-            var container = blobClient.GetContainerReference("product-images");
+            var container = _storageAccount.GetBlobContainerClient("product-images");
 
             if (!_productImagesContainerExists)
             {
                 await container.CreateIfNotExistsAsync();
-                await container.SetPermissionsAsync(new BlobContainerPermissions()
-                {
-                    PublicAccess = BlobContainerPublicAccessType.Blob
-                });
+                await container.SetAccessPolicyAsync(PublicAccessType.Blob);
                 _productImagesContainerExists = true;
             }
 
@@ -114,17 +110,18 @@ namespace FestivalPOS.Controllers
 
             async Task<string> UploadAsync(Image image, string name)
             {
-                var blob = container.GetBlockBlobReference(name);
+                var blob = container.GetBlobClient(name);
 
                 using (var stream = new MemoryStream())
                 {
                     image.SaveAsPng(stream);
 
                     stream.Position = 0;
-                    await blob.UploadFromStreamAsync(stream);
-
-                    blob.Properties.ContentType = "image/png";
-                    await blob.SetPropertiesAsync();
+                    await blob.UploadAsync(stream);
+                    await blob.SetHttpHeadersAsync(new BlobHttpHeaders
+                    {
+                        ContentType = "image/png"
+                    });
                 }
 
                 return blob.Uri.ToString();

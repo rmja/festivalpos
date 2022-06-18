@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using FestivalPOS.Converters;
 using FestivalPOS.Hubs;
 using FestivalPOS.Printing;
@@ -5,12 +6,9 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.Webpack;
-using Microsoft.Azure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Text.Json;
@@ -65,7 +63,7 @@ namespace FestivalPOS
             services.AddSingleton(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<PosOptions>>().Value;
-                return CloudStorageAccount.Parse(options.StorageConnectionString);
+                return new BlobServiceClient(options.StorageConnectionString);
             });
 
             services.AddScoped<PrintDispatcher>()
@@ -73,7 +71,7 @@ namespace FestivalPOS
                 .AddSingleton<ReceiptPrintGenerator>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceScopeFactory serviceScopeFactory)
+        public void Configure(IApplicationBuilder app, IServiceScopeFactory serviceScopeFactory)
         {
             using (var scope = serviceScopeFactory.CreateScope())
             {
@@ -81,18 +79,8 @@ namespace FestivalPOS
                 db.Database.Migrate();
             }
 
-            if (env.IsDevelopment())
-            {
-                app
-                    .UseDeveloperExceptionPage()
-                    .UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions { HotModuleReplacement = true });
-            }
-            else
-            {
-                app.UseHsts();
-            }
-
             app
+                .UseDeveloperExceptionPage()
                 .UseStaticFiles()
                 .UseRouting()
                 .UseEndpoints(endpoints =>
