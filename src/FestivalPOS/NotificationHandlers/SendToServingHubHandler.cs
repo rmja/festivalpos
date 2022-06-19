@@ -26,39 +26,39 @@ namespace FestivalPOS.NotificationHandlers
         {
             var serving = await _db.Servings
                 .Include(x => x.Lines)
-                .FirstAsync(x => x.Id == notification.ServingId);
+                .FirstAsync(x => x.Id == notification.ServingId ,cancellationToken);
 
             serving.OnMaterialized();
 
             var clients = _hub.Clients.Group($"PointsOfSale:{serving.PointOfSaleId}");
 
-            await clients.SendAsync("ServingCreated", serving);
+            await clients.SendAsync("ServingCreated", serving, cancellationToken);
         }
 
         public async Task Handle(ServingUpdatedNotification notification, CancellationToken cancellationToken)
         {
             var serving = await _db.Servings
                 .Include(x => x.Lines)
-                .FirstAsync(x => x.Id == notification.ServingId);
+                .FirstAsync(x => x.Id == notification.ServingId, cancellationToken);
 
             serving.OnMaterialized();
 
             var clients = _hub.Clients.Group($"PointsOfSale:{serving.PointOfSaleId}");
 
-            await clients.SendAsync("ServingUpdated", serving);
+            await clients.SendAsync("ServingUpdated", serving, cancellationToken);
         }
 
         public async Task Handle(PointOfSaleUpdatedNotification notification, CancellationToken cancellationToken)
         {
             var pos = await _db.PointOfSales
                 .Include(x => x.ServingStaff)
-                .FirstAsync(x => x.Id == notification.PointOfSaleId);
+                .FirstAsync(x => x.Id == notification.PointOfSaleId, cancellationToken);
 
             pos.OnMaterialized();
 
             var clients = _hub.Clients.Group($"PointsOfSale:{pos.Id}");
 
-            await clients.SendAsync("PointOfSaleUpdated", pos);
+            await clients.SendAsync("PointOfSaleUpdated", pos, cancellationToken);
         }
     }
 }
