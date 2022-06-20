@@ -1,8 +1,8 @@
-import { autoinject } from "aurelia-framework";
-import { Api } from "../../api";
-import { Patch } from "ur-jsonpatch";
-import { Router } from "aurelia-router";
 import { AlarmFeed } from "../../api/alarms";
+import { Api } from "../../api";
+import { Patch } from "@utiliread/jsonpatch";
+import { Router } from "aurelia-router";
+import { autoinject } from "aurelia-framework";
 
 @autoinject()
 export class EditAlarm {

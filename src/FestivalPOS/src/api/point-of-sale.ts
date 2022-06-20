@@ -1,5 +1,5 @@
 import { ServingStaff } from './serving-staff';
-import { jsonProperty } from "ur-json";
+import { jsonProperty } from "@utiliread/json";
 import { transparentConverter } from "./converters/transparent-converter";
 
 export class PointOfSale {

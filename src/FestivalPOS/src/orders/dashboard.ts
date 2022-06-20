@@ -48,7 +48,7 @@ export class OrdersDashboard {
         this.orders = await this.api.getAllOrders({
             pointOfSaleId: this.pointOfSale && this.pointOfSale.id,
             terminalId: this.terminal && this.terminal.id
-        }).bypassCache().transfer();
+        }).bypassClientCache().transfer();
 
         for (const order of this.orders) {
             const pos = this.pointsOfSale.find(x => x.id === order.pointOfSaleId);

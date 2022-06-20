@@ -1,5 +1,5 @@
-import { JsonConverter } from "ur-json";
 import { Big } from "big.js";
+import { JsonConverter } from "@utiliread/json";
 
 class BigConverter implements JsonConverter {
     toJson(source: Big) {

@@ -2,7 +2,7 @@ import { autoinject, observable } from "aurelia-framework";
 
 import { Api } from "../api";
 import { Big } from "big.js";
-import { HttpError } from "ur-http";
+import { HttpError } from "@utiliread/http";
 import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";

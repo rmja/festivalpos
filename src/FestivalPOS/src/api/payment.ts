@@ -1,8 +1,8 @@
-import { jsonProperty } from "ur-json";
 import { Big } from "big.js";
+import { DateTime } from "luxon";
 import { bigConverter } from "./converters/big-converter";
 import { dateTimeConverter } from "./converters/date-time-converter";
-import { DateTime } from "luxon";
+import { jsonProperty } from "@utiliread/json";
 
 export type PaymentMethod = "card" | "cash" | "account";
 

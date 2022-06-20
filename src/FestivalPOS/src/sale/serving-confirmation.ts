@@ -1,5 +1,5 @@
 import { Api } from "../api";
-import { Patch } from "ur-jsonpatch";
+import { Patch } from "@utiliread/jsonpatch";
 import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
 import { Serving } from "../api/serving";

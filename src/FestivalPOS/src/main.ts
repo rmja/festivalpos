@@ -5,8 +5,6 @@ import "bootstrap/dist/js/bootstrap.js";
 import { Aurelia, PLATFORM } from "aurelia-framework";
 
 import { DialogConfiguration } from "aurelia-dialog";
-import { Http } from "ur-http";
-import { HttpClient } from "aurelia-fetch-client";
 import { initialState } from "./state";
 
 if ('serviceWorker' in navigator && window.location.protocol.startsWith('https')) {
@@ -42,11 +40,6 @@ export async function configure(aurelia: Aurelia) {
     }
 
     await aurelia.start();
-
-    const httpClient = aurelia.container.get(HttpClient) as HttpClient;
-    httpClient.configure(config => config.withBaseUrl("api"));
-    Http.defaults.fetch = httpClient.fetch.bind(httpClient);
-    Http.defaults.timeout = 10000;
 
     await aurelia.setRoot(PLATFORM.moduleName("app"));
 }

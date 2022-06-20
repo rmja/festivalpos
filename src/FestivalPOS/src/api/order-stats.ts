@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { PaymentMethod } from "./payment";
 import { bigConverter } from "./converters/big-converter";
 import { dateTimeConverter } from "./converters/date-time-converter";
-import { jsonProperty } from "ur-json";
+import { jsonProperty } from "@utiliread/json";
 
 class PaymentStats {
     @jsonProperty()

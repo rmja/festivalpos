@@ -1,9 +1,9 @@
-import { HubConnection, HubConnectionBuilder } from "@aspnet/signalr";
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
 import { EventAggregator } from "aurelia-event-aggregator";
 import { PrintJob } from './print-job';
 import { autoinject } from "aurelia-framework";
-import { modelBind } from "ur-json";
+import { deserialize } from "@utiliread/json";
 
 @autoinject()
 export class PrintingHub {
@@ -17,7 +17,7 @@ export class PrintingHub {
             .build();
 
         this.connection.on("Print", (job: any) => {
-            job = modelBind(PrintJob, job);
+            job = deserialize(PrintJob, job);
             eventAggregator.publish(new PrintJobCreated(job));
         });
     }

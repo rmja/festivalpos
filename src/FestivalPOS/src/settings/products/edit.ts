@@ -4,7 +4,7 @@ import * as Croppie from "croppie";
 
 import { Api } from "../../api";
 import { Big } from "big.js";
-import { Patch } from "ur-jsonpatch";
+import { Patch } from "@utiliread/jsonpatch";
 import { Product } from "../../api/product";
 import { Router } from "aurelia-router";
 import { autoinject } from "aurelia-framework";
@@ -96,9 +96,10 @@ export class EditProduct {
         await this.api.updateProduct(this.productId, patch.operations).transfer();
 
         if (this.croppie && this.file.files) {
-            const image = await this.croppie.result({ type: "blob"});
+            const filename = this.file.files[0].name;
+            const image = await this.croppie.result({ type: "blob" });
             
-            await this.api.uploadImage(this.productId, image, this.file.files[0].name).transfer();
+            await this.api.uploadImage(this.productId, image, filename).transfer();
         }
 
         this.router.navigateToRoute("list");

@@ -1,5 +1,5 @@
 import { Api } from "../../api";
-import { Patch } from "ur-jsonpatch";
+import { Patch } from "@utiliread/jsonpatch";
 import { Printer } from "../../api/printer";
 import { Router } from "aurelia-router";
 import { autoinject } from "aurelia-framework";

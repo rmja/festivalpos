@@ -1,6 +1,6 @@
 import { Api } from "../api";
 import { Big } from "big.js";
-import { Patch } from "ur-jsonpatch";
+import { Patch } from "@utiliread/jsonpatch";
 import { Payment } from "../api/payment";
 import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";

@@ -1,9 +1,9 @@
-import { HubConnection, HubConnectionBuilder } from "@aspnet/signalr";
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
 import { AlarmEvent } from "./alarms";
 import { EventAggregator } from "aurelia-event-aggregator";
 import { autoinject } from "aurelia-framework";
-import { modelBind } from "ur-json";
+import { deserialize } from "@utiliread/json";
 
 @autoinject()
 export class AlarmsHub {
@@ -17,7 +17,7 @@ export class AlarmsHub {
             .build();
 
         this.connection.on("EventCreated", (event: any) => {
-            event = modelBind(AlarmEvent, event);
+            event = deserialize(AlarmEvent, event);
             eventAggregator.publish(new EventCreated(event));
         });
     }

@@ -1,5 +1,5 @@
-import { JsonConverter } from "ur-json";
 import { DateTime } from "luxon";
+import { JsonConverter } from "@utiliread/json";
 
 class DateTimeConverter implements JsonConverter {
     toJson(source: DateTime) {

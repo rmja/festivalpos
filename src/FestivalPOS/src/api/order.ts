@@ -4,7 +4,7 @@ import { Payment } from "./payment";
 import { Serving } from "./serving";
 import { bigConverter } from "./converters/big-converter";
 import { dateTimeConverter } from "./converters/date-time-converter";
-import { jsonProperty } from "ur-json";
+import { jsonProperty } from "@utiliread/json";
 
 export class OrderLine {
     @jsonProperty()

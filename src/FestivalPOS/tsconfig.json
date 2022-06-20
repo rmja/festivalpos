@@ -1,21 +1,15 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "target": "es5",
-        "sourceMap": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "skipDefaultLibCheck": true,
-        "strict": true,
-        "lib": [
-            "es2017",
-            "dom"
-        ],
-        "noImplicitAny": false
-    },
-    "exclude": [
-        "bin",
-        "node_modules"
-    ]
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "target": "ES2020",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipDefaultLibCheck": true,
+    "strict": true,
+    "lib": ["ES2020", "DOM", "WebWorker"],
+    "noImplicitAny": false
+  },
+  "exclude": ["bin", "node_modules"]
 }

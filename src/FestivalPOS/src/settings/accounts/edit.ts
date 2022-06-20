@@ -1,7 +1,7 @@
 import { Account } from "../../api/account";
 import { Api } from "../../api";
 import {Big} from "big.js";
-import { Patch } from "ur-jsonpatch";
+import { Patch } from "@utiliread/jsonpatch";
 import { Router } from "aurelia-router";
 import { autoinject } from "aurelia-framework";
 

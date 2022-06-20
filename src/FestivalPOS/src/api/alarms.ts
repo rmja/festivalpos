@@ -1,6 +1,6 @@
-import { jsonProperty } from "ur-json";
 import { DateTime } from "luxon";
 import { dateTimeConverter } from "./converters/date-time-converter";
+import { jsonProperty } from "@utiliread/json";
 
 export class AlarmFeed {
     @jsonProperty()

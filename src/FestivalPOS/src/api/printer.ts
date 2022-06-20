@@ -1,4 +1,4 @@
-import { jsonProperty } from "ur-json";
+import { jsonProperty } from "@utiliread/json";
 
 export class Printer {
     @jsonProperty()

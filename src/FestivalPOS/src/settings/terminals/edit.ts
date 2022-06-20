@@ -1,8 +1,8 @@
-import { autoinject } from "aurelia-framework";
 import { Api } from "../../api";
-import { Patch } from "ur-jsonpatch";
+import { Patch } from "@utiliread/jsonpatch";
 import { Router } from "aurelia-router";
 import { Terminal } from "../../api/terminal";
+import { autoinject } from "aurelia-framework";
 
 @autoinject()
 export class EditTerminal {

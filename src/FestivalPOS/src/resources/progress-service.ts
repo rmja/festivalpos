@@ -1,7 +1,7 @@
 import { DialogService } from "aurelia-dialog";
 import { ProgressBusy } from "./progress-busy";
 import { ProgressError } from "./progress-error";
-import { TimeoutError } from "ur-http";
+import { TimeoutError } from "@utiliread/http";
 import { autoinject } from "aurelia-framework";
 
 @autoinject()
@@ -32,7 +32,7 @@ export class ProgressService {
         }
     }
 
-    async error(title: string, error: Error | string) {
+    async error(title: string, error: unknown) {
         let message: string;
 
         if (typeof error === "string") {
@@ -45,7 +45,7 @@ export class ProgressService {
             message = "Intet svar indenfor tidsgrænsen";
         }
         else {
-            message = error.message;
+            message = (<any>error).message;
         }
 
         if (this.busyOpenPromise) {

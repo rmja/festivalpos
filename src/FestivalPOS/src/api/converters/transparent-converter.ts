@@ -1,4 +1,4 @@
-import { JsonConverter } from "ur-json";
+import { JsonConverter } from "@utiliread/json";
 
 class TransparentConverter implements JsonConverter {
     toJson(source: number | null) {

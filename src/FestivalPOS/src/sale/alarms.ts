@@ -23,7 +23,7 @@ export class Alarms {
         try {
             this.progress.busy("Henter alarmer", faBell);
 
-            var events = await this.api.getAllPendingAlarmEvents({ pointOfSaleId: this.state.pointOfSaleId }).bypassCache().transfer();
+            var events = await this.api.getAllPendingAlarmEvents({ pointOfSaleId: this.state.pointOfSaleId }).bypassClientCache().transfer();
 
             this.progress.done();
         }

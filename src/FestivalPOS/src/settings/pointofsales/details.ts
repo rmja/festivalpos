@@ -8,7 +8,7 @@ import { PointOfSale } from "../../api/point-of-sale";
 import { PointOfSaleProduct } from './../../api/point-of-sale-product';
 import { Router } from "aurelia-router";
 import { autoinject } from "aurelia-framework";
-import { diff } from "ur-jsonpatch";
+import { diff } from "@utiliread/jsonpatch";
 import { moveBefore } from "../../move-before";
 
 @autoinject()

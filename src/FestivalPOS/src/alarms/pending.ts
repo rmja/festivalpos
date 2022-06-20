@@ -1,8 +1,9 @@
-import { autoinject, Disposable } from "aurelia-framework";
+import { AlarmsHub, EventCreated } from "../api/alarms-hub";
+import { Disposable, autoinject } from "aurelia-framework";
+
 import { Api } from "../api";
 import { DateTime } from "luxon";
 import { EventAggregator } from "aurelia-event-aggregator";
-import { EventCreated, AlarmsHub } from "../api/alarms-hub";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 
 @autoinject()
@@ -17,7 +18,7 @@ export class PendingAlarms {
     async activate() {
         await this.alarmsHub.connect();
 
-        this.pendingEvents = await this.api.getAllPendingAlarmEvents().bypassCache().transfer();
+        this.pendingEvents = await this.api.getAllPendingAlarmEvents().bypassClientCache().transfer();
 
         this.disposables = [
             this.eventAggregator.subscribe(EventCreated, this.eventCreated.bind(this))

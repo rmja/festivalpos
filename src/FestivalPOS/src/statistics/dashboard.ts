@@ -70,14 +70,14 @@ export class StatisticsDashboard {
             this.stats = await this.api.getStats(this.periodStart, this.periodEnd, this.kind, offset, {
                 pointOfSaleId: this.pointOfSale && this.pointOfSale.id,
                 terminalId: this.terminal && this.terminal.id
-            }).bypassCache().transfer();
+            }).bypassClientCache().transfer();
         }
         else {
             const offset = Duration.fromObject({ hours: 4 });
             this.stats = await this.api.getStats(this.periodStart.plus(offset), this.periodEnd.plus(offset), this.kind, Duration.fromMillis(0), {
                 pointOfSaleId: this.pointOfSale && this.pointOfSale.id,
                 terminalId: this.terminal && this.terminal.id
-            }).bypassCache().transfer();
+            }).bypassClientCache().transfer();
         }
     }
 }

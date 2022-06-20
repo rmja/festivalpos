@@ -1,6 +1,6 @@
 import Big, { } from "big.js"
 import { bigConverter } from "./converters/big-converter";
-import { jsonProperty } from "ur-json"
+import { jsonProperty } from "@utiliread/json"
 
 export class Product {
     @jsonProperty()

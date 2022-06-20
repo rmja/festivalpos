@@ -4,7 +4,7 @@ import { faTicketAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Api } from "../api";
 import { Big } from "big.js";
 import { DialogService } from "aurelia-dialog";
-import { HttpError } from "ur-http";
+import { HttpError } from "@utiliread/http";
 import { ProgressService } from "../resources/progress-service";
 import { TagOverwriteDialog } from "./tag-overwrite-dialog";
 import { autoinject } from "aurelia-framework";

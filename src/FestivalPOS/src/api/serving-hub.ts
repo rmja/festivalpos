@@ -1,10 +1,10 @@
-import { HubConnection, HubConnectionBuilder } from "@aspnet/signalr";
+import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 
 import { EventAggregator } from "aurelia-event-aggregator";
 import { PointOfSale } from "./point-of-sale";
 import { Serving } from "./serving";
 import { autoinject } from "aurelia-framework";
-import { modelBind } from "ur-json";
+import { deserialize } from "@utiliread/json";
 
 @autoinject()
 export class ServingHub {
@@ -18,17 +18,17 @@ export class ServingHub {
             .build();
 
         this.connection.on("ServingCreated", (serving: any) => {
-            serving = modelBind(Serving, serving);
+            serving = deserialize(Serving, serving);
             eventAggregator.publish(new ServingCreated(serving));
         });
 
         this.connection.on("ServingUpdated", (serving: any) => {
-            serving = modelBind(Serving, serving);
+            serving = deserialize(Serving, serving);
             eventAggregator.publish(new ServingUpdated(serving));
         });
 
         this.connection.on("PointOfSaleUpdated", (pos: any) => {
-            pos = modelBind(PointOfSale, pos);
+            pos = deserialize(PointOfSale, pos);
             eventAggregator.publish(new PointOfSaleUpdated(pos));
         })
     }

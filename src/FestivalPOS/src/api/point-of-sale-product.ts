@@ -1,5 +1,5 @@
 import { Product } from "./product";
-import { jsonProperty } from "ur-json";
+import { jsonProperty } from "@utiliread/json";
 
 export class PointOfSaleProduct {
     @jsonProperty()

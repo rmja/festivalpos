@@ -6,7 +6,7 @@ import { Api } from "../api";
 import { DateTime } from "luxon";
 import { DialogService } from 'aurelia-dialog';
 import { EventAggregator } from "aurelia-event-aggregator";
-import { Patch } from "ur-jsonpatch";
+import { Patch } from "@utiliread/jsonpatch";
 import { PointOfSaleUpdated } from './../api/serving-hub';
 import { Serving } from "../api/serving";
 import { ServingStaff } from '../api/serving-staff';
@@ -41,7 +41,7 @@ export class ServingDashboard {
         this.beam = !!params.beam;
         const [pos, servings] = await Promise.all([
             this.api.getPointOfSale(this.state.pointOfSaleId).transfer(),
-            this.api.getAllServingsByPointOfSaleId(this.state.pointOfSaleId).bypassCache().transfer()
+            this.api.getAllServingsByPointOfSaleId(this.state.pointOfSaleId).bypassClientCache().transfer()
         ]);
         this.servingStaff = pos.servingStaff.map(x => new ServingStaffViewModel(this, x));
 
