@@ -6,6 +6,7 @@ import { Order } from "../api/order";
 import { ProgressService } from "../resources/progress-service";
 import { State } from "../state";
 import { autoinject } from "aurelia-framework";
+import { connectTo } from "aurelia-store";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 @autoinject()
