@@ -15,7 +15,7 @@
                     <div class="list-group">
                         <button type="button" repeat.for="serving of pendingServings"
                             class="list-group-item list-group-item-warning list-group-item-action ${serving === selectedServing ? 'active' : ''}"
-                            click.delegate="toggleSelected(serving)">
+                            click.delegate="toggleSelected(serving)" fast-click>
                             <serving-item serving.bind="serving" now.bind="now"></serving-item>
                         </button>
                     </div>
@@ -32,7 +32,7 @@
                             </div>
                             <p>
                                 <button type="button" class="btn btn-primary btn-block"
-                                    click.delegate="acceptNextServing(staff.number)">
+                                    click.delegate="acceptNextServing(staff.number)" fast-click>
                                     <font-awesome-icon icon="level-down-alt"></font-awesome-icon> Påbegynd
                                 </button>
                             </p>
@@ -42,7 +42,7 @@
                                         repeat.for="serving of staff.ongoingServings">
                                         <serving-item serving.bind="serving" now.bind="now">
                                             <button type="button" class="btn btn-secondary btn-block"
-                                                click.delegate="complete(serving)">
+                                                click.delegate="complete(serving)" fast-click>
                                                 <font-awesome-icon icon="long-arrow-alt-down"></font-awesome-icon> Færdig
                                             </button>
                                         </serving-item>
