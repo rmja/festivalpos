@@ -11,7 +11,6 @@ favicons("favicon.svg", {
     developerURL: 'https://github.com/rmja',
     background: '#f3f3f4',
     theme_color: '#550000',
-    orientation: "portrait"
 }, async (error, response) => {
     if (error) {
         console.error(error);

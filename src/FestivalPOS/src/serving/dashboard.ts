@@ -1,5 +1,6 @@
 import { Disposable, LogManager, PLATFORM, autoinject } from "aurelia-framework";
 import { ServingCreated, ServingHub, ServingUpdated } from "../api/serving-hub";
+import { tryLockOrientation, tryUnlockOrientation } from "../orientation";
 
 import { AddServerDialog } from './add-server-dialog';
 import { Api } from "../api";
@@ -55,6 +56,8 @@ export class ServingDashboard {
 
         this.intervalHandle = window.setInterval(() => this.now = DateTime.local(), 500);
 
+        await tryUnlockOrientation();
+
         this.disposables = [
             this.eventAggregator.subscribe(ServingCreated, (event: ServingCreated) => this.addOrUpdateServing(event.serving)),
             this.eventAggregator.subscribe(ServingUpdated, (event: ServingUpdated) => this.addOrUpdateServing(event.serving)),
@@ -70,6 +73,8 @@ export class ServingDashboard {
         for (const handle of this.timeoutHandles) {
             clearTimeout(handle);
         }
+
+        await tryLockOrientation();
 
         for (const disposable of this.disposables) {
             disposable.dispose();

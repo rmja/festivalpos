@@ -5,7 +5,6 @@
   "dir": "auto",
   "lang": "en-US",
   "display": "standalone",
-  "orientation": "portrait",
   "start_url": "/?homescreen=1",
   "background_color": "#f3f3f4",
   "theme_color": "#550000",
