@@ -20,6 +20,7 @@ export class Setup {
 
     affiliate?: SumUpAffiliateViewModel;
     affiliates!: SumUpAffiliateViewModel[];
+    receiptEmail?: string;
 
     mobilepayNumber?: number;
 
@@ -38,6 +39,7 @@ export class Setup {
         this.terminal = this.terminals.find(x => x.id === this.state.terminalId);
         this.pointOfSale = this.pointOfSales.find(x => x.id === this.state.pointOfSaleId);
         this.affiliate = this.affiliates.find(x => x.key === this.state.sumupAffiliateKey);
+        this.receiptEmail = this.state.sumupReceiptEmail;
         this.mobilepayNumber = this.state.mobilepayNumber;
     }
 
@@ -51,7 +53,13 @@ export class Setup {
             throw new Error();
         }
 
-        await this.store.dispatch(setup, this.terminal.id, this.pointOfSale.id, this.affiliate && this.affiliate.key, this.mobilepayNumber && this.mobilepayNumber);
+        await this.store.dispatch(setup, {
+            terminalId: this.terminal.id,
+            pointOfSaleId: this.pointOfSale.id,
+            sumupAffiliateKey: this.affiliate?.key,
+            sumupReceiptEmail: this.receiptEmail || undefined,
+            mobilepayNumber: this.mobilepayNumber && this.mobilepayNumber,
+        });
 
         this.router.navigateToRoute("sale");
     }
