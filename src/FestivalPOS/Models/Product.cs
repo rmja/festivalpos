@@ -10,9 +10,11 @@ namespace FestivalPOS.Models
         public string Name { get; set; }
         public decimal Price { get; set; }
         [MaxLength(300)]
-        public string PreviewImageUrl { get; set; }
+        public string PreviewImageName { get; set; }
+        public string PreviewImageUrl => PreviewImageName != null ? $"/api/Products/{Id}/Image?kind=preview" : null;
         [MaxLength(300)]
-        public string ThumbnailImageUrl { get; set; }
+        public string ThumbnailImageName { get; set; }
+        public string ThumbnailImageUrl => ThumbnailImageName != null ? $"/api/Products/{Id}/Image?kind=thumbnail" : null;
         public bool IsDeleted { get; set; }
     }
 }

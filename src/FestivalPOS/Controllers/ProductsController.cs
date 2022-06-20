@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
@@ -75,43 +77,72 @@ namespace FestivalPOS.Controllers
             return product;
         }
 
-        [HttpPut("{id:int}/Image")]
-        public async Task<ActionResult<Product>> UploadImage(int id, [FromForm] IFormFile file)
+        [HttpGet("{id:int}/Image")]
+        public async Task<ActionResult> GetImage(int id, string kind = "preview", CancellationToken cancellationToken = default)
         {
-            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
-
+            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
             if (product == null)
             {
                 return NotFound();
             }
 
-            var container = _storageAccount.GetBlobContainerClient("product-images");
-
-            if (!_productImagesContainerExists)
+            var blobName = kind switch
             {
-                await container.CreateIfNotExistsAsync();
-                await container.SetAccessPolicyAsync(PublicAccessType.Blob);
-                _productImagesContainerExists = true;
+                "preview" => product.PreviewImageName,
+                "thumbnail" => product.ThumbnailImageName,
+                _ => null,
+            };
+
+            if (blobName == null)
+            {
+                return BadRequest("Invalid image kind");
             }
 
+            var container = await GetImagesBlobContainerClientAsync();
+
+            var blobClient = container.GetBlobClient(blobName);
+
+            var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
+
+            var responseHeaders = Response.GetTypedHeaders();
+            responseHeaders.ContentType = new MediaTypeHeaderValue(properties.Value.ContentType);
+            responseHeaders.ETag = new EntityTagHeaderValue(properties.Value.ETag.ToString());
+            responseHeaders.ContentLength = properties.Value.ContentLength;
+            responseHeaders.LastModified = properties.Value.LastModified;
+            await blobClient.DownloadToAsync(Response.Body, cancellationToken);
+
+            return new EmptyResult();
+        }
+
+        [HttpPut("{id:int}/Image")]
+        public async Task<ActionResult<Product>> UploadImage(int id, [FromForm] IFormFile file)
+        {
+            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var container = await GetImagesBlobContainerClientAsync();
             using (var inputStream = file.OpenReadStream())
             using (var previewImage = Image.Load(inputStream))
             {
                 var thumbnailImage = previewImage.Clone(x => x.Resize(150, 120));
 
                 var version = Guid.NewGuid();
-                product.PreviewImageUrl = await UploadAsync(previewImage, $"{id}/{version}.300x240.png");
-                product.ThumbnailImageUrl = await UploadAsync(thumbnailImage, $"{id}/{version}.150x120.png");
+                product.PreviewImageName = $"{id}/{version}.300x240.png";
+                product.ThumbnailImageName = $"{id}/{version}.150x120.png";
+                await UploadAsync(previewImage, product.PreviewImageName);
+                await UploadAsync(thumbnailImage, product.ThumbnailImageName);
             }
 
             await _db.SaveChangesAsync();
 
             return product;
 
-            async Task<string> UploadAsync(Image image, string name)
+            async Task UploadAsync(Image image, string name)
             {
                 var blob = container.GetBlobClient(name);
-
                 using (var stream = new MemoryStream())
                 {
                     image.SaveAsPng(stream);
@@ -123,9 +154,21 @@ namespace FestivalPOS.Controllers
                         ContentType = "image/png"
                     });
                 }
-
-                return blob.Uri.ToString();
             }
+        }
+
+        private async Task<BlobContainerClient> GetImagesBlobContainerClientAsync()
+        {
+            var container = _storageAccount.GetBlobContainerClient("product-images");
+
+            if (!_productImagesContainerExists)
+            {
+                await container.CreateIfNotExistsAsync();
+                await container.SetAccessPolicyAsync(PublicAccessType.Blob);
+                _productImagesContainerExists = true;
+            }
+
+            return container;
         }
 
         [HttpDelete("{id:int}")]
