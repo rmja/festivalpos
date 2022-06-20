@@ -15,7 +15,7 @@
                     <div class="list-group">
                         <button type="button" repeat.for="serving of pendingServings"
                             class="list-group-item list-group-item-warning list-group-item-action ${serving === selectedServing ? 'active' : ''}"
-                            click.delegate="toggleSelected(serving)" fast-click>
+                            click.delegate="toggleSelected(serving)">
                             <serving-item serving.bind="serving" now.bind="now"></serving-item>
                         </button>
                     </div>
