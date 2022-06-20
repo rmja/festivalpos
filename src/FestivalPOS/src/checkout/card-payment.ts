@@ -39,6 +39,7 @@ export class CardPayment {
             // Example: <a href="sumupmerchant://pay/1.0?affiliate-key=7ca84f17-84a5-4140-8df6-6ebeed8540fc&app-id=com.example.myapp&total=1.23&currency=EUR&title=Taxi Ride&receipt-mobilephone=+3531234567890&receipt-email=customer@mail.com&callback=http://example.com/myapp/mycallback">Start SumUp Payment</a>
 
             const affiliateKey = this.state.sumupAffiliateKey;
+            const receiptEmail = this.state.sumupReceiptEmail;
             const appId = "com.rmja.festivalpos";
             const total = order.amountDue.toFixed(2); // Has "." as decimal separator
             const title = `Kajfest ${pos.name}`;
@@ -51,7 +52,12 @@ export class CardPayment {
 
             await this.progress.done();
 
-            window.location.href = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${encodeURIComponent(title)}&callback=${encodeURIComponent(callbackUrl)}`;
+            let apiUrl = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${encodeURIComponent(title)}&skip-screen-success=true&callback=${encodeURIComponent(callbackUrl)}`
+            if (receiptEmail) {
+                apiUrl += `&receipt-email=${encodeURIComponent(receiptEmail)}`; 
+            }
+
+            window.location.href = apiUrl;
         }
         catch (error) {
             await this.progress.error("Kortbetaling kunne ikke gennemføres", error);
