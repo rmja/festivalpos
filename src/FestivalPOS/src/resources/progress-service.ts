@@ -8,10 +8,26 @@ import { autoinject } from "aurelia-framework";
 export class ProgressService {
     private busyOpenPromise?: Promise<any>;
 
+    public state: "idle" | "busy" | "error" = "idle";
+
+    public get isIdle() {
+        return this.state === "idle";
+    }
+
     constructor(private dialog: DialogService) {
     }
 
-    busy(title: string, icon?: any) {
+    tryBusy(title: string, icon?: any) {
+        if (!this.isIdle) {
+            return false;
+        }
+
+        this.setBusy(title, icon);
+        return true;
+    }
+
+    setBusy(title: string, icon?: any) {
+        this.state = "busy";
         if (this.busyOpenPromise) {
             this.busyOpenPromise.then(async () => {
                 await this.dialog.closeAll();
@@ -23,17 +39,20 @@ export class ProgressService {
         }
     }
 
-    done() {
+    async done() {
         if (this.busyOpenPromise) {
-            return this.busyOpenPromise.then(() => this.dialog.closeAll());
+            await this.busyOpenPromise.then(() => this.dialog.closeAll());
         }
         else {
-            return this.dialog.closeAll();
+            await this.dialog.closeAll();
         }
+
+        this.state = "idle";
     }
 
     async error(title: string, error: unknown) {
         let message: string;
+        this.state = "error";
 
         if (typeof error === "string") {
             message = error;
@@ -53,5 +72,7 @@ export class ProgressService {
         }
         await this.dialog.closeAll();
         await this.dialog.open({ viewModel: ProgressError, model: { title, message } }).whenClosed();
+
+        this.state = "idle";
     }
 }

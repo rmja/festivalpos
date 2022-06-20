@@ -48,11 +48,13 @@ export class MobilepayPayment {
 
     async cancel() {
         try {
-            this.progress.busy("Sletter ordre", faTrash);
+            if (!this.progress.tryBusy("Sletter ordre", faTrash)) {
+                return;
+            }
 
             await this.api.deleteOrder(this.order.id).send();
 
-            this.progress.done();
+            await this.progress.done();
 
             this.router.navigate("/sale");
         }
@@ -67,7 +69,9 @@ export class MobilepayPayment {
         }
 
         try {
-            this.progress.busy("Registrerer betaling", faCashRegister);
+            if (!this.progress.tryBusy("Registrerer betaling", faCashRegister)) {
+                return;
+            }
 
             const payment = await this.api.createPayment(this.order.id, {
                 method: "mobilePay",
@@ -75,7 +79,7 @@ export class MobilepayPayment {
                 transactionNumber: this.transactionNumber,
             }).transfer();
 
-            this.progress.done();
+            await this.progress.done();
 
             this.router.navigateToRoute("receipt", {
                 orderId: payment.orderId,

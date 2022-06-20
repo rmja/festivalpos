@@ -75,7 +75,9 @@ export class AccountPayment {
         }
 
         try {
-            this.progress.busy("Registrerer betaling", faCashRegister);
+            if (!this.progress.tryBusy("Registrerer betaling", faCashRegister)) {
+                return;
+            }
 
             let tagConflict = false;
             if (this.order.canHaveTag()) {
@@ -98,7 +100,7 @@ export class AccountPayment {
                 accountId: this.account.id
             }).transfer();
 
-            this.progress.done();
+            await this.progress.done();
 
             if (tagConflict) {
                 this.router.navigateToRoute("account-tag", {

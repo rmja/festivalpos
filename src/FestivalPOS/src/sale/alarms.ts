@@ -21,11 +21,11 @@ export class Alarms {
         this.feeds = await this.api.getAllAlarmFeeds().transfer();
 
         try {
-            this.progress.busy("Henter alarmer", faBell);
+            this.progress.setBusy("Henter alarmer", faBell);
 
             var events = await this.api.getAllPendingAlarmEvents({ pointOfSaleId: this.state.pointOfSaleId }).bypassClientCache().transfer();
 
-            this.progress.done();
+            await this.progress.done();
         }
         catch (error) {
             this.progress.error("Fejl ved hentning af alarmer", error);

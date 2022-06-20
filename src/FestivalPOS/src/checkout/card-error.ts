@@ -33,11 +33,13 @@ export class CardError {
         }
 
         try {
-            this.progress.busy("Sletter ordre", faTrash);
+            if (!this.progress.tryBusy("Sletter ordre", faTrash)) {
+                return;
+            }
 
             await this.api.deleteOrder(this.orderId).send();
 
-            this.progress.done();
+            await this.progress.done();
 
             this.appRouter.navigateToRoute("sale");
         }

@@ -46,7 +46,9 @@ export class PayButtonCustomElement {
         }
 
         try {
-            this.progress.busy("Opretter ordre", faFileAlt);
+            if (!this.progress.tryBusy("Opretter ordre", faFileAlt)) {
+                return;
+            }
 
             const order = await this.api.createOrder({
                 terminalId: this.state.terminalId,
@@ -60,7 +62,7 @@ export class PayButtonCustomElement {
 
             await this.store.dispatch(resetOrder);
 
-            this.progress.done();
+            await this.progress.done();
 
             if (order.canHaveTag()) {
                 this.router.navigate(`/checkout/orders/${order.id}/tag?paymentMethod=${method}`);

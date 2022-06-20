@@ -28,15 +28,17 @@ export class Tag {
         const tagNumber = Number(this.tagNumber.toFixed());
 
         try {
-            this.progress.busy("Søger efter ordre", faSearch);
+            if (!this.progress.tryBusy("Søger efter ordre", faSearch)) {
+                return;
+            }
             
             var order = await this.api.getCurrentOrderByTag(tagNumber).transfer();
 
-            this.progress.done();
+            await this.progress.done();
         }
         catch (error) {
             if (error instanceof HttpError && error.statusCode === 404) {
-                this.progress.done();
+                await this.progress.done();
                 this.notFound = true;
             }
             else {

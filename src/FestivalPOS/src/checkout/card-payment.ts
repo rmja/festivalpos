@@ -30,7 +30,7 @@ export class CardPayment {
 
     private async redirectToSumUpApp(orderId: number, tagNumber?: string) {
         try {
-            this.progress.busy("Viderestiller til kortbetaling", faCreditCard);
+            this.progress.setBusy("Viderestiller til kortbetaling", faCreditCard);
 
             const order = await this.api.getOrderById(orderId).transfer();
 

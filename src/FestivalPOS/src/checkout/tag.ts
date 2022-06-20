@@ -46,11 +46,13 @@ export class Tag {
 
     async cancel() {
         try {
-            this.progress.busy("Sletter ordre", faTrash);
+            if (!this.progress.tryBusy("Sletter ordre", faTrash)) {
+                return;
+            }
 
             await this.api.deleteOrder(this.order.id).send();
 
-            this.progress.done();
+            await this.progress.done();
 
             this.router.navigate("/sale");
         }
@@ -69,24 +71,26 @@ export class Tag {
         const tagNumber = Number(this.tagNumber.toFixed());
 
         try {
-            this.progress.busy("Registrerer brik", faTicketAlt);
+            if (!this.progress.tryBusy("Registrerer brik", faTicketAlt)) {
+                return;
+            }
 
             if (await this.tryAssignTag(tagNumber)) {
                 // Tag was assigned
-                this.progress.done();
+                await this.progress.done();
             }
             else {
-                this.progress.done();
+                await this.progress.done();
 
                 const result = await this.dialog.open({ viewModel: TagOverwriteDialog, model: tagNumber }).whenClosed();
 
                 if (!result.wasCancelled) {
                     // Overwrite current tag
-                    this.progress.busy("Overskriver brik", faTicketAlt);
+                    this.progress.setBusy("Overskriver brik", faTicketAlt);
 
                     await this.api.assignOrderTag(this.orderId, tagNumber, true).send();
                     
-                    this.progress.done();
+                    await this.progress.done();
                 }
                 else {
                     // Do not overwrite, enter new number

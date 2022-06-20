@@ -62,7 +62,10 @@ export class OrderDetails {
 
     async delete() {
         try {
-            this.progress.busy("Sletter ordre");
+            if (!this.progress.tryBusy("Sletter ordre")) {
+                return;
+            }
+
             await this.api.deleteOrder(this.orderId).send();
             await this.progress.done();
         }

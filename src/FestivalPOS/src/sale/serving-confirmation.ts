@@ -38,11 +38,13 @@ export class ServingConfirmation {
                 .replace(x => x.state, "completed");
 
             try {
-                this.progress.busy("Færdiggør servering", faUtensils);
+                if (!this.progress.tryBusy("Færdiggør servering", faUtensils)) {
+                    return;
+                }
 
                 await this.api.updateServing(this.serving.id, patch.operations).send();
 
-                this.progress.done();
+                await this.progress.done();
             }
             catch (error) {
                 await this.progress.error("Serveringen kunne ikke færdiggøres", error);

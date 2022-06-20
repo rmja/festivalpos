@@ -26,7 +26,7 @@ export class CardCallback {
 
         if (params["smp-status"] === "success") {
             try {
-                this.progress.busy("Registrerer betaling", faCashRegister);
+                this.progress.setBusy("Registrerer betaling", faCashRegister);
 
                 const payment = await this.api.createPayment(orderId, {
                     method: "card",
@@ -34,7 +34,7 @@ export class CardCallback {
                     transactionNumber: params["smp-tx-code"]
                 }).transfer();
 
-                this.progress.done();
+                await this.progress.done();
 
                 return new RedirectToRoute("receipt", {
                     orderId: orderId,

@@ -58,14 +58,16 @@ export class ProcessPresale {
         }
 
         try {
-            this.progress.busy("Opretter servering", faUtensils);
+            if (!this.progress.tryBusy("Opretter servering", faUtensils)) {
+                return;
+            }
 
             const serving = await this.api.createServing(this.order.id, {
                 pointOfSaleId: this.state.pointOfSaleId,
                 lines: lines
             }).transfer();
 
-            this.progress.done();
+            await this.progress.done();
 
             this.router.navigateToRoute("serving-confirmation", {
                 orderId: this.order.id,
