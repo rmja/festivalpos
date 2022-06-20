@@ -4,16 +4,20 @@ import { Api } from "../api";
 import { Big } from "big.js";
 import { Order } from "../api/order";
 import { ProgressService } from "../resources/progress-service";
+import { State } from "../state";
 import { autoinject } from "aurelia-framework";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 @autoinject()
+@connectTo()
 export class CardError {
+    private state!: State;
     private order!: Order;
     orderId!: number;
     cause!: string;
     message!: string;
     total!: Big;
+    mobilepayEnabled!: boolean;
 
     constructor(private api: Api, private router: Router, private appRouter: AppRouter, private progress: ProgressService) {
     }
@@ -25,6 +29,10 @@ export class CardError {
 
         this.order = await this.api.getOrderById(this.orderId).transfer();
         this.total = this.order.total;
+    }
+
+    bind() {
+        this.mobilepayEnabled = !!this.state.mobilepayNumber;
     }
 
     async cancelOrder() {
@@ -48,7 +56,7 @@ export class CardError {
         }
     }
 
-    doConfirm(method: "card" | "cash" | "account") {
+    doConfirm(method: "card" | "cash" | "account" | "mobilepay") {
         this.router.navigateToRoute(method, {
             orderId: this.order.id
         });

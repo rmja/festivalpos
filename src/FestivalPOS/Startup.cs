@@ -83,16 +83,7 @@ namespace FestivalPOS
             app
                 .UseDeveloperExceptionPage()
                 .UseHttpsRedirection()
-                .UseStaticFiles(new StaticFileOptions
-                {
-                    OnPrepareResponse = context =>
-                    {
-                        if (context.File.Name.Equals("service-worker.js", StringComparison.OrdinalIgnoreCase))
-                        {
-                            context.Context.Response.Headers[HeaderNames.CacheControl] = "no-cache";
-                        }
-                    }
-                })
+                .UseStaticFiles()
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
