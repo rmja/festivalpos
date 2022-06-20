@@ -43,7 +43,7 @@ namespace FestivalPOS.Controllers
         public async Task<List<PointOfSale>> GetAll()
         {
             var poss = await _db.PointOfSales
-                .Include(x => x.ServingStaff)
+                .Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .OrderBy(x => x.Name).ToListAsync();
 
             foreach (var pos in poss)
@@ -58,7 +58,7 @@ namespace FestivalPOS.Controllers
         public async Task<ActionResult<PointOfSale>> GetById(int id)
         {
             var pos = await _db.PointOfSales
-                .Include(x => x.ServingStaff)
+                .Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (pos == null)
@@ -75,7 +75,7 @@ namespace FestivalPOS.Controllers
         public async Task<ActionResult<PointOfSale>> Update(int id, JsonPatchDocument<PointOfSale> patch)
         {
             var pos = await _db.PointOfSales
-                .Include(x => x.ServingStaff)
+                .Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (pos == null)
