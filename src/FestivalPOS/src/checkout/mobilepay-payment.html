@@ -21,8 +21,8 @@
         </div>
 
         <div class="btn-group btn-block fixed-bottom">
-            <button type="button" class="btn btn-danger btn-lg col-4" click.delegate="cancel()"><font-awesome-icon icon="times"></font-awesome-icon> Fortryd</button>
-            <button type="submit" class="btn btn-success btn-lg col-8" disabled.bind="!canSubmit"><font-awesome-icon icon="check"></font-awesome-icon> Udfør</button>
+            <button type="button" class="btn btn-danger btn-lg col-4" click.delegate="cancel()" fast-click><font-awesome-icon icon="times"></font-awesome-icon> Fortryd</button>
+            <button type="submit" class="btn btn-success btn-lg col-8" disabled.bind="!canSubmit" fast-click><font-awesome-icon icon="check"></font-awesome-icon> Udfør</button>
         </div>
     </form>
 </template>

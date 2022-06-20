@@ -31,7 +31,7 @@
 
     <div class="row pad-bottom" if.bind="products.length">
         <div repeat.for="item of products" class="col-4 col-sm-3 col-md-2" style="display: flex">
-            <div class="card div-link mb-3" style="width: 100%" click.delegate="addToCart(item)">
+            <div class="card div-link mb-3" style="width: 100%" click.delegate="addToCart(item)" fast-click>
                 <div if.bind="item.product.thumbnailImageUrl" style="position: relative">
                     <img class="card-img-top" src.one-time="item.product.thumbnailImageUrl">
                     <small class="badge badge-secondary price-badge">${item.product.price}</small>

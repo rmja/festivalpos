@@ -30,7 +30,7 @@
         <div class="alert alert-warning" if.bind="keepTag">
             <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Kunden må beholde nummerbrikken efter denne servering!
         </div>
-        <button class="btn btn-primary btn-block fixed-bottom" disabled.bind="totalQuantity === 0" click.delegate="process()">
+        <button class="btn btn-primary btn-block fixed-bottom" disabled.bind="totalQuantity === 0" click.delegate="process()" fast-click>
             <font-awesome-icon icon="check"></font-awesome-icon> Servér ${totalQuantity} markerede
         </button>
     </div>

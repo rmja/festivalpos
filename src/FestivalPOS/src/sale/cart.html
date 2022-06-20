@@ -7,7 +7,7 @@
                 <td>${line.quantity}</td>
                 <td style="width: 100%">${line.name || 'Diverse'}</td>
                 <td class="text-right" style="width: 5em">${line.total | money}</td>
-                <td><button class="btn btn-sm btn-danger" click.delegate="delete($index)"><font-awesome-icon icon="trash"></font-awesome-icon></button></td>
+                <td><button class="btn btn-sm btn-danger" click.delegate="delete($index)" fast-click><font-awesome-icon icon="trash"></font-awesome-icon></button></td>
             </tr>
         </table>
 
