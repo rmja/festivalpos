@@ -1,9 +1,9 @@
 import Big from "big.js";
 
 export class MoneyValueConverter {
-    toView(value: Big) {
+    toView(value: Big, decimals = 2) {
         if (value) {
-            return value.toFixed(2);
+            return value.toFixed(decimals);
         }
     }
 }
