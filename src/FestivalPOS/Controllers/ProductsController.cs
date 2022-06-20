@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using FestivalPOS.Models;
 using Microsoft.AspNetCore.Http;
@@ -102,16 +103,23 @@ namespace FestivalPOS.Controllers
 
             var blobClient = container.GetBlobClient(blobName);
 
-            var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
+            try
+            {
+                var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
 
-            var responseHeaders = Response.GetTypedHeaders();
-            responseHeaders.ContentType = new MediaTypeHeaderValue(properties.Value.ContentType);
-            responseHeaders.ETag = new EntityTagHeaderValue(properties.Value.ETag.ToString());
-            responseHeaders.ContentLength = properties.Value.ContentLength;
-            responseHeaders.LastModified = properties.Value.LastModified;
-            await blobClient.DownloadToAsync(Response.Body, cancellationToken);
+                var responseHeaders = Response.GetTypedHeaders();
+                responseHeaders.ContentType = new MediaTypeHeaderValue(properties.Value.ContentType);
+                responseHeaders.ETag = new EntityTagHeaderValue(properties.Value.ETag.ToString());
+                responseHeaders.ContentLength = properties.Value.ContentLength;
+                responseHeaders.LastModified = properties.Value.LastModified;
+                await blobClient.DownloadToAsync(Response.Body, cancellationToken);
 
-            return new EmptyResult();
+                return new EmptyResult();
+            }
+            catch (RequestFailedException e)
+            {
+                return StatusCode(e.Status);
+            }
         }
 
         [HttpPut("{id:int}/Image")]
