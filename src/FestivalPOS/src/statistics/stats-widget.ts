@@ -71,7 +71,7 @@ export class EnsureAllPaymentMethodsValueConverter {
     toView(payments: PaymentStatsViewModel[]) {
         const result: PaymentStatsViewModel[] = [];
 
-        for (const method of <PaymentMethod[]> ["card", "cash", "account"]) {
+        for (const method of <PaymentMethod[]> ["card", "cash", "account", "mobilePay"]) {
             const payment = payments.find(x => x.method === method) || {
                 method: method,
                 payments: 0,
