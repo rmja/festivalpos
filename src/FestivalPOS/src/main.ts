@@ -33,7 +33,8 @@ export async function configure(aurelia: Aurelia) {
         .globalResources(PLATFORM.moduleName("resources/money-format"))
         .globalResources(PLATFORM.moduleName("resources/number-format"))
         .globalResources(PLATFORM.moduleName("resources/keypad-display"))
-        .globalResources(PLATFORM.moduleName("resources/keypad-input"));
+        .globalResources(PLATFORM.moduleName("resources/keypad-input"))
+        .globalResources(PLATFORM.moduleName("resources/qr-code"));
 
     if (__DEBUG__) {
         aurelia.use.developmentLogging();

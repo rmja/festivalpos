@@ -21,6 +21,8 @@ export class Setup {
     affiliate?: SumUpAffiliateViewModel;
     affiliates!: SumUpAffiliateViewModel[];
 
+    mobilepayNumber?: number;
+
     get canSubmit() {
         return this.terminal && this.pointOfSale;
     }
@@ -36,6 +38,7 @@ export class Setup {
         this.terminal = this.terminals.find(x => x.id === this.state.terminalId);
         this.pointOfSale = this.pointOfSales.find(x => x.id === this.state.pointOfSaleId);
         this.affiliate = this.affiliates.find(x => x.key === this.state.sumupAffiliateKey);
+        this.mobilepayNumber = this.state.mobilepayNumber;
     }
 
     async createDefaults() {
@@ -48,7 +51,7 @@ export class Setup {
             throw new Error();
         }
 
-        await this.store.dispatch(setup, this.terminal.id, this.pointOfSale.id, this.affiliate && this.affiliate.key);
+        await this.store.dispatch(setup, this.terminal.id, this.pointOfSale.id, this.affiliate && this.affiliate.key, this.mobilepayNumber && this.mobilepayNumber);
 
         this.router.navigateToRoute("sale");
     }

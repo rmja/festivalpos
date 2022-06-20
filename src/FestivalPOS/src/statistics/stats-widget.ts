@@ -1,4 +1,4 @@
-import { IconDefinition, faCoins, faCreditCard, faUser } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faCoins, faCreditCard, faUser, faMobileScreenButton } from "@fortawesome/free-solid-svg-icons";
 import { Kind, PaymentStatsViewModel, StatsViewModel } from "./dashboard";
 import { autoinject, bindable } from "aurelia-framework";
 
@@ -10,13 +10,15 @@ import { Router } from "aurelia-router";
 const icons: { [id in PaymentMethod]: IconDefinition } = {
     "card": faCreditCard,
     "cash": faCoins,
-    "account": faUser
+    "account": faUser,
+    "mobilePay": faMobileScreenButton,
 }
 
 const names: { [id in PaymentMethod]: string } = {
-    "card": "Kortomsætning",
-    "cash": "Kontantomsætning",
-    "account": "Kontoomsætning"
+    "card": "Kort omsætning",
+    "cash": "Kontant omsætning",
+    "account": "Konto omsætning",
+    "mobilePay": "MobilePay omsætning",
 };
 
 @autoinject()

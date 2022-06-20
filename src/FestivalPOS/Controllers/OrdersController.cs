@@ -92,10 +92,10 @@ namespace FestivalPOS.Controllers
         {
             var order = await _db.OrderTags
                 .Where(x => x.Number == tagNumber && x.Detached == null)
+                .Include(x => x.Order.Lines)
+                .Include(x => x.Order.Payments)
+                .Include(x => x.Order.Servings)
                 .Select(x => x.Order)
-                .Include(x => x.Lines)
-                .Include(x => x.Payments)
-                .Include(x => x.Servings)
                 .FirstOrDefaultAsync();
 
             if (order == null)

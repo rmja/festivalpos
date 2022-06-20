@@ -3,6 +3,7 @@
         <button class="btn btn-primary btn-lg" style="width: 7em" disabled="true">${total | money} kr.</button>
         <button class="btn btn-primary btn-lg" click.delegate="doConfirm('account')" disabled.bind="!canConfirm"><font-awesome-icon icon="user" fixed-width="true"></font-awesome-icon></button>
         <button class="btn btn-primary btn-lg" click.delegate="doConfirm('card')" disabled.bind="!canConfirm" if.bind="cardEnabled"><font-awesome-icon icon="credit-card" fixed-width="true"></font-awesome-icon></button>
+        <button class="btn btn-primary btn-lg" click.delegate="doConfirm('mobilepay')" disabled.bind="!canConfirm" if.bind="mobilepayEnabled"><font-awesome-icon icon="mobile-screen-button" fixed-width="true"></font-awesome-icon></button>
         <button class="btn btn-primary btn-lg" click.delegate="doConfirm('cash')" disabled.bind="!canConfirm"><font-awesome-icon icon="coins" fixed-width="true"></font-awesome-icon></button>
     </div>
 </template>

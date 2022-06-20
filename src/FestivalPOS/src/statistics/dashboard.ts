@@ -104,7 +104,7 @@ export interface StatsViewModel {
 }
 
 export interface PaymentStatsViewModel {
-    method: "card" | "cash" | "account"
+    method: "card" | "cash" | "account" | "mobilePay"
     payments: number;
     total: Big;
 };

@@ -1,4 +1,4 @@
-import { IconDefinition, faCoins, faCreditCard, faRssSquare, faUser } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faCoins, faCreditCard, faMobileScreenButton, faRssSquare, faUser } from "@fortawesome/free-solid-svg-icons";
 import { faCheckSquare, faSquare } from "@fortawesome/free-regular-svg-icons";
 
 import { Api } from "../api";
@@ -13,13 +13,14 @@ import { autoinject } from "aurelia-framework";
 const paymentMethodIcons: { [id in PaymentMethod]: IconDefinition } = {
     "card": faCreditCard,
     "cash": faCoins,
-    "account": faUser
+    "account": faUser,
+    "mobilePay": faMobileScreenButton,
 };
 
 const servingStateIcons: { [id in ServingState]: IconDefinition } = {
     "pending": faSquare,
     "ongoing": faRssSquare,
-    "completed": faCheckSquare
+    "completed": faCheckSquare,
 };
 
 @autoinject()

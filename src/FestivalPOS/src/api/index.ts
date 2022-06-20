@@ -230,7 +230,7 @@ export class Api {
         ]));
     }
 
-    createPayment(orderId: number, payment: { method: "card" | "cash" | "account", amount: Big, transactionNumber?: string, accountId?: number }) {
+    createPayment(orderId: number, payment: { method: "card" | "cash" | "account" | "mobilePay", amount: Big, transactionNumber?: string, accountId?: number }) {
         return http.post(`/Orders/${orderId}/Payments`).withJson(payment).expectJson(Payment).onSent(this.bust([
             K.Payments,
             K.Orders

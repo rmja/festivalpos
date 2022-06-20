@@ -4,7 +4,7 @@ import { bigConverter } from "./converters/big-converter";
 import { dateTimeConverter } from "./converters/date-time-converter";
 import { jsonProperty } from "@utiliread/json";
 
-export type PaymentMethod = "card" | "cash" | "account";
+export type PaymentMethod = "card" | "cash" | "account" | "mobilePay";
 
 export class Payment {
     @jsonProperty()

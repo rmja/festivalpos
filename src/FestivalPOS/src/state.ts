@@ -4,6 +4,7 @@ export interface State {
     terminalId: number;
     pointOfSaleId: number;
     sumupAffiliateKey?: string;
+    mobilepayNumber?: number;
     orderLines: OrderLineState[];
     currentMiscOrderLine: {
         total: Big;
@@ -37,12 +38,13 @@ export function ensureValidState(state: State) {
     return newState;
 }
 
-export function setup(state: State, terminalId: number, pointOfSaleId: number, sumupAffiliateKey?: string) {
+export function setup(state: State, terminalId: number, pointOfSaleId: number, sumupAffiliateKey?: string, mobilepayNumber?: number) {
     const newState = Object.assign({}, state);
 
     newState.terminalId = terminalId;
     newState.pointOfSaleId = pointOfSaleId;
-    newState.sumupAffiliateKey = sumupAffiliateKey
+    newState.sumupAffiliateKey = sumupAffiliateKey;
+    newState.mobilepayNumber = mobilepayNumber;
 
     return newState;
 }

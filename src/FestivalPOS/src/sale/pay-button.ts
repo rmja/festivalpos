@@ -12,6 +12,7 @@ import { faFileAlt } from "@fortawesome/free-solid-svg-icons";
 export class PayButtonCustomElement {
     private state!: State;
     cardEnabled!: boolean;
+    mobilepayEnabled!: boolean;
     @bindable() confirm?: () => void | Promise<void>;
 
     @computedFrom("state")
@@ -32,9 +33,10 @@ export class PayButtonCustomElement {
 
     bind() {
         this.cardEnabled = !!this.state.sumupAffiliateKey;
+        this.mobilepayEnabled = !!this.state.mobilepayNumber;
     }
 
-    async doConfirm(method: "card" | "cash" | "account") {
+    async doConfirm(method: "card" | "cash" | "account" | "mobilepay") {
         if (!this.canConfirm) {
             return;
         }

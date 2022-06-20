@@ -26,6 +26,7 @@ namespace FestivalPOS.Models
         Cash = 2,
         Account = 3,
         Offset = 4,
-        Deposit = 5
+        Deposit = 5,
+        MobilePay = 6,
     }
 }
