@@ -81,6 +81,7 @@ namespace FestivalPOS
 
             app
                 .UseDeveloperExceptionPage()
+                .UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseRouting()
                 .UseEndpoints(endpoints =>
