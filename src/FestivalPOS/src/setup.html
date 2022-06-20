@@ -2,7 +2,7 @@
     <top-navbar></top-navbar>
     <page-body>
         <form submit.delegate="submit()" if.bind="terminals.length && pointOfSales.length">
-            <div class"form-group">
+            <div class="form-group">
                 <label>Terminal</label>
                 <select value.bind="terminal" class="form-control">
                     <option repeat.for="terminal of terminals" model.bind="terminal">${terminal.name}</option>

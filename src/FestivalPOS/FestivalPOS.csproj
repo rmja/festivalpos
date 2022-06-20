@@ -39,4 +39,18 @@
     <PackageReference Include="StackExchange.Redis" Version="2.6.45" />
   </ItemGroup>
 
+  <!-- https://codeburst.io/how-to-use-webpack-in-asp-net-core-projects-a-basic-react-template-sample-25a3681a5fc2 -->
+  <Target Name="PublishWebpackRelease" AfterTargets="ComputeFilesToPublish">
+	<Exec Command="npm run clean" />
+	<Exec Command="npm run release" />
+	<ItemGroup>
+	  <DistFiles Include="wwwroot\dist\**" />
+	  <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+		<RelativePath>%(DistFiles.Identity)</RelativePath>
+		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	  </ResolvedFileToPublish>
+	</ItemGroup>
+  </Target>
+
 </Project>
