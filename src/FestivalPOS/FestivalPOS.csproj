@@ -41,6 +41,10 @@
 
   <!-- https://codeburst.io/how-to-use-webpack-in-asp-net-core-projects-a-basic-react-template-sample-25a3681a5fc2 -->
   <Target Name="PublishWebpackRelease" AfterTargets="ComputeFilesToPublish">
+	<ItemGroup>
+	  <PrevScriptFiles Include="wwwroot\dist\**" />
+	  <ResolvedFileToPublish Remove="@(PrevScriptFiles->'%(FullPath)')" />
+	</ItemGroup>
 	<Exec Command="npm run clean" />
 	<Exec Command="npm run release" />
 	<ItemGroup>
