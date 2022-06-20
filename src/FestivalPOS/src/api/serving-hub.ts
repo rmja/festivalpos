@@ -18,17 +18,17 @@ export class ServingHub {
             .build();
 
         this.connection.on("ServingCreated", (serving: any) => {
-            serving = deserialize(Serving, serving);
+            serving = deserialize(serving, Serving);
             eventAggregator.publish(new ServingCreated(serving));
         });
 
         this.connection.on("ServingUpdated", (serving: any) => {
-            serving = deserialize(Serving, serving);
+            serving = deserialize(serving, Serving);
             eventAggregator.publish(new ServingUpdated(serving));
         });
 
         this.connection.on("PointOfSaleUpdated", (pos: any) => {
-            pos = deserialize(PointOfSale, pos);
+            pos = deserialize(pos, PointOfSale);
             eventAggregator.publish(new PointOfSaleUpdated(pos));
         })
     }

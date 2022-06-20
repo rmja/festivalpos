@@ -17,7 +17,7 @@ export class AlarmsHub {
             .build();
 
         this.connection.on("EventCreated", (event: any) => {
-            event = deserialize(AlarmEvent, event);
+            event = deserialize(event, AlarmEvent);
             eventAggregator.publish(new EventCreated(event));
         });
     }

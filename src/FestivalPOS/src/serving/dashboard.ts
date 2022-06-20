@@ -1,4 +1,4 @@
-import { Disposable, PLATFORM, autoinject } from "aurelia-framework";
+import { Disposable, LogManager, PLATFORM, autoinject } from "aurelia-framework";
 import { ServingCreated, ServingHub, ServingUpdated } from "../api/serving-hub";
 
 import { AddServerDialog } from './add-server-dialog';
@@ -19,6 +19,7 @@ import { connectTo } from "aurelia-store";
 })
 @autoinject()
 export class ServingDashboard {
+    private logger = LogManager.getLogger("serving");
     private state!: State;
     private beam!: boolean;
     servingStaff!: ServingStaffViewModel[];
@@ -128,6 +129,7 @@ export class ServingDashboard {
     }
 
     private addOrUpdateServing(serving: ServingViewModel) {
+        this.logger.info(`Handling serving ${serving.id} created ${serving.created}`);
         const index = this.servings.findIndex(x => x.id === serving.id);
 
         if (index >= 0) {

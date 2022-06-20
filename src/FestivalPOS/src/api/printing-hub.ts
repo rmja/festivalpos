@@ -17,7 +17,7 @@ export class PrintingHub {
             .build();
 
         this.connection.on("Print", (job: any) => {
-            job = deserialize(PrintJob, job);
+            job = deserialize(job, PrintJob);
             eventAggregator.publish(new PrintJobCreated(job));
         });
     }
