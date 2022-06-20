@@ -36,6 +36,10 @@ export class ServingDashboard {
         return this.servings.filter(x => x.state === "pending");
     }
 
+    get anyOngoingServings() {
+        return this.servings.some(x => x.state === "ongoing");
+    }
+
     constructor(private api: Api, private hub: ServingHub, private eventAggregator: EventAggregator, private dialog: DialogService) {
     }
 
@@ -97,7 +101,10 @@ export class ServingDashboard {
         }
     }
 
-    removeServer(index: number) {
+    removeServer(staff: ServingStaffViewModel, index: number) {
+        if (!confirm(`Skal ${staff.name} fjernes?`)) {
+            return;
+        }
         return this.api.updatePointOfSale(this.state.pointOfSaleId, [
             { op: "remove", path: `/servingStaff/${index}` }
         ]).send();
