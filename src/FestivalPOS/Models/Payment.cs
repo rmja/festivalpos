@@ -12,7 +12,7 @@ namespace FestivalPOS.Models
         public Order Order { get; set; }
         public PaymentMethod Method { get; set; }
         public decimal Amount { get; set; }
-        [MaxLength(10)]
+        [MaxLength(20)]
         public string TransactionNumber { get; set; }
         public int? AccountId { get; set; }
         [JsonIgnore]

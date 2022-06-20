@@ -2,6 +2,7 @@ import { faCashRegister, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import { Api } from "../api";
 import { Big } from "big.js";
+import { DateTime } from "luxon";
 import { Order } from "../api/order";
 import { ProgressService } from "../resources/progress-service";
 import { QueryString } from "@utiliread/http";
@@ -22,6 +23,7 @@ export class MobilepayPayment {
     total!: Big;
     amountDue!: Big;
     mobilepayNumber!: number;
+    transactionNumber!: string;
     qrValue!: string;
 
     get canSubmit() {
@@ -39,8 +41,9 @@ export class MobilepayPayment {
         this.total = this.order.total;
         this.amountDue = this.order.amountDue;
         this.mobilepayNumber = this.state.mobilepayNumber!;
-        const comment = `${this.order.terminalId}/${this.order.pointOfSaleId}/${this.order.id}`;
-        this.qrValue = generateLink(this.mobilepayNumber, Number(this.amountDue.toFixed(0)), comment, true);
+        const timestamp = Math.floor(DateTime.utc().toSeconds());
+        this.transactionNumber = `${timestamp}-${this.order.terminalId}`;
+        this.qrValue = generateLink(this.mobilepayNumber, Number(this.amountDue.toFixed(0)), this.transactionNumber, true);
     }
 
     async cancel() {
@@ -68,7 +71,8 @@ export class MobilepayPayment {
 
             const payment = await this.api.createPayment(this.order.id, {
                 method: "mobilePay",
-                amount: this.amountDue
+                amount: this.amountDue,
+                transactionNumber: this.transactionNumber,
             }).transfer();
 
             this.progress.done();
