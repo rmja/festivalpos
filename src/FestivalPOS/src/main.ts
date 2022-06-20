@@ -6,6 +6,7 @@ import { Aurelia, PLATFORM } from "aurelia-framework";
 
 import { DialogConfiguration } from "aurelia-dialog";
 import { initialState } from "./state";
+import { CacheOptions } from "aurelia-workbox-cachecontrol";
 
 if ('serviceWorker' in navigator && window.location.protocol.startsWith('https')) {
     window.addEventListener('load', async () => {
@@ -26,6 +27,7 @@ export async function configure(aurelia: Aurelia) {
             config.settings.keyboard = true;
         })
         .plugin(PLATFORM.moduleName("aurelia-store"), { initialState })
+        .plugin(PLATFORM.moduleName("aurelia-workbox-cachecontrol"), (options: CacheOptions) => options.setCacheId("FestivalPOS"))
         .globalResources(PLATFORM.moduleName("top-navbar"))
         .globalResources(PLATFORM.moduleName("page-body.html"))
         .globalResources(PLATFORM.moduleName("empty-hint.html"))

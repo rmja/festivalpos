@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
+using System;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -81,7 +83,16 @@ namespace FestivalPOS
             app
                 .UseDeveloperExceptionPage()
                 .UseHttpsRedirection()
-                .UseStaticFiles()
+                .UseStaticFiles(new StaticFileOptions
+                {
+                    OnPrepareResponse = context =>
+                    {
+                        if (context.File.Name.Equals("service-worker.js", StringComparison.OrdinalIgnoreCase))
+                        {
+                            context.Context.Response.Headers[HeaderNames.CacheControl] = "no-cache";
+                        }
+                    }
+                })
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {

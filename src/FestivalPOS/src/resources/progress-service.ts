@@ -2,11 +2,12 @@ import { DialogService } from "aurelia-dialog";
 import { ProgressBusy } from "./progress-busy";
 import { ProgressError } from "./progress-error";
 import { TimeoutError } from "@utiliread/http";
-import { autoinject } from "aurelia-framework";
+import { autoinject, LogManager } from "aurelia-framework";
 
 @autoinject()
 export class ProgressService {
     private busyOpenPromise?: Promise<any>;
+    private logger = LogManager.getLogger("progress");
 
     public state: "idle" | "busy" | "error" = "idle";
 
@@ -19,6 +20,7 @@ export class ProgressService {
 
     tryBusy(title: string, icon?: any) {
         if (!this.isIdle) {
+            this.logger.warn("Unable to transition to busy state");
             return false;
         }
 
@@ -27,7 +29,9 @@ export class ProgressService {
     }
 
     setBusy(title: string, icon?: any) {
+        this.logger.info("Setting state: busy");
         this.state = "busy";
+
         if (this.busyOpenPromise) {
             this.busyOpenPromise.then(async () => {
                 await this.dialog.closeAll();
@@ -47,11 +51,13 @@ export class ProgressService {
             await this.dialog.closeAll();
         }
 
+        this.logger.info("Setting state: idle");
         this.state = "idle";
     }
 
     async error(title: string, error: unknown) {
         let message: string;
+        this.logger.info("Setting state: error");
         this.state = "error";
 
         if (typeof error === "string") {
@@ -73,6 +79,7 @@ export class ProgressService {
         await this.dialog.closeAll();
         await this.dialog.open({ viewModel: ProgressError, model: { title, message } }).whenClosed();
 
+        this.logger.info("Setting state: idle");
         this.state = "idle";
     }
 }

@@ -1,3 +1,5 @@
+import { LogManager, autoinject } from "aurelia-framework";
+
 import { Api } from "../api";
 import { Big } from "big.js";
 import { Patch } from "@utiliread/jsonpatch";
@@ -6,7 +8,6 @@ import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
 import { Serving } from "../api/serving";
 import { State } from "../state";
-import { autoinject } from "aurelia-framework";
 import { connectTo } from "aurelia-store";
 import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 
@@ -17,7 +18,8 @@ interface Params { orderId: string, paymentId: string, change?: string, tagNumbe
     selector: store => store.state
 })
 @autoinject()
-export class CashReceipt {
+export class Receipt {
+    private logger = LogManager.getLogger("receipt");
     private state!: State;
     private payment!: Payment
     tagNumber?: number;
@@ -44,6 +46,7 @@ export class CashReceipt {
         const payment = order.payments.find(x => x.id === paymentId);
 
         if (!payment) {
+            this.logger.error("No payment found on order ");
             return false;
         }
 
