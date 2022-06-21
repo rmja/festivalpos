@@ -1,6 +1,5 @@
 import { Disposable, LogManager, PLATFORM, autoinject } from "aurelia-framework";
 import { ServingCreated, ServingHub, ServingUpdated } from "../api/serving-hub";
-import { tryLockOrientation, tryUnlockOrientation } from "../orientation";
 
 import { AddServerDialog } from './add-server-dialog';
 import { Api } from "../api";
@@ -9,6 +8,7 @@ import { DialogService } from 'aurelia-dialog';
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Patch } from "@utiliread/jsonpatch";
 import { PointOfSaleUpdated } from './../api/serving-hub';
+import { ServerDialog } from './server-dialog';
 import { Serving } from "../api/serving";
 import { ServingStaff } from '../api/serving-staff';
 import { State } from "../state";
@@ -29,6 +29,11 @@ export class ServingDashboard {
     private intervalHandle!: number;
     private timeoutHandles: number[] = [];
     private disposables!: Disposable[];
+    fullscreenEnabled = document.fullscreenEnabled;
+    
+    get isFullscreen() {
+        return !!document.fullscreenElement;
+    }
 
     now = DateTime.local();
 
@@ -60,8 +65,6 @@ export class ServingDashboard {
 
         this.intervalHandle = window.setInterval(() => this.now = DateTime.local(), 500);
 
-        await tryUnlockOrientation();
-
         this.disposables = [
             this.eventAggregator.subscribe(ServingCreated, (event: ServingCreated) => this.addOrUpdateServing(event.serving)),
             this.eventAggregator.subscribe(ServingUpdated, (event: ServingUpdated) => this.addOrUpdateServing(event.serving)),
@@ -78,8 +81,6 @@ export class ServingDashboard {
             clearTimeout(handle);
         }
 
-        await tryLockOrientation();
-
         for (const disposable of this.disposables) {
             disposable.dispose();
         }
@@ -87,6 +88,22 @@ export class ServingDashboard {
 
     getViewStrategy() {
         return this.beam ? PLATFORM.moduleName("./dashboard-beam.html") : PLATFORM.moduleName("./dashboard.html");
+    }
+
+    protected async toggleFullscreen() {
+        try {
+            if (this.isFullscreen) {
+                screen.orientation.unlock(); // Remove landscape lock and go back to the default in manifest.json
+                await document.exitFullscreen();
+            }
+            else {
+                await document.documentElement.requestFullscreen();
+                await screen.orientation.lock("landscape");
+            }
+        }
+        catch (error) {
+            alert("errror" + error);
+        }
     }
 
     async addServer() {

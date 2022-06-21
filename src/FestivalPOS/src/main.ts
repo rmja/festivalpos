@@ -7,7 +7,6 @@ import { Aurelia, PLATFORM } from "aurelia-framework";
 import { CacheOptions } from "aurelia-workbox-cachecontrol";
 import { DialogConfiguration } from "aurelia-dialog";
 import { initialState } from "./state";
-import { tryLockOrientation } from "./orientation";
 
 if ('serviceWorker' in navigator && window.location.protocol.startsWith('https')) {
     window.addEventListener('load', async () => {
@@ -43,8 +42,6 @@ export async function configure(aurelia: Aurelia) {
     if (__DEBUG__) {
         aurelia.use.developmentLogging();
     }
-
-    await tryLockOrientation();
 
     await aurelia.start();
 
