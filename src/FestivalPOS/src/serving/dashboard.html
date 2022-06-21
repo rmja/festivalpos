@@ -32,7 +32,10 @@
                     <div class="row">
                         <div class="col" repeat.for="staff of servingStaff">
                             <div class="d-flex justify-content-between">
-                                <h6>${staff.name || staff.number}</h6>
+                                <h6>
+                                    <button class="btn btn-link p-0" click.delegate="editServer(staff, $index)"><font-awesome-icon icon="edit"></font-awesome-icon></button>
+                                    ${staff.name || staff.number}
+                                </h6>
 
                                 <!-- We cannot remove a server unless we are totally idle, as there is a bug where if we remove a "later" server, then its servings are hidden -->
                                 <button class="btn btn-link text-danger p-0" click.delegate="removeServer(staff, $index)" hide.bind="anyOngoingServings"><font-awesome-icon icon="times"></font-awesome-icon></button>

@@ -4,11 +4,15 @@ import { DialogController } from "aurelia-dialog";
 import { ServingStaff } from "../api/serving-staff";
 
 @autoinject()
-@useView("serving/add-server-dialog.html")
-export class AddServerDialog {
-    name = "";
+@useView("serving/server-dialog.html")
+export class ServerDialog {
+    name!: string;
 
     constructor(private controller: DialogController) {
+    }
+
+    activate(model?: { name?: string }) {
+        this.name = model?.name ?? "";
     }
 
     close() {

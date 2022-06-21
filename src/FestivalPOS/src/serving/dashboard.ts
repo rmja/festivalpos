@@ -1,7 +1,6 @@
 import { Disposable, LogManager, PLATFORM, autoinject } from "aurelia-framework";
 import { ServingCreated, ServingHub, ServingUpdated } from "../api/serving-hub";
 
-import { AddServerDialog } from './add-server-dialog';
 import { Api } from "../api";
 import { DateTime } from "luxon";
 import { DialogService } from 'aurelia-dialog';
@@ -107,7 +106,7 @@ export class ServingDashboard {
     }
 
     async addServer() {
-        const result = await this.dialog.open({ viewModel: AddServerDialog }).whenClosed();
+        const result = await this.dialog.open({ viewModel: ServerDialog }).whenClosed();
 
         if (!result.wasCancelled) {
             const output: Partial<ServingStaff> = result.output;
@@ -115,6 +114,20 @@ export class ServingDashboard {
             await this.api.updatePointOfSale(this.state.pointOfSaleId, [
                 { op: "add", path: "/servingStaff/-", value: { name: output.name } }
             ]).send();
+        }
+    }
+
+    async editServer(staff: ServingStaffViewModel, index: number) {
+        const result = await this.dialog.open({ viewModel: ServerDialog, model: { name: staff.name } }).whenClosed();
+
+        if (!result.wasCancelled) {
+            const output: Partial<ServingStaff> = result.output;
+            const name = output.name!;
+
+            await this.api.updatePointOfSale(this.state.pointOfSaleId, [
+                { op: "replace", path: `/servingStaff/${index}/name`, value: name }
+            ]).send();
+            staff.name = staff.name;
         }
     }
 
