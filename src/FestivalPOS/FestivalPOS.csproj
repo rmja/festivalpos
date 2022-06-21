@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="web.Release.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Sql\GetOrderStats.sql" />
     <None Remove="Sql\GetPaymentStats.sql" />
     <None Remove="Sql\GetProductSaleStats.sql" />
@@ -20,6 +24,10 @@
     <EmbeddedResource Include="Sql\GetProductSaleStats.sql" />
     <EmbeddedResource Include="Sql\GetOrderStats.sql" />
     <EmbeddedResource Include="Sql\GetPaymentStats.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="web.Release.config" />
   </ItemGroup>
 
   <ItemGroup>
