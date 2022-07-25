@@ -59,11 +59,6 @@ namespace FestivalPOS.Controllers
                 .Take(10)
                 .ToListAsync();
 
-            foreach (var order in orders)
-            {
-                order.OnMaterialized();
-            }
-
             return orders;
         }
 
@@ -71,7 +66,7 @@ namespace FestivalPOS.Controllers
         public async Task<ActionResult<Order>> GetById(int id)
         {
             var order = await _db.Orders
-                .Include(x => x.Lines)
+                .Include(x => x.Lines.OrderBy(l => l.Position))
                 .Include(x => x.Payments)
                 .Include(x => x.Servings)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -81,8 +76,6 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            order.OnMaterialized();
-
             return order;
         }
 
@@ -91,7 +84,7 @@ namespace FestivalPOS.Controllers
         {
             var order = await _db.OrderTags
                 .Where(x => x.Number == tagNumber && x.Detached == null)
-                .Include(x => x.Order.Lines)
+                .Include(x => x.Order.Lines.OrderBy(l => l.Position))
                 .Include(x => x.Order.Payments)
                 .Include(x => x.Order.Servings)
                 .Select(x => x.Order)
@@ -101,8 +94,6 @@ namespace FestivalPOS.Controllers
             {
                 return NotFound();
             }
-
-            order.OnMaterialized();
 
             return order;
         }

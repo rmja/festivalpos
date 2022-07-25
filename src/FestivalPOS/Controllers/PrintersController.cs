@@ -75,11 +75,12 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            var pointsOfSale = await _db.PointOfSales.Where(x => x.ReceiptPrinterId == printer.Id).ToListAsync();
+            var pointsOfSale = await _db.PointOfSales
+                .Where(x => x.ReceiptPrinterId == printer.Id)
+                .ToListAsync();
 
             foreach (var pos in pointsOfSale)
             {
-                pos.OnMaterialized();
                 pos.ReceiptPrinterId = null;
             }
 

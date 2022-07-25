@@ -21,10 +21,5 @@ namespace FestivalPOS.Models
         public IList<Serving> Servings { get; set; } = new List<Serving>();
         public bool IsDeleted { get; set; }
         public DateTimeOffset Created { get; set; }
-
-        public void OnMaterialized()
-        {
-            Lines.Sort((a, b) => a.Position.CompareTo(b.Position));
-        }
     }
 }

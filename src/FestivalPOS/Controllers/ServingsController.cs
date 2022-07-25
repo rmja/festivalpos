@@ -77,15 +77,13 @@ namespace FestivalPOS.Controllers
         public async Task<ActionResult<Serving>> GetById(int id)
         {
             var serving = await _db.Servings
-                .Include(x => x.Lines)
+                .Include(x => x.Lines.OrderBy(l => l.Position))
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (serving == null)
             {
                 return NotFound();
             }
-
-            serving.OnMaterialized();
 
             return Ok(serving);
         }
@@ -125,18 +123,13 @@ namespace FestivalPOS.Controllers
             var completedThreshold = LocalClock.Now.AddSeconds(-60);
 
             var servings = await _db.Servings
-                .Include(x => x.Lines)
+                .Include(x => x.Lines.OrderBy(l => l.Position))
                 .Where(x => x.PointOfSaleId == pointOfSaleId)
                 .Where(x => x.State == ServingState.Pending
                          || x.State == ServingState.Ongoing
                          || x.Completed >= completedThreshold)
                 .OrderBy(x => x.Created)
                 .ToListAsync();
-
-            foreach (var serving in servings)
-            {
-                serving.OnMaterialized();
-            }
 
             return servings;
         }

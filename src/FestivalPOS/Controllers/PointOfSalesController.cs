@@ -46,11 +46,6 @@ namespace FestivalPOS.Controllers
                 .Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .OrderBy(x => x.Name).ToListAsync();
 
-            foreach (var pos in poss)
-            {
-                pos.OnMaterialized();
-            }
-
             return poss;
         }
 
@@ -66,8 +61,6 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            pos.OnMaterialized();
-
             return pos;
         }
 
@@ -82,8 +75,6 @@ namespace FestivalPOS.Controllers
             {
                 return NotFound();
             }
-
-            pos.OnMaterialized();
 
             patch.ApplyTo(pos);
 
@@ -108,8 +99,6 @@ namespace FestivalPOS.Controllers
             {
                 return NotFound();
             }
-
-            pos.OnMaterialized();
 
             pos.IsDeleted = true;
             await _db.SaveChangesAsync();

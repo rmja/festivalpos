@@ -3,6 +3,7 @@ using FestivalPOS.Notifications;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,10 +26,8 @@ namespace FestivalPOS.NotificationHandlers
         public async Task Handle(ServingCreatedNotification notification, CancellationToken cancellationToken)
         {
             var serving = await _db.Servings
-                .Include(x => x.Lines)
+                .Include(x => x.Lines.OrderBy(l => l.Position))
                 .FirstAsync(x => x.Id == notification.ServingId ,cancellationToken);
-
-            serving.OnMaterialized();
 
             var clients = _hub.Clients.Group($"PointsOfSale:{serving.PointOfSaleId}");
 
@@ -38,10 +37,8 @@ namespace FestivalPOS.NotificationHandlers
         public async Task Handle(ServingUpdatedNotification notification, CancellationToken cancellationToken)
         {
             var serving = await _db.Servings
-                .Include(x => x.Lines)
+                .Include(x => x.Lines.OrderBy(l => l.Position))
                 .FirstAsync(x => x.Id == notification.ServingId, cancellationToken);
-
-            serving.OnMaterialized();
 
             var clients = _hub.Clients.Group($"PointsOfSale:{serving.PointOfSaleId}");
 
@@ -51,10 +48,8 @@ namespace FestivalPOS.NotificationHandlers
         public async Task Handle(PointOfSaleUpdatedNotification notification, CancellationToken cancellationToken)
         {
             var pos = await _db.PointOfSales
-                .Include(x => x.ServingStaff)
+                .Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .FirstAsync(x => x.Id == notification.PointOfSaleId, cancellationToken);
-
-            pos.OnMaterialized();
 
             var clients = _hub.Clients.Group($"PointsOfSale:{pos.Id}");
 

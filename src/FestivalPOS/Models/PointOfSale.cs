@@ -16,10 +16,5 @@ namespace FestivalPOS.Models
         public bool IsDeleted { get; set; }
 
         public List<ServingStaff> ServingStaff { get; set; } = new List<ServingStaff>();
-
-        public void OnMaterialized()
-        {
-            ServingStaff.Sort((a, b) => a.Number.CompareTo(b.Number));
-        }
     }
 }
