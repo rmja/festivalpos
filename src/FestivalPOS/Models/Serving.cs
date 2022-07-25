@@ -21,11 +21,6 @@ namespace FestivalPOS.Models
         public DateTimeOffset? Accepted { get; set; }
         public DateTimeOffset? Completed { get; set; }
         public List<ServingLine> Lines { get; set; } = new List<ServingLine>();
-
-        public void OnMaterialized()
-        {
-            Lines.Sort((a, b) => a.Position.CompareTo(b.Position));
-        }
     }
 
     public enum ServingState

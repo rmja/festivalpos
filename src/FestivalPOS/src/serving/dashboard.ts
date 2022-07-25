@@ -161,6 +161,7 @@ export class ServingDashboard {
 
         if (serving) {
             const patch = new Patch<Serving>()
+                .test(x => x.state, "pending")
                 .replace(x => x.state, "ongoing")
                 .replace(nameof<Serving>(x => x.staffNumber), staffNumber);
 
