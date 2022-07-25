@@ -13,7 +13,13 @@ export class Product {
     price!: Big;
 
     @jsonProperty()
+    previewImageName?: string;
+
+    @jsonProperty()
     previewImageUrl?: string;
+
+    @jsonProperty()
+    thumbnailImageName?: string;
 
     @jsonProperty()
     thumbnailImageUrl?: string;

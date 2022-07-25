@@ -89,8 +89,8 @@ export class EditProduct {
             .replace(x => x.price, new Big(this.price));
 
         if (!this.imageUrl) {
-            patch = patch.replace(nameof<Product>(x => x.previewImageUrl), null);
-            patch = patch.replace(nameof<Product>(x => x.thumbnailImageUrl), null);
+            patch = patch.replace(nameof<Product>(x => x.previewImageName), null);
+            patch = patch.replace(nameof<Product>(x => x.thumbnailImageName), null);
         }
 
         await this.api.updateProduct(this.productId, patch.operations).transfer();
