@@ -4,7 +4,6 @@ using FestivalPOS.Printing;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -138,7 +137,17 @@ namespace FestivalPOS.Controllers
 
             await _db.SaveChangesAsync();
 
-            await _mediator.Publish(new OrderTagAssignedNotification(id, tagNumber));
+            var notifications = new List<INotification>(1 + currentTags.Count)
+            {
+                new OrderTagAssignedNotification(id, tagNumber),
+            };
+
+            foreach (var tag in currentTags)
+            {
+                notifications.Add(new OrderTagUnassignedNotification(tag.OrderId, tag.Number));
+            }
+
+            await Task.WhenAll(notifications.Select(x => _mediator.Publish(x)));
 
             return NoContent();
         }
@@ -152,6 +161,8 @@ namespace FestivalPOS.Controllers
             {
                 tag.Detached = LocalClock.Now;
                 await _db.SaveChangesAsync();
+
+                await _mediator.Publish(new OrderTagUnassignedNotification(id, tag.Number));
             }
 
             return NoContent();
