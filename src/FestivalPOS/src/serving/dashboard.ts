@@ -26,6 +26,7 @@ export class ServingDashboard {
     servings: ServingViewModel[] = [];
     selectedServing?: ServingViewModel;
     private intervalHandle!: number;
+    private helloHandle!: number;
     private timeoutHandles: number[] = [];
     private disposables!: Disposable[];
     fullscreenEnabled = document.fullscreenEnabled;
@@ -64,6 +65,9 @@ export class ServingDashboard {
 
         this.intervalHandle = window.setInterval(() => this.now = DateTime.local(), 500);
 
+        // Ensure that we are connected to server even when the server reboots and looses connection state
+        this.helloHandle = window.setInterval(() => this.hub.hello(this.state.pointOfSaleId), 10_000);
+
         this.disposables = [
             this.eventAggregator.subscribe(ServingCreated, (event: ServingCreated) => this.addOrUpdateServing(event.serving)),
             this.eventAggregator.subscribe(ServingUpdated, (event: ServingUpdated) => this.addOrUpdateServing(event.serving)),
@@ -72,9 +76,10 @@ export class ServingDashboard {
     }
 
     async deactivate() {
-        await this.hub.disconnect();
-
         clearInterval(this.intervalHandle);
+        clearInterval(this.helloHandle);
+
+        await this.hub.disconnect();
 
         for (const handle of this.timeoutHandles) {
             clearTimeout(handle);

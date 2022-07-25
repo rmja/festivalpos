@@ -15,6 +15,7 @@ export class ServingHub {
     constructor(eventAggregator: EventAggregator) {
         this.connection = new HubConnectionBuilder()
             .withUrl("/Serving")
+            .withAutomaticReconnect()
             .build();
 
         this.connection.on("ServingCreated", (serving: any) => {
