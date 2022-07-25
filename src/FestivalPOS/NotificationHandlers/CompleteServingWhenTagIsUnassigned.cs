@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace FestivalPOS.NotificationHandlers
 {
-    public class RemoveTagOnServingWhenUnassigned : INotificationHandler<OrderTagUnassignedNotification>
+    public class CompleteServingWhenTagIsUnassigned : INotificationHandler<OrderTagUnassignedNotification>
     {
         private readonly IMediator _mediator;
         private readonly PosContext _db;
 
-        public RemoveTagOnServingWhenUnassigned(IMediator mediator, PosContext db)
+        public CompleteServingWhenTagIsUnassigned(IMediator mediator, PosContext db)
         {
             _mediator = mediator;
             _db = db;
@@ -23,16 +23,18 @@ namespace FestivalPOS.NotificationHandlers
         public async Task Handle(OrderTagUnassignedNotification notification, CancellationToken cancellationToken)
         {
             var servings = await _db.Servings
-                .Where(x => x.OrderId == notification.OrderId && x.State == ServingState.Pending && x.TagNumber == notification.TagNumber)
+                .Where(x => x.OrderId == notification.OrderId && x.State != ServingState.Completed && x.TagNumber == notification.TagNumber)
                 .ToListAsync();
 
             if (servings.Count > 0)
             {
+                var now = LocalClock.Now;
                 var notifications = new List<INotification>(servings.Count);
 
                 foreach (var serving in servings)
                 {
-                    serving.TagNumber = null;
+                    serving.Completed = now;
+                    serving.State = ServingState.Completed;
                     notifications.Add(new ServingUpdatedNotification(serving.Id));
                 }
 

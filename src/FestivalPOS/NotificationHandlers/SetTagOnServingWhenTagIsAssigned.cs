@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace FestivalPOS.NotificationHandlers
 {
-    public class SetTagOnServingWhenAssigned : INotificationHandler<OrderTagAssignedNotification>
+    public class SetTagOnServingWhenTagIsAssigned : INotificationHandler<OrderTagAssignedNotification>
     {
         private readonly IMediator _mediator;
         private readonly PosContext _db;
 
-        public SetTagOnServingWhenAssigned(IMediator mediator, PosContext db)
+        public SetTagOnServingWhenTagIsAssigned(IMediator mediator, PosContext db)
         {
             _mediator = mediator;
             _db = db;
