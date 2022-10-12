@@ -18,10 +18,10 @@ typedef struct frame {
 void setup() {
   Serial.begin(9600);
   
-  ensureNoError(radio.begin(434.0, 4.960 /* kbps */));
-  ensureNoError(radio.disableSyncWordFiltering()); // Do not generate preamble and syncword
-  ensureNoError(radio.setCrcFiltering(false)); // Do not generate CRC
-  ensureNoError(radio.setOOK(true)); // Use ASK
+  cc1101_ensureSuccess(radio.begin(434.0 /* MHz */, 4.960 /* kbps */));
+  cc1101_ensureSuccess(radio.disableSyncWordFiltering()); // Do not generate preamble and syncword
+  cc1101_ensureSuccess(radio.setCrcFiltering(false)); // Do not generate CRC
+  cc1101_ensureSuccess(radio.setOOK(true)); // Use ASK
 }
 
 void loop() {
@@ -141,13 +141,13 @@ static void frame_buildCall(frame_t* frame, int restaurantId, int pagerId) {
 }
 
 static void cc1101_send(frame_t* frame) {
-  ensureNoError(radio.fixedPacketLengthMode(frame->length)); // Do not prefix length byte
-  ensureNoError(radio.transmit(frame->buffer, frame->length));
+  cc1101_ensureSuccess(radio.fixedPacketLengthMode(frame->length)); // Do not prefix length byte
+  cc1101_ensureSuccess(radio.transmit(frame->buffer, frame->length));
 }
 
-static void ensureNoError(int error) {
+static void cc1101_ensureSuccess(int error) {
   if (error != RADIOLIB_ERR_NONE) {
-    Serial.print(F("failed, code "));
+    Serial.print(F("CC1101 failed with code: "));
     Serial.println(error);
     while (true);
   }
