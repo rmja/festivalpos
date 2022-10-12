@@ -69,7 +69,6 @@
     "bootstrap": "^4.5.2",
     "croppie": "^2.6.5",
     "dexie": "^3.2.2",
-    "favicons": "^6.2.0",
     "hammerjs": "^2.0.8",
     "jquery": "^3.6.0",
     "luxon": "^3.0.4",

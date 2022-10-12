@@ -1,0 +1,10 @@
+{
+  "name": "favicon",
+  "module": "generate.mjs",
+  "scripts": {
+    "generate": "node ./generate.mjs"
+  },
+  "devDependencies": {
+    "favicons": "^7.0.1"
+  }
+}
