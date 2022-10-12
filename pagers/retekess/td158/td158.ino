@@ -45,7 +45,7 @@ void loop() {
   }
 }
 
-static int newline = -1;
+static int previous = -1;
 static String serial_readLine() {
   String result;
   while (true) {
@@ -53,19 +53,20 @@ static String serial_readLine() {
     if (c == -1) {
       continue;
     }
-    if (c == '\r' || c == '\n') {
-      if (c == newline) {
-        return result;
-      }
-      else if (newline == -1) {
-        newline = c;
-        return result;
-      }
-      else {
+    if (c == '\r') {
+      previous = c;
+      return result;
+    }
+    else if (c == '\n') {
+      if (previous == '\r') {
+        previous = c;
         continue; // Ignore \n after \r
       }
+      previous = c;
+      return result;
     }
     result += (char)c;
+    previous = c;
   }
 }
 
