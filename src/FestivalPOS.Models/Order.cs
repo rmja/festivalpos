@@ -7,10 +7,10 @@ namespace FestivalPOS.Models
         public int Id { get; set; }
         public int TerminalId { get; set; }
         [JsonIgnore]
-        public Terminal Terminal { get; set; } = default!;
+        public Terminal? Terminal { get; set; }
         public int PointOfSaleId { get; set; }
         [JsonIgnore]
-        public PointOfSale PointOfSale { get; set; } = default!;
+        public PointOfSale? PointOfSale { get; set; }
         public decimal Total { get; set; }
         public decimal AmountDue { get; set; }
         public List<OrderLine> Lines { get; set; } = new List<OrderLine>();

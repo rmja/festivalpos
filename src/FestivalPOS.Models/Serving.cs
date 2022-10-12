@@ -7,10 +7,10 @@ namespace FestivalPOS.Models
         public int Id { get; private set; }
         public int OrderId { get; set; }
         [JsonIgnore]
-        public Order Order { get; private set; } = default!;
+        public Order? Order { get; private set; }
         public int PointOfSaleId { get; set; }
         [JsonIgnore]
-        public PointOfSale PointOfSale { get; set; } = default!;
+        public PointOfSale? PointOfSale { get; set; }
         public ServingState State { get; set; }
         public bool HighPriority { get; set; }
         public int? TagNumber { get; set; }

@@ -3,9 +3,9 @@
     public class PointOfSaleProduct
     {
         public int PointOfSaleId { get; set; }
-        public PointOfSale PointOfSale { get; set; } = default!;
+        public PointOfSale? PointOfSale { get; set; }
         public int ProductId { get; set; }
-        public Product Product { get; set; } = default!;
+        public Product? Product { get; set; }
         public int Position { get; set; }
         public bool Presale { get; set; }
         public bool IsServing { get; set; }

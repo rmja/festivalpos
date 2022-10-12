@@ -8,7 +8,7 @@ namespace FestivalPOS.Models
         public int Id { get; set; }
         public int OrderId { get; set; }
         [JsonIgnore]
-        public Order Order { get; set; } = default!;
+        public Order? Order { get; set; }
         public int Position { get; set; }
         [MaxLength(100)]
         public string? Name { get; set; }

@@ -9,7 +9,7 @@ namespace FestivalPOS.Models
         [MaxLength(100)]
         public string Name { get; set; } = default!;
         public int TerminalId { get; set; }
-        public Terminal Terminal { get; set; } = default!;
+        public Terminal? Terminal { get; set; }
         [MaxLength(50)]
         public string? RestPrintPrinterName { get; set; }
         [MaxLength(50)]
