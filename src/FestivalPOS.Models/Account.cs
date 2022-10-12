@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FestivalPOS.Models
 {
@@ -9,7 +8,7 @@ namespace FestivalPOS.Models
         public int Number { get; set; }
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
         public decimal MaxCredit { get; set; }
         public decimal RemainingCredit { get; set; }
         public bool HighPriorityServing { get; set; }

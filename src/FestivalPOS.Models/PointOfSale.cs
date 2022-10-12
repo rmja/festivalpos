@@ -9,10 +9,10 @@ namespace FestivalPOS.Models
         public int Id { get; set; }
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
         public int? ReceiptPrinterId { get; set; }
         [JsonIgnore]
-        public Printer ReceiptPrinter { get; set; }
+        public Printer? ReceiptPrinter { get; set; }
         public bool IsDeleted { get; set; }
 
         public List<ServingStaff> ServingStaff { get; set; } = new List<ServingStaff>();

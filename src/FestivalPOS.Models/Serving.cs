@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace FestivalPOS.Models
 {
@@ -9,10 +7,10 @@ namespace FestivalPOS.Models
         public int Id { get; private set; }
         public int OrderId { get; set; }
         [JsonIgnore]
-        public Order Order { get; private set; }
+        public Order Order { get; private set; } = default!;
         public int PointOfSaleId { get; set; }
         [JsonIgnore]
-        public PointOfSale PointOfSale { get; set; }
+        public PointOfSale PointOfSale { get; set; } = default!;
         public ServingState State { get; set; }
         public bool HighPriority { get; set; }
         public int? TagNumber { get; set; }

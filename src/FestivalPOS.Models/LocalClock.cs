@@ -1,5 +1,4 @@
 ﻿using NodaTime;
-using System;
 
 namespace FestivalPOS
 {
@@ -9,9 +8,9 @@ namespace FestivalPOS
 
         public static DateTimeOffset Now => TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timezone);
 
-        public static DateTimeZone TimeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull("Europe/Copenhagen") ?? throw new TimeZoneNotFoundException("Unable to get timezone");
+        public static DateTimeZone TimeZone { get; } = DateTimeZoneProviders.Tzdb.GetZoneOrNull("Europe/Copenhagen") ?? throw new TimeZoneNotFoundException("Unable to get timezone");
 
-        private static TimeZoneInfo TryGetTimezone(string id)
+        private static TimeZoneInfo? TryGetTimezone(string id)
         {
             try
             {
