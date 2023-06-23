@@ -15,11 +15,13 @@ namespace PagerController
         private readonly HubConnection _hub;
         private readonly PagerService _pagerService;
         private readonly ControllerOptions _options;
+        private readonly ILogger<HubListener> _logger;
 
-        public HubListener(PagerService pagerService, IOptions<ControllerOptions> options)
+        public HubListener(PagerService pagerService, IOptions<ControllerOptions> options, ILogger<HubListener> logger)
         {
             _pagerService = pagerService;
             _options = options.Value;
+            _logger = logger;
 
             _hub = new HubConnectionBuilder()
                 .WithUrl(_options.ServingHub)
@@ -40,7 +42,19 @@ namespace PagerController
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             await _hub.StartAsync(cancellationToken);
-            await _hub.SendAsync("Hello", _options.PointOfSaleId, cancellationToken);
+            if (_options.PointOfSaleIds is not null)
+            {
+                foreach (var id in _options.PointOfSaleIds)
+                {
+                    _logger.LogInformation("Sending hello to pos {}", id);
+                    await _hub.SendAsync("Hello", id, cancellationToken);
+                }
+            }
+            else
+            {
+                _logger.LogInformation("Sending broadcast hello");
+                await _hub.SendAsync("HelloAll", cancellationToken);
+            }
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)

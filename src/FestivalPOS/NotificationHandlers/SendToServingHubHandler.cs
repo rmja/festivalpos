@@ -1,4 +1,5 @@
 ﻿using FestivalPOS.Hubs;
+using FestivalPOS.Models;
 using FestivalPOS.Notifications;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
@@ -29,7 +30,7 @@ namespace FestivalPOS.NotificationHandlers
                 .Include(x => x.Lines.OrderBy(l => l.Position))
                 .FirstAsync(x => x.Id == notification.ServingId ,cancellationToken);
 
-            var clients = _hub.Clients.Group($"PointsOfSale:{serving.PointOfSaleId}");
+            var clients = _hub.Clients.Groups(new[] { $"PointsOfSale:{serving.PointOfSaleId}", "PointsOfSale:All" });
 
             await clients.SendAsync("ServingCreated", serving, cancellationToken);
         }
@@ -40,7 +41,7 @@ namespace FestivalPOS.NotificationHandlers
                 .Include(x => x.Lines.OrderBy(l => l.Position))
                 .FirstAsync(x => x.Id == notification.ServingId, cancellationToken);
 
-            var clients = _hub.Clients.Group($"PointsOfSale:{serving.PointOfSaleId}");
+            var clients = _hub.Clients.Groups(new[] { $"PointsOfSale:{serving.PointOfSaleId}", "PointsOfSale:All" });
 
             await clients.SendAsync("ServingUpdated", serving, cancellationToken);
         }
@@ -51,7 +52,7 @@ namespace FestivalPOS.NotificationHandlers
                 .Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .FirstAsync(x => x.Id == notification.PointOfSaleId, cancellationToken);
 
-            var clients = _hub.Clients.Group($"PointsOfSale:{pos.Id}");
+            var clients = _hub.Clients.Groups(new[] { $"PointsOfSale:{pos.Id}", "PointsOfSale:All" });
 
             await clients.SendAsync("PointOfSaleUpdated", pos, cancellationToken);
         }
