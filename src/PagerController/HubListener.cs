@@ -66,6 +66,8 @@ namespace PagerController
         {
             if (serving.State == ServingState.Ongoing && serving.TagNumber.HasValue)
             {
+                _logger.LogInformation("Calling pager {} for pos {}", serving.TagNumber, serving.PointOfSaleId);
+
                 await _pagerService.CallAsync(_options.RestaurantId, serving.TagNumber.Value);
             }
         }
