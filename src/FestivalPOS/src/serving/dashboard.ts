@@ -12,6 +12,7 @@ import { Serving } from "../api/serving";
 import { ServingStaff } from '../api/serving-staff';
 import { State } from "../state";
 import { connectTo } from "aurelia-store";
+import { nameof } from "../utils";
 
 @connectTo({
     setup: "activate",
@@ -163,7 +164,7 @@ export class ServingDashboard {
             const patch = new Patch<Serving>()
                 .test(x => x.state, "pending")
                 .replace(x => x.state, "ongoing")
-                .replace(nameof<Serving>(x => x.staffNumber), staffNumber);
+                .replace(nameof<Serving>("staffNumber"), staffNumber);
 
             await this.api.updateServing(serving.id, patch.operations).transfer();
         }

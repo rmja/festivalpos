@@ -3,6 +3,7 @@ import { autoinject, bindable } from "aurelia-framework";
 import QRCode from "qrcodejs2";
 
 import "./qr-code.css";
+import { nameof } from "../utils";
 
 @autoinject()
 export class QrCodeCustomElement {
@@ -10,7 +11,7 @@ export class QrCodeCustomElement {
   private qrCode?: QRCode;
   private resizeObserver: ResizeObserver;
 
-  @bindable({ changeHandler: nameof<QrCodeCustomElement>((x) => x.drawCode) })
+  @bindable({ changeHandler: nameof<QrCodeCustomElement>("drawCode") })
   public value = "";
 
   constructor(element: Element) {
@@ -28,7 +29,7 @@ export class QrCodeCustomElement {
     this.qrCode?.clear();
   }
 
-  private drawCode() {
+  drawCode() {
     const size = this.element.clientWidth;
     if (size === 0) {
       this.qrCode?.clear();

@@ -1,6 +1,5 @@
 import * as MiniCssExtractPlugin from "mini-css-extract-plugin";
 import * as autoprefixer from "autoprefixer";
-import * as tsNameof from "ts-nameof";
 
 import {
   Configuration,
@@ -51,7 +50,6 @@ const config = (
             options: {
               silent: true,
               configFile: "tsconfig.app.json",
-              getCustomTransformers: () => ({ before: [tsNameof] }),
             },
           },
         },

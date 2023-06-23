@@ -8,30 +8,31 @@ import { Order } from "../api/order";
 import { ProgressService } from "../resources/progress-service";
 import { Router } from "aurelia-router";
 import { faCashRegister } from "@fortawesome/free-solid-svg-icons";
+import { nameof } from "../utils";
 
 @autoinject()
 export class AccountPayment {
     private order!: Order;
     private accounts!: Account[];
-    private account?: Account;
+    account?: Account;
     total!: Big;
     @observable() accountNumber!: Big;
 
-    @computedFrom(nameof<AccountPayment>(x => x.account))
+    @computedFrom(nameof<AccountPayment>("account"))
     get accountName() {
         if (this.account) {
             return this.account.name;
         }
     }
 
-    @computedFrom(nameof<AccountPayment>(x => x.account))
+    @computedFrom(nameof<AccountPayment>("account"))
     get remainingCredit() {
         if (this.account) {
             return this.account.remainingCredit;
         }
     }
 
-    @computedFrom(nameof<AccountPayment>(x => x.account))
+    @computedFrom(nameof<AccountPayment>("account"))
     get remainingCreditClass() {
         if (this.account) {
             if (this.account.remainingCredit.gte(this.total)) {
