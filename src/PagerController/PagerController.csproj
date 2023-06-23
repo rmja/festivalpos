@@ -5,10 +5,19 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>pager-controller</ToolCommandName>
+	<PackageId>FestivalPOS.PagerController</PackageId>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<RepositoryUrl>https://github.com/rmja/festivalpos</RepositoryUrl>
+	<Authors>Rasmus Melchior Jacobsen</Authors>
+	<Version>1.0.0-beta.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+	<None Include="README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>
