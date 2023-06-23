@@ -8,12 +8,12 @@ COPY ["src/FestivalPOS/typings", "./typings"]
 COPY ["src/FestivalPOS/src", "./src"]
 RUN node_modules/.bin/webpack --mode ${WEBPACK_MODE}
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:6.0-alpine AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:7.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:7.0 AS build
 WORKDIR /src
 COPY ["src/FestivalPOS/FestivalPOS.csproj", "src/FestivalPOS/"]
 RUN dotnet restore "src/FestivalPOS/FestivalPOS.csproj"

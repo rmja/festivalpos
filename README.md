@@ -21,7 +21,13 @@ docker run -e SqlServerConnectionString="..." -e RedisConnectionString="..." -e 
 Update with a connection string to SqlServer, Redis and an Azure storage account. Redis is only needed for printing.
 Then navigate to [localhost:5000]() to see the app running.
 
-## Build
+## Setting up a dev environment
+Clone the repo. Go to src/FestivalPOS and run `npm i` followed by `npm run watch`.
+Open the VS solution and run the FestivalPOS project. The app can then be accessed at https://localhost:5001.
 
+## Deploy
+
+```
 docker build -f src/FestivalPOS/Dockerfile -t rmjac/festivalpos .
 docker push rmjac/festivalpos
+```

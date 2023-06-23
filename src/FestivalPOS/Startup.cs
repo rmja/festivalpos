@@ -57,7 +57,7 @@ namespace FestivalPOS
                     options.PayloadSerializerOptions.Converters.Add(new DecimalConverter());
                 });
 
-            services.AddMediatR(typeof(Startup).Assembly);
+            services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Startup).Assembly));
 
             services.AddSingleton(sp =>
             {
