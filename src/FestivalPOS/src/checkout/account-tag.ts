@@ -16,6 +16,7 @@ export class AccountTag {
     private orderId!: number;
     private paymentId!: number;
     accountNumber!: number;
+    accountTagInUse = false;
 
     constructor(private api: Api, private router: Router, private dialog: DialogService, private progress: ProgressService) {
     }
@@ -37,6 +38,10 @@ export class AccountTag {
         });
     }
 
+    useAccountNumber() {
+        this.tagNumber = new Big(this.accountNumber);
+    }
+
     async submit() {
         const tagNumber = Number(this.tagNumber.toFixed());
 
@@ -45,12 +50,20 @@ export class AccountTag {
                 return;
             }
 
+            this.accountTagInUse = false;
+
             if (await this.tryAssignTag(tagNumber)) {
                 // Tag was assigned
                 await this.progress.done();
             }
             else {
                 await this.progress.done();
+
+                if (+this.tagNumber == this.accountNumber) {
+                    this.tagNumber = new Big(0);
+                    this.accountTagInUse = true;
+                    return;
+                }
 
                 const result = await this.dialog.open({ viewModel: TagOverwriteDialog, model: tagNumber }).whenClosed();
 

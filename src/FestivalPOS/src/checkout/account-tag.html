@@ -1,12 +1,19 @@
 <template>
     <form submit.delegate="submit()">
-        <div class="alert alert-warning">
+        <div class="alert alert-warning" if.bind="accountTagInUse">
             <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon>
             Der er allerede et igangværende salg registreret på kontrobrik ${accountNumber}. Tildel en ny serveringsbrik.
         </div>
-        <keypad-display title="Ny Serveringsbrik" value.bind="tagNumber"></keypad-display>
 
-        <keypad-input value.bind="tagNumber"></keypad-input>
+        <keypad-display title="Serveringsbrik" value.bind="tagNumber"></keypad-display>
+
+        <keypad-input value.bind="tagNumber">
+            <div class="col-4">
+                <button type="button" class="btn btn-light" click.delegate="useAccountNumber()" fast-click>
+                    <h5>=</h5>
+                </button>
+            </div>
+        </keypad-input>
 
         <div class="btn-group btn-block fixed-bottom">
             <button class="btn btn-secondary btn-lg col-4" if.bind="canSkip" click.delegate="skip()" fast-click><font-awesome-icon icon="times"></font-awesome-icon> Undlad</button>

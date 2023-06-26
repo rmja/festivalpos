@@ -80,21 +80,6 @@ export class AccountPayment {
                 return;
             }
 
-            let tagConflict = false;
-            if (this.order.canHaveTag()) {
-                try {
-                    await this.api.assignOrderTag(this.order.id, this.account.number).send();
-                }
-                catch (error) {
-                    if (error instanceof HttpError && error.statusCode === 409) { // Conflict
-                        tagConflict = true;
-                    }
-                    else {
-                        throw error;
-                    }
-                }
-            }
-
             const payment = await this.api.createPayment(this.order.id, {
                 method: "account",
                 amount: this.total,
@@ -103,8 +88,8 @@ export class AccountPayment {
 
             await this.progress.done();
 
-            if (tagConflict) {
-                this.router.navigateToRoute("account-tag", {
+            if (this.order.canHaveTag()) {
+                    this.router.navigateToRoute("account-tag", {
                     orderId: payment.orderId,
                     paymentId: payment.id,
                     accountNumber: this.account.number
