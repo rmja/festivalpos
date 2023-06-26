@@ -37,11 +37,22 @@ namespace PagerController
             _hub.On("ServingCreated", (Serving serving) => { });
             _hub.On("ServingUpdated", new Func<Serving, Task>(OnServingUpdatedAsync));
             _hub.On("PointOfSaleUpdated", (PointOfSale pos) => { });
+            _hub.Reconnected += (connectionId) => SayHelloAsync(CancellationToken.None);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             await _hub.StartAsync(cancellationToken);
+            await SayHelloAsync(cancellationToken);
+        }
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            await _hub.StopAsync(cancellationToken);
+        }
+
+        private async Task SayHelloAsync(CancellationToken cancellationToken)
+        {
             if (_options.PointOfSaleIds is not null)
             {
                 foreach (var id in _options.PointOfSaleIds)
@@ -55,11 +66,6 @@ namespace PagerController
                 _logger.LogInformation("Sending broadcast hello");
                 await _hub.SendAsync("HelloAll", cancellationToken);
             }
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            await _hub.StopAsync(cancellationToken);
         }
 
         private async Task OnServingUpdatedAsync(Serving serving)
