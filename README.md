@@ -25,6 +25,10 @@ Then navigate to [localhost:5000]() to see the app running.
 Clone the repo. Go to src/FestivalPOS and run `npm i` followed by `npm run watch`.
 Open the VS solution and run the FestivalPOS project. The app can then be accessed at https://localhost:5001.
 
+![Sale window](https://github.com/rmja/festivalpos/assets/2112306/a0bdfb3d-7d5e-4598-8b02-69f208805df7)
+![Serving window](https://github.com/rmja/festivalpos/assets/2112306/adf726e2-7722-4d25-a30f-42eac86012ec)
+
+
 ## Deploy
 
 ```
