@@ -27,7 +27,12 @@ Open the VS solution and run the FestivalPOS project. The app can then be access
 
 ## Screenshots
 
+Sale window with product list per point of sale.
+
 ![Sale window](https://github.com/rmja/festivalpos/assets/2112306/a0bdfb3d-7d5e-4598-8b02-69f208805df7)
+
+Serving window where the order queue is to the left, and where each staff member can assign and finish orders.
+
 ![Serving window](https://github.com/rmja/festivalpos/assets/2112306/adf726e2-7722-4d25-a30f-42eac86012ec)
 
 
