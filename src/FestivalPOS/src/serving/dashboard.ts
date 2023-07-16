@@ -46,6 +46,18 @@ export class ServingDashboard {
         return this.servings.some(x => x.state === "ongoing");
     }
 
+    get pendingServingSummary() {
+        let count = new Map<string, number>();
+        for (const serving of this.pendingServings) {
+            for (const line of serving.lines) {
+                let current = count.get(line.name) || 0;
+                count.set(line.name, current + line.quantity);
+            }
+        }        
+
+        return new Map([...count].sort());
+    }
+
     constructor(private api: Api, private hub: ServingHub, private eventAggregator: EventAggregator, private dialog: DialogService) {
     }
 

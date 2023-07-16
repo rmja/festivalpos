@@ -10,7 +10,18 @@
                         <div class="list-group-item list-group-item-danger">FÆRDIG</div>
                     </div>
                 </p>
-                <hr>
+                <table class="table table-sm">
+                    <thead>
+                        <th>Vare</th>
+                        <th class="text-right">Antal</th>
+                    </thead>
+                    <tbody>
+                        <tr repeat.for="[name, count] of pendingServingSummary">
+                            <td>${name}</td>
+                            <td class="text-right">${count}</td>
+                        </tr>
+                    </tbody>
+                </table>
                 <p>
                     <div class="list-group">
                         <div repeat.for="serving of pendingServings" class="list-group-item list-group-item-warning">
