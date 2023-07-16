@@ -40,7 +40,9 @@ namespace FestivalPOS.Controllers
                     return BadRequest();
                 }
 
-                var account = await _db.Accounts.FirstOrDefaultAsync(x => x.Id == payment.AccountId);
+                var account = await _db.Accounts.FirstOrDefaultAsync(
+                    x => x.Id == payment.AccountId
+                );
 
                 if (account.RemainingCredit >= payment.Amount)
                 {
@@ -94,7 +96,13 @@ namespace FestivalPOS.Controllers
         }
 
         [HttpGet]
-        public Task<List<Payment>> GetAll(int? terminalId, int? pointOfSaleId, int? accountId, DateTimeOffset? from, DateTimeOffset? to)
+        public Task<List<Payment>> GetAll(
+            int? terminalId,
+            int? pointOfSaleId,
+            int? accountId,
+            DateTimeOffset? from,
+            DateTimeOffset? to
+        )
         {
             var query = _db.Payments.AsQueryable();
 

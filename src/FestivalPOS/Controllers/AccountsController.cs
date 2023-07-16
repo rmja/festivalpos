@@ -23,12 +23,14 @@ namespace FestivalPOS.Controllers
         public async Task<Account> Create(Account account)
         {
             account.RemainingCredit = account.MaxCredit;
-            account.Payments.Add(new Payment()
-            {
-                Method = PaymentMethod.Offset,
-                Amount = -account.MaxCredit,
-                Created = LocalClock.Now
-            });
+            account.Payments.Add(
+                new Payment()
+                {
+                    Method = PaymentMethod.Offset,
+                    Amount = -account.MaxCredit,
+                    Created = LocalClock.Now
+                }
+            );
             _db.Accounts.Add(account);
 
             await _db.SaveChangesAsync();
@@ -76,12 +78,14 @@ namespace FestivalPOS.Controllers
                 var offset = account.MaxCredit - oldMaxCredit;
 
                 account.RemainingCredit += offset;
-                account.Payments.Add(new Payment()
-                {
-                    Method = PaymentMethod.Offset,
-                    Amount = -offset,
-                    Created = LocalClock.Now
-                });
+                account.Payments.Add(
+                    new Payment()
+                    {
+                        Method = PaymentMethod.Offset,
+                        Amount = -offset,
+                        Created = LocalClock.Now
+                    }
+                );
             }
 
             await _db.SaveChangesAsync();
@@ -92,21 +96,21 @@ namespace FestivalPOS.Controllers
         [HttpPost("Reset")]
         public async Task ResetAll()
         {
-            var accounts = await _db.Accounts
-                .Include(x => x.Payments)
-                .ToListAsync();
+            var accounts = await _db.Accounts.Include(x => x.Payments).ToListAsync();
 
             foreach (var account in accounts)
             {
                 var offset = account.MaxCredit - account.RemainingCredit;
 
                 account.RemainingCredit += offset;
-                account.Payments.Add(new Payment()
-                {
-                    Method = PaymentMethod.Offset,
-                    Amount = -offset,
-                    Created = LocalClock.Now
-                });
+                account.Payments.Add(
+                    new Payment()
+                    {
+                        Method = PaymentMethod.Offset,
+                        Amount = -offset,
+                        Created = LocalClock.Now
+                    }
+                );
             }
 
             await _db.SaveChangesAsync();

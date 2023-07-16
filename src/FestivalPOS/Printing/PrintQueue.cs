@@ -26,11 +26,10 @@ namespace FestivalPOS.Printing
 
             var batch = _database.CreateBatch();
 
-            _ = batch.HashSetAsync(jobKey, new[]
-            {
-                new HashEntry("name", job.Name),
-                new HashEntry("data", job.Data)
-            });
+            _ = batch.HashSetAsync(
+                jobKey,
+                new[] { new HashEntry("name", job.Name), new HashEntry("data", job.Data) }
+            );
 
             var positionTask = batch.ListRightPushAsync($"printers:{job.PrinterId}:queue", jobKey);
 
@@ -43,7 +42,9 @@ namespace FestivalPOS.Printing
         {
             await EnsureConnected();
 
-            var result = (RedisValue[])await _database.ScriptEvaluateAsync(@"
+            var result = (RedisValue[])
+                await _database.ScriptEvaluateAsync(
+                    @"
 local queueKey = KEYS[1]
 local jobKey = redis.call('LPOP', queueKey)
 if jobKey then
@@ -52,11 +53,9 @@ if jobKey then
     return hash
 end
 return {}",
-                new RedisKey[]
-                {
-                    $"printers:{printerId}:queue"
-                },
-                Array.Empty<RedisValue>());
+                    new RedisKey[] { $"printers:{printerId}:queue" },
+                    Array.Empty<RedisValue>()
+                );
 
             if (result.Length == 0)
             {
@@ -95,7 +94,9 @@ return {}",
                     return;
                 }
 
-                var connection = await ConnectionMultiplexer.ConnectAsync(_options.RedisConnectionString);
+                var connection = await ConnectionMultiplexer.ConnectAsync(
+                    _options.RedisConnectionString
+                );
                 _database = connection.GetDatabase();
             }
             finally

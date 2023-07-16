@@ -23,7 +23,14 @@ namespace FestivalPOS.Controllers
 
         [HttpGet("{periodStart}/{periodEnd}/{kind}")]
         [HttpGet("{periodStart}/{periodEnd}/{kind}-{offset}")]
-        public async Task<List<OrderStats>> GetHourlyStats(DateTimeOffset periodStart, DateTimeOffset periodEnd, StatsKind kind, TimeSpan offset, int? terminalId, int? pointOfSaleId)
+        public async Task<List<OrderStats>> GetHourlyStats(
+            DateTimeOffset periodStart,
+            DateTimeOffset periodEnd,
+            StatsKind kind,
+            TimeSpan offset,
+            int? terminalId,
+            int? pointOfSaleId
+        )
         {
             var connection = _db.Database.GetDbConnection();
 
@@ -39,21 +46,26 @@ namespace FestivalPOS.Controllers
 
             var orderStats = await connection.QueryAsync<OrderStats>(
                 sql: await SqlScript.GetAsync("GetOrderStats.sql"),
-                param: param);
+                param: param
+            );
 
             var paymentStats = await connection.QueryAsync<PaymentStats>(
                 sql: await SqlScript.GetAsync("GetPaymentStats.sql"),
-                param: param);
+                param: param
+            );
 
             var productSaleStats = await connection.QueryAsync<ProductSaleStats>(
                 sql: await SqlScript.GetAsync("GetProductSaleStats.sql"),
-                param: param);
+                param: param
+            );
 
             var productServingStats = await connection.QueryAsync<ProductServingStats>(
                 sql: await SqlScript.GetAsync("GetProductServingStats.sql"),
-                param: param);
+                param: param
+            );
 
-            var periodStarts = orderStats.Select(x => x.PeriodStart)
+            var periodStarts = orderStats
+                .Select(x => x.PeriodStart)
                 .Union(productServingStats.Select(x => x.PeriodStart))
                 .OrderBy(x => x)
                 .ToList();
@@ -62,11 +74,15 @@ namespace FestivalPOS.Controllers
 
             foreach (var startOfPeriod in periodStarts)
             {
-                var order = orderStats.FirstOrDefault(x => x.PeriodStart == startOfPeriod) ?? new OrderStats() { PeriodStart = startOfPeriod };
+                var order =
+                    orderStats.FirstOrDefault(x => x.PeriodStart == startOfPeriod)
+                    ?? new OrderStats() { PeriodStart = startOfPeriod };
 
                 var productStats = new Dictionary<int, ProductStats>();
 
-                foreach (var sale in productSaleStats.Where(x => x.PeriodStart == order.PeriodStart))
+                foreach (
+                    var sale in productSaleStats.Where(x => x.PeriodStart == order.PeriodStart)
+                )
                 {
                     var stats = new ProductStats()
                     {
@@ -80,7 +96,11 @@ namespace FestivalPOS.Controllers
                     productStats.Add(sale.ProductId, stats);
                 }
 
-                foreach (var serving in productServingStats.Where(x => x.PeriodStart == order.PeriodStart))
+                foreach (
+                    var serving in productServingStats.Where(
+                        x => x.PeriodStart == order.PeriodStart
+                    )
+                )
                 {
                     if (!productStats.TryGetValue(serving.ProductId, out var stats))
                     {
@@ -95,7 +115,9 @@ namespace FestivalPOS.Controllers
                     stats.ServingQuantity = serving.ProductQuantity;
                 }
 
-                order.Payments = paymentStats.Where(x => x.PeriodStart == order.PeriodStart).ToList();
+                order.Payments = paymentStats
+                    .Where(x => x.PeriodStart == order.PeriodStart)
+                    .ToList();
                 order.Products = productStats.Values.OrderBy(x => x.ProductName).ToList();
 
                 result.Add(order);

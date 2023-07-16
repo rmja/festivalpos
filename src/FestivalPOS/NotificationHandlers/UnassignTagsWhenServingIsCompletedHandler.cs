@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace FestivalPOS.NotificationHandlers
 {
-    public class UnassignTagsWhenServingIsCompletedHandler : INotificationHandler<ServingUpdatedNotification>
+    public class UnassignTagsWhenServingIsCompletedHandler
+        : INotificationHandler<ServingUpdatedNotification>
     {
         private readonly PosContext _db;
 
@@ -17,14 +18,19 @@ namespace FestivalPOS.NotificationHandlers
             _db = db;
         }
 
-        public async Task Handle(ServingUpdatedNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(
+            ServingUpdatedNotification notification,
+            CancellationToken cancellationToken
+        )
         {
             var serving = await _db.Servings.FirstAsync(x => x.Id == notification.ServingId);
 
             if (serving.State == ServingState.Completed)
             {
                 var now = LocalClock.Now;
-                var tags = await _db.OrderTags.Where(x => x.OrderId == serving.OrderId && x.Detached == null).ToListAsync();
+                var tags = await _db.OrderTags
+                    .Where(x => x.OrderId == serving.OrderId && x.Detached == null)
+                    .ToListAsync();
 
                 foreach (var tag in tags)
                 {

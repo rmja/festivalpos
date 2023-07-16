@@ -29,35 +29,44 @@ namespace FestivalPOS
             services.Configure<PosOptions>(Configuration);
 
             var fakeServiceProvider = new ServiceCollection();
-            fakeServiceProvider
-                .AddLogging()
-                .AddMvc()
-                .AddNewtonsoftJson();
+            fakeServiceProvider.AddLogging().AddMvc().AddNewtonsoftJson();
 
-            var fakeMvcOptions = fakeServiceProvider.BuildServiceProvider().GetRequiredService<IOptions<MvcOptions>>().Value;
+            var fakeMvcOptions = fakeServiceProvider
+                .BuildServiceProvider()
+                .GetRequiredService<IOptions<MvcOptions>>()
+                .Value;
 
-            services.AddMvc(options =>
+            services
+                .AddMvc(options =>
                 {
-                    var jsonPatchInputFormatter = fakeMvcOptions.InputFormatters.OfType<Microsoft.AspNetCore.Mvc.Formatters.NewtonsoftJsonPatchInputFormatter>().Single();
+                    var jsonPatchInputFormatter = fakeMvcOptions.InputFormatters
+                        .OfType<Microsoft.AspNetCore.Mvc.Formatters.NewtonsoftJsonPatchInputFormatter>()
+                        .Single();
                     options.InputFormatters.Insert(0, jsonPatchInputFormatter);
                 })
                 .AddJsonOptions(options =>
                 {
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                    options.JsonSerializerOptions.Converters.Add(
+                        new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                    );
                     options.JsonSerializerOptions.Converters.Add(new DecimalConverter());
                 });
 
-            services.AddEntityFrameworkSqlServer()
-                .AddDbContext<PosContext>();
+            services.AddEntityFrameworkSqlServer().AddDbContext<PosContext>();
 
-            services.AddSignalR()
+            services
+                .AddSignalR()
                 .AddJsonProtocol(options =>
                 {
-                    options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                    options.PayloadSerializerOptions.Converters.Add(
+                        new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                    );
                     options.PayloadSerializerOptions.Converters.Add(new DecimalConverter());
                 });
 
-            services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Startup).Assembly));
+            services.AddMediatR(
+                config => config.RegisterServicesFromAssembly(typeof(Startup).Assembly)
+            );
 
             services.AddSingleton(sp =>
             {
@@ -65,7 +74,8 @@ namespace FestivalPOS
                 return new BlobServiceClient(options.StorageConnectionString);
             });
 
-            services.AddScoped<PrintDispatcher>()
+            services
+                .AddScoped<PrintDispatcher>()
                 .AddSingleton<PrintQueue>()
                 .AddSingleton<ReceiptPrintGenerator>();
         }
@@ -78,8 +88,7 @@ namespace FestivalPOS
                 db.Database.Migrate();
             }
 
-            app
-                .UseDeveloperExceptionPage()
+            app.UseDeveloperExceptionPage()
                 .UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseRouting()

@@ -19,7 +19,10 @@ namespace FestivalPOS.NotificationHandlers
             _db = db;
         }
 
-        public async Task Handle(OrderPayedNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(
+            OrderPayedNotification notification,
+            CancellationToken cancellationToken
+        )
         {
             var order = await _db.Orders
                 .Include(x => x.Lines)
@@ -28,18 +31,22 @@ namespace FestivalPOS.NotificationHandlers
                 .Include(x => x.Account)
                 .FirstAsync(x => x.Id == notification.PaymentId);
 
-            var highPriority = payment.Method == PaymentMethod.Account && payment.Account.HighPriorityServing;
+            var highPriority =
+                payment.Method == PaymentMethod.Account && payment.Account.HighPriorityServing;
 
             var servingLines = order.Lines
                 .OrderBy(x => x.Position)
                 .Where(x => x.IsServing)
-                .Select((line, index) => new ServingLine()
-                {
-                    Position = index,
-                    OrderLineId = line.Id,
-                    Name = line.Name,
-                    Quantity = line.Quantity - line.Receiveable
-                })
+                .Select(
+                    (line, index) =>
+                        new ServingLine()
+                        {
+                            Position = index,
+                            OrderLineId = line.Id,
+                            Name = line.Name,
+                            Quantity = line.Quantity - line.Receiveable
+                        }
+                )
                 .Where(x => x.Quantity > 0)
                 .ToList();
 

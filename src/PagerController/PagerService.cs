@@ -52,7 +52,11 @@ namespace PagerController
             }
         }
 
-        public async Task CallAsync(int restaurantId, int pagerId, CancellationToken cancellationToken = default)
+        public async Task CallAsync(
+            int restaurantId,
+            int pagerId,
+            CancellationToken cancellationToken = default
+        )
         {
             var stream = _port.BaseStream;
 

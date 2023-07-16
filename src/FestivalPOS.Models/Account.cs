@@ -6,6 +6,7 @@ namespace FestivalPOS.Models
     {
         public int Id { get; set; }
         public int Number { get; set; }
+
         [Required]
         [MaxLength(100)]
         public string Name { get; set; } = default!;

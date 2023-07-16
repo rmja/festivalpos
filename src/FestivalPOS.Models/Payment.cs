@@ -8,13 +8,16 @@ namespace FestivalPOS.Models
     {
         public int Id { get; set; }
         public int? OrderId { get; set; }
+
         [JsonIgnore]
         public Order? Order { get; set; }
         public PaymentMethod Method { get; set; }
         public decimal Amount { get; set; }
+
         [MaxLength(20)]
         public string? TransactionNumber { get; set; }
         public int? AccountId { get; set; }
+
         [JsonIgnore]
         public Account? Account { get; set; }
         public DateTimeOffset Created { get; set; }

@@ -19,7 +19,10 @@ namespace FestivalPOS.NotificationHandlers
             _printQueue = printQueue;
         }
 
-        public async Task Handle(PrintJobCreatedNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(
+            PrintJobCreatedNotification notification,
+            CancellationToken cancellationToken
+        )
         {
             PrintJob job;
             while ((job = await _printQueue.DequeueAsync(notification.PrinterId)) != null)

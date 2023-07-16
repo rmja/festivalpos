@@ -20,7 +20,13 @@ namespace FestivalPOS.Controllers
         private readonly ReceiptPrintGenerator _receiptPrintGenerator;
         private readonly PrintQueue _printQueue;
 
-        public OrdersController(IMediator mediator, PosContext db, PrintDispatcher printDispatcher, ReceiptPrintGenerator receiptPrintGenerator, PrintQueue printQueue)
+        public OrdersController(
+            IMediator mediator,
+            PosContext db,
+            PrintDispatcher printDispatcher,
+            ReceiptPrintGenerator receiptPrintGenerator,
+            PrintQueue printQueue
+        )
         {
             _mediator = mediator;
             _db = db;
@@ -102,7 +108,9 @@ namespace FestivalPOS.Controllers
         public async Task<ActionResult> AssignTag(int id, int tagNumber, bool force)
         {
             var now = LocalClock.Now;
-            var currentTags = await _db.OrderTags.Where(x => x.Number == tagNumber && x.Detached == null).ToListAsync();
+            var currentTags = await _db.OrderTags
+                .Where(x => x.Number == tagNumber && x.Detached == null)
+                .ToListAsync();
 
             if (currentTags.Count > 0)
             {
@@ -119,12 +127,14 @@ namespace FestivalPOS.Controllers
                 }
             }
 
-            _db.OrderTags.Add(new OrderTag()
-            {
-                Number = tagNumber,
-                OrderId = id,
-                Attached = now,
-            });
+            _db.OrderTags.Add(
+                new OrderTag()
+                {
+                    Number = tagNumber,
+                    OrderId = id,
+                    Attached = now,
+                }
+            );
 
             await _db.SaveChangesAsync();
 
@@ -146,7 +156,9 @@ namespace FestivalPOS.Controllers
         [HttpDelete("{id:int}/Tags/{tagNumber:int}")]
         public async Task<ActionResult> UnassignTag(int id, int tagNumber)
         {
-            var tag = await _db.OrderTags.FirstOrDefaultAsync(x => x.Number == tagNumber && x.OrderId == id && x.Detached == null);
+            var tag = await _db.OrderTags.FirstOrDefaultAsync(
+                x => x.Number == tagNumber && x.OrderId == id && x.Detached == null
+            );
 
             if (tag != null)
             {
@@ -162,16 +174,16 @@ namespace FestivalPOS.Controllers
         [HttpPost("{id:int}/Receipt")]
         public async Task<ActionResult> Receipt(int id, int? pointOfSaleId)
         {
-            var order = await _db.Orders
-                .Include(x => x.Lines)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var order = await _db.Orders.Include(x => x.Lines).FirstOrDefaultAsync(x => x.Id == id);
 
             if (order == null)
             {
                 return NotFound();
             }
 
-            var printerId = await _printDispatcher.GetReceiptPrinterAsync(pointOfSaleId ?? order.PointOfSaleId);
+            var printerId = await _printDispatcher.GetReceiptPrinterAsync(
+                pointOfSaleId ?? order.PointOfSaleId
+            );
 
             if (printerId == null)
             {
@@ -179,12 +191,14 @@ namespace FestivalPOS.Controllers
             }
 
             var data = _receiptPrintGenerator.Generate(order);
-            await _printQueue.EnqueueAsync(new PrintJob()
-            {
-                PrinterId = printerId.Value,
-                Name = $"Kvittering {order.Id}",
-                Data = data
-            });
+            await _printQueue.EnqueueAsync(
+                new PrintJob()
+                {
+                    PrinterId = printerId.Value,
+                    Name = $"Kvittering {order.Id}",
+                    Data = data
+                }
+            );
             await _mediator.Publish(new PrintJobCreatedNotification(printerId.Value));
 
             return NoContent();

@@ -20,8 +20,11 @@ namespace FestivalPOS.Hubs
 
         public async Task Hello(int terminalId)
         {
-            var printerIds = await _db.Printers.Where(x => x.TerminalId == terminalId).Select(x => x.Id).ToListAsync();
-           
+            var printerIds = await _db.Printers
+                .Where(x => x.TerminalId == terminalId)
+                .Select(x => x.Id)
+                .ToListAsync();
+
             foreach (var printerId in printerIds)
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, $"Printers:{printerId}");

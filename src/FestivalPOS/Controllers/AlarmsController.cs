@@ -1,5 +1,4 @@
-﻿
-using FestivalPOS.Hubs;
+﻿using FestivalPOS.Hubs;
 using FestivalPOS.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -53,7 +52,10 @@ namespace FestivalPOS.Controllers
         }
 
         [HttpPatch("Feeds/{id:int}")]
-        public async Task<ActionResult<AlarmFeed>> UpdateFeed(int id, JsonPatchDocument<AlarmFeed> patch)
+        public async Task<ActionResult<AlarmFeed>> UpdateFeed(
+            int id,
+            JsonPatchDocument<AlarmFeed> patch
+        )
         {
             var feed = await _db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
 

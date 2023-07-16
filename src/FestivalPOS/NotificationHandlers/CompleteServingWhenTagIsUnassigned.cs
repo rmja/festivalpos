@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace FestivalPOS.NotificationHandlers
 {
-    public class CompleteServingWhenTagIsUnassigned : INotificationHandler<OrderTagUnassignedNotification>
+    public class CompleteServingWhenTagIsUnassigned
+        : INotificationHandler<OrderTagUnassignedNotification>
     {
         private readonly IMediator _mediator;
         private readonly PosContext _db;
@@ -20,10 +21,18 @@ namespace FestivalPOS.NotificationHandlers
             _db = db;
         }
 
-        public async Task Handle(OrderTagUnassignedNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(
+            OrderTagUnassignedNotification notification,
+            CancellationToken cancellationToken
+        )
         {
             var servings = await _db.Servings
-                .Where(x => x.OrderId == notification.OrderId && x.State != ServingState.Completed && x.TagNumber == notification.TagNumber)
+                .Where(
+                    x =>
+                        x.OrderId == notification.OrderId
+                        && x.State != ServingState.Completed
+                        && x.TagNumber == notification.TagNumber
+                )
                 .ToListAsync();
 
             if (servings.Count > 0)

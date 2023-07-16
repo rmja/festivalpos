@@ -43,8 +43,15 @@ namespace FestivalPOS
 
             modelBuilder.Entity<Account>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Account>().Property(x => x.MaxCredit).HasColumnType("decimal(9,2)");
-            modelBuilder.Entity<Account>().Property(x => x.RemainingCredit).HasColumnType("decimal(9,2)");
-            modelBuilder.Entity<Account>().HasIndex(x => x.Number).IsUnique().HasFilter("IsDeleted = 0");
+            modelBuilder
+                .Entity<Account>()
+                .Property(x => x.RemainingCredit)
+                .HasColumnType("decimal(9,2)");
+            modelBuilder
+                .Entity<Account>()
+                .HasIndex(x => x.Number)
+                .IsUnique()
+                .HasFilter("IsDeleted = 0");
 
             modelBuilder.Entity<AlarmFeed>().HasQueryFilter(x => !x.IsDeleted);
 
@@ -52,25 +59,55 @@ namespace FestivalPOS
             modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<OrderLine>().Property(x => x.Total).HasColumnType("decimal(9,2)");
             modelBuilder.Entity<Payment>().Property(x => x.Amount).HasColumnType("decimal(9,2)");
-            modelBuilder.Entity<Order>().HasMany(x => x.Tags).WithOne(x => x.Order).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder
+                .Entity<Order>()
+                .HasMany(x => x.Tags)
+                .WithOne(x => x.Order)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<OrderTag>().HasIndex(x => x.Number).HasFilter("Detached IS NULL");
-            modelBuilder.Entity<OrderTag>().HasIndex(x => new { x.Number, x.OrderId }).HasFilter("Detached IS NULL").IsUnique();
+            modelBuilder
+                .Entity<OrderTag>()
+                .HasIndex(x => new { x.Number, x.OrderId })
+                .HasFilter("Detached IS NULL")
+                .IsUnique();
 
             modelBuilder.Entity<PointOfSale>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<PointOfSale>().HasOne(x => x.ReceiptPrinter).WithMany().OnDelete(DeleteBehavior.SetNull);
-            modelBuilder.Entity<PointOfSale>().HasMany(x => x.ServingStaff).WithOne().OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<PointOfSaleProduct>().HasKey(x => new { x.PointOfSaleId, x.ProductId });
+            modelBuilder
+                .Entity<PointOfSale>()
+                .HasOne(x => x.ReceiptPrinter)
+                .WithMany()
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder
+                .Entity<PointOfSale>()
+                .HasMany(x => x.ServingStaff)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder
+                .Entity<PointOfSaleProduct>()
+                .HasKey(x => new { x.PointOfSaleId, x.ProductId });
 
-            modelBuilder.Entity<Printer>().HasOne(x => x.Terminal).WithMany(x => x.Printers).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder
+                .Entity<Printer>()
+                .HasOne(x => x.Terminal)
+                .WithMany(x => x.Printers)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Product>().Property(x => x.Price).HasColumnType("decimal(9,2)");
             modelBuilder.Entity<Product>().HasQueryFilter(x => !x.IsDeleted);
 
             modelBuilder.Entity<Terminal>().HasQueryFilter(x => !x.IsDeleted);
 
-            modelBuilder.Entity<Serving>().HasOne(x => x.PointOfSale).WithMany().OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<ServingLine>().HasOne(x => x.OrderLine).WithMany().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder
+                .Entity<Serving>()
+                .HasOne(x => x.PointOfSale)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder
+                .Entity<ServingLine>()
+                .HasOne(x => x.OrderLine)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<SumUpAffiliate>().HasKey(x => x.Key);
         }

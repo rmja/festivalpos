@@ -7,6 +7,7 @@ namespace FestivalPOS.Models
         [Required]
         [MaxLength(100)]
         public string Key { get; set; } = default!;
+
         [MaxLength(100)]
         public string? Name { get; set; }
     }

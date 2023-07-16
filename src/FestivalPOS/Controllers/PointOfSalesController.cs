@@ -44,7 +44,8 @@ namespace FestivalPOS.Controllers
         {
             var poss = await _db.PointOfSales
                 .Include(x => x.ServingStaff.OrderBy(s => s.Number))
-                .OrderBy(x => x.Name).ToListAsync();
+                .OrderBy(x => x.Name)
+                .ToListAsync();
 
             return poss;
         }
@@ -65,7 +66,10 @@ namespace FestivalPOS.Controllers
         }
 
         [HttpPatch("{id:int}")]
-        public async Task<ActionResult<PointOfSale>> Update(int id, JsonPatchDocument<PointOfSale> patch)
+        public async Task<ActionResult<PointOfSale>> Update(
+            int id,
+            JsonPatchDocument<PointOfSale> patch
+        )
         {
             var pos = await _db.PointOfSales
                 .Include(x => x.ServingStaff.OrderBy(s => s.Number))

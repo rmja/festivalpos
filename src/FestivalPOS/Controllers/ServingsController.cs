@@ -56,7 +56,10 @@ namespace FestivalPOS.Controllers
                     servingLine.Name = orderLine.Name;
 
                     // Adjust receivable on order line
-                    orderLine.Receiveable = Math.Max(orderLine.Receiveable - servingLine.Quantity, 0);
+                    orderLine.Receiveable = Math.Max(
+                        orderLine.Receiveable - servingLine.Quantity,
+                        0
+                    );
                 }
                 else
                 {
@@ -125,9 +128,12 @@ namespace FestivalPOS.Controllers
             var servings = await _db.Servings
                 .Include(x => x.Lines.OrderBy(l => l.Position))
                 .Where(x => x.PointOfSaleId == pointOfSaleId)
-                .Where(x => x.State == ServingState.Pending
-                         || x.State == ServingState.Ongoing
-                         || x.Completed >= completedThreshold)
+                .Where(
+                    x =>
+                        x.State == ServingState.Pending
+                        || x.State == ServingState.Ongoing
+                        || x.Completed >= completedThreshold
+                )
                 .OrderBy(x => x.Created)
                 .ToListAsync();
 

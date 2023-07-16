@@ -7,13 +7,22 @@ namespace FestivalPOS.Converters
 {
     public class DecimalConverter : JsonConverter<decimal>
     {
-        public override decimal Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options)
+        public override decimal Read(
+            ref Utf8JsonReader reader,
+            Type type,
+            JsonSerializerOptions options
+        )
         {
             if (reader.TokenType == JsonTokenType.String)
             {
-                ReadOnlySpan<byte> span = reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan;
+                ReadOnlySpan<byte> span = reader.HasValueSequence
+                    ? reader.ValueSequence.ToArray()
+                    : reader.ValueSpan;
 
-                if (Utf8Parser.TryParse(span, out decimal number, out var bytesConsumed) && span.Length == bytesConsumed)
+                if (
+                    Utf8Parser.TryParse(span, out decimal number, out var bytesConsumed)
+                    && span.Length == bytesConsumed
+                )
                 {
                     return number;
                 }
@@ -22,7 +31,11 @@ namespace FestivalPOS.Converters
             return reader.GetDecimal();
         }
 
-        public override void Write(Utf8JsonWriter writer, decimal value, JsonSerializerOptions options)
+        public override void Write(
+            Utf8JsonWriter writer,
+            decimal value,
+            JsonSerializerOptions options
+        )
         {
             writer.WriteNumberValue(value);
         }

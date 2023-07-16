@@ -17,7 +17,11 @@ namespace PagerController
         private readonly ControllerOptions _options;
         private readonly ILogger<HubListener> _logger;
 
-        public HubListener(PagerService pagerService, IOptions<ControllerOptions> options, ILogger<HubListener> logger)
+        public HubListener(
+            PagerService pagerService,
+            IOptions<ControllerOptions> options,
+            ILogger<HubListener> logger
+        )
         {
             _pagerService = pagerService;
             _options = options.Value;
@@ -29,7 +33,9 @@ namespace PagerController
                 .ConfigureLogging(logging => logging.AddConsole())
                 .AddJsonProtocol(options =>
                 {
-                    options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                    options.PayloadSerializerOptions.Converters.Add(
+                        new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                    );
                     options.PayloadSerializerOptions.Converters.Add(new DecimalConverter());
                 })
                 .Build();
@@ -72,7 +78,11 @@ namespace PagerController
         {
             if (serving.State == ServingState.Ongoing && serving.TagNumber.HasValue)
             {
-                _logger.LogInformation("Calling pager {} for pos {}", serving.TagNumber, serving.PointOfSaleId);
+                _logger.LogInformation(
+                    "Calling pager {} for pos {}",
+                    serving.TagNumber,
+                    serving.PointOfSaleId
+                );
 
                 await _pagerService.CallAsync(_options.RestaurantId, serving.TagNumber.Value);
             }

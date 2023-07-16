@@ -62,7 +62,10 @@ namespace FestivalPOS.Controllers
         }
 
         [HttpPatch("{id:int}")]
-        public async Task<ActionResult<Product>> UpdateProduct(int id, JsonPatchDocument<Product> patch)
+        public async Task<ActionResult<Product>> UpdateProduct(
+            int id,
+            JsonPatchDocument<Product> patch
+        )
         {
             var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -79,9 +82,16 @@ namespace FestivalPOS.Controllers
         }
 
         [HttpGet("{id:int}/Image")]
-        public async Task<ActionResult> GetImage(int id, string kind = "preview", CancellationToken cancellationToken = default)
+        public async Task<ActionResult> GetImage(
+            int id,
+            string kind = "preview",
+            CancellationToken cancellationToken = default
+        )
         {
-            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            var product = await _db.Products.FirstOrDefaultAsync(
+                x => x.Id == id,
+                cancellationToken
+            );
             if (product == null)
             {
                 return NotFound();
@@ -105,10 +115,14 @@ namespace FestivalPOS.Controllers
 
             try
             {
-                var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
+                var properties = await blobClient.GetPropertiesAsync(
+                    cancellationToken: cancellationToken
+                );
 
                 var responseHeaders = Response.GetTypedHeaders();
-                responseHeaders.ContentType = new MediaTypeHeaderValue(properties.Value.ContentType);
+                responseHeaders.ContentType = new MediaTypeHeaderValue(
+                    properties.Value.ContentType
+                );
                 responseHeaders.ETag = new EntityTagHeaderValue(properties.Value.ETag.ToString());
                 responseHeaders.ContentLength = properties.Value.ContentLength;
                 responseHeaders.LastModified = properties.Value.LastModified;
@@ -157,10 +171,9 @@ namespace FestivalPOS.Controllers
 
                     stream.Position = 0;
                     await blob.UploadAsync(stream);
-                    await blob.SetHttpHeadersAsync(new BlobHttpHeaders
-                    {
-                        ContentType = "image/png"
-                    });
+                    await blob.SetHttpHeadersAsync(
+                        new BlobHttpHeaders { ContentType = "image/png" }
+                    );
                 }
             }
         }
@@ -207,7 +220,10 @@ namespace FestivalPOS.Controllers
         }
 
         [HttpPatch("/api/PointOfSales/{pointOfSaleId:int}/Products")]
-        public async Task<List<PointOfSaleProduct>> UpdateProductsByPointOfSaleId(int pointOfSaleId, JsonPatchDocument<IList<PointOfSaleProduct>> patch)
+        public async Task<List<PointOfSaleProduct>> UpdateProductsByPointOfSaleId(
+            int pointOfSaleId,
+            JsonPatchDocument<IList<PointOfSaleProduct>> patch
+        )
         {
             var items = await _db.PointOfSaleProducts
                 .Where(x => x.PointOfSaleId == pointOfSaleId)
@@ -231,14 +247,16 @@ namespace FestivalPOS.Controllers
             {
                 var item = patchedItems[position];
 
-                _db.PointOfSaleProducts.Add(new PointOfSaleProduct()
-                {
-                    PointOfSaleId = item.PointOfSaleId,
-                    ProductId = item.Product.Id,
-                    Position = position,
-                    Presale = item.Presale,
-                    IsServing = item.IsServing
-                });
+                _db.PointOfSaleProducts.Add(
+                    new PointOfSaleProduct()
+                    {
+                        PointOfSaleId = item.PointOfSaleId,
+                        ProductId = item.Product.Id,
+                        Position = position,
+                        Presale = item.Presale,
+                        IsServing = item.IsServing
+                    }
+                );
             }
 
             await _db.SaveChangesAsync();

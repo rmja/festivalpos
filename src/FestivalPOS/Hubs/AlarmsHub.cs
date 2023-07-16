@@ -2,7 +2,5 @@
 
 namespace FestivalPOS.Hubs
 {
-    public class AlarmsHub : Hub
-    {
-    }
+    public class AlarmsHub : Hub { }
 }
