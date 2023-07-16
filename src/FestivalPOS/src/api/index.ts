@@ -301,6 +301,10 @@ export class Api {
     return http.delete(`/Orders/${orderId}`).onSent(this.bust([K.Orders]));
   }
 
+  deleteOrderRange(notBefore: DateTime) {
+    return http.delete(`/Orders`, {notBefore});
+  }
+
   createPayment(
     orderId: number,
     payment: {

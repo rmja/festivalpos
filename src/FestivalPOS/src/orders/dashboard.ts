@@ -1,6 +1,7 @@
 import { autoinject, observable } from "aurelia-framework";
 
 import { Api } from "../api";
+import { DateTime } from "luxon";
 import { State } from "../state";
 import { connectTo } from "aurelia-store";
 
@@ -56,6 +57,22 @@ export class OrdersDashboard {
 
             order.pointOfSaleName = pos && pos.name;
             order.terminalName = terminal && terminal.name;
+        }
+    }
+
+    async deleteHistory() {
+        let answer = prompt(`Skriv startdatoen hvorfra alle ordre slettes i formatet 'yyyy-mm-dd'.`);
+        if (!answer) {
+            return;
+        }
+        
+        let date = DateTime.fromFormat(answer, "yyyy-MM-dd", { locale: "da-DK" });
+        if (!date.isValid) {
+            return;
+        }
+        if (prompt(`Skal alle ordre siden d. ${date} slettes? Skriv 'JA' for at bekræfte`) === "JA") {
+            await this.api.deleteOrderRange(date).send();
+            await this.fetch();
         }
     }
 }

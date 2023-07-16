@@ -4,8 +4,10 @@ using FestivalPOS.Printing;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
@@ -219,6 +221,19 @@ namespace FestivalPOS.Controllers
 
             order.IsDeleted = true;
             await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> Delete(
+            DateTimeOffset notBefore,
+            CancellationToken cancellationToken
+        )
+        {
+            await _db.Orders
+                .Where(x => x.Created >= notBefore)
+                .ExecuteUpdateAsync(u => u.SetProperty(x => x.IsDeleted, true), cancellationToken);
 
             return NoContent();
         }

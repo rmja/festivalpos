@@ -128,6 +128,7 @@ namespace FestivalPOS.Controllers
             var servings = await _db.Servings
                 .Include(x => x.Lines.OrderBy(l => l.Position))
                 .Where(x => x.PointOfSaleId == pointOfSaleId)
+                .Where(x => !x.Order.IsDeleted)
                 .Where(
                     x =>
                         x.State == ServingState.Pending
