@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PagerController", "src\PagerController\PagerController.csproj", "{242C882B-3652-490B-A14B-415528E68992}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PagerController", "src\PagerController\PagerController.csproj", "{242C882B-3652-490B-A14B-415528E68992}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FestivalPOS.Models", "src\FestivalPOS.Models\FestivalPOS.Models.csproj", "{3C4EE560-B0ED-4FE1-A6BE-AEF47ECF349B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FestivalPOS.Models", "src\FestivalPOS.Models\FestivalPOS.Models.csproj", "{3C4EE560-B0ED-4FE1-A6BE-AEF47ECF349B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
