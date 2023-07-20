@@ -3,21 +3,21 @@
     <div class="container" style="width: 100%; max-width: 100%; padding: 20px;">
         <div class="row">
             <div class="col">
-                <p>
+                <!-- <p>
                     <div class="list-group font-weight-bold">
                         <div class="list-group-item list-group-item-warning">AFVENTER</div>
                         <div class="list-group-item list-group-item-success">ANRETTES</div>
                         <div class="list-group-item list-group-item-danger">FÆRDIG</div>
                     </div>
-                </p>
+                </p> -->
                 <table class="table table-sm">
                     <thead>
                         <th>Vare</th>
                         <th class="text-right">Antal</th>
                     </thead>
-                    <tbody>
+                    <tbody style="font-size: xx-large;">
                         <tr repeat.for="[name, count] of pendingServingSummary">
-                            <td>${name}</td>
+                            <td style="white-space: nowrap; display: block;">${name}</td>
                             <td class="text-right">${count}</td>
                         </tr>
                     </tbody>
