@@ -52,7 +52,12 @@ namespace FestivalPOS
                     options.JsonSerializerOptions.Converters.Add(new DecimalConverter());
                 });
 
-            services.AddEntityFrameworkSqlServer().AddDbContext<PosContext>();
+            services
+                .AddEntityFrameworkSqlServer()
+                .AddDbContext<PosContext>(
+                    contextLifetime: ServiceLifetime.Transient,
+                    optionsLifetime: ServiceLifetime.Scoped
+                );
 
             services
                 .AddSignalR()
