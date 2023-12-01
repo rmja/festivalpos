@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "webpack --mode development --watch",
+    "prettier": "prettier --write src/**/*.ts src/**/*.html",
     "release": "webpack --mode production",
     "clean": "rimraf wwwroot/dist"
   },
@@ -33,6 +34,7 @@
     "html-loader": "^4.2.0",
     "mini-css-extract-plugin": "^2.6.1",
     "postcss-loader": "^7.0.0",
+    "prettier": "^3.1.0",
     "rimraf": "^5.0.1",
     "ts-loader": "^9.3.0",
     "ts-node": "^10.8.1",

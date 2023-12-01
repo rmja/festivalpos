@@ -1,44 +1,63 @@
 <template>
-    <require from="./stats-widget"></require>
-    <h2>Statistik</h2>
+  <require from="./stats-widget"></require>
+  <h2>Statistik</h2>
 
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item ${month ? '' : 'active'}">
-                <div class="dropdown">
-                    <a if.bind="month" route-href="route: year; params.bind: { year: year }">${year}</a>
-                    <span else>${year}</span>
-                    <a href class="dropdown-toggle" data-toggle="dropdown"></a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" repeat.for="offset of currentYear - firstYear + 1" route-href="route: year; params.bind: { year: firstYear + offset }">${firstYear + offset}</a>
-                    </div>
-                </div>
-            </li>
-            <li class="breadcrumb-item ${day ? '' : 'active'}" if.bind="month">
-                <a if.bind="day" route-href="route: month; params.bind: { year: year, month: month }">${periodStart | monthName}</a>
-                <span else>${periodStart | monthName}</span>
-            </li>
-            <li class="breadcrumb-item active" if.bind="day">
-                <span>${periodStart | dayName}</span>
-            </li>
-        </ol>
-    </nav>
-
-    <div class="input-group">
-        <div class="input-group-prepend">
-            <span class="input-group-text"><font-awesome-icon icon="filter"></font-awesome-icon></span>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item ${month ? '' : 'active'}">
+        <div class="dropdown">
+          <a
+            if.bind="month"
+            route-href="route: year; params.bind: { year: year }"
+            >${year}</a
+          >
+          <span else>${year}</span>
+          <a href class="dropdown-toggle" data-toggle="dropdown"></a>
+          <div class="dropdown-menu">
+            <a
+              class="dropdown-item"
+              repeat.for="offset of currentYear - firstYear + 1"
+              route-href="route: year; params.bind: { year: firstYear + offset }"
+              >${firstYear + offset}</a
+            >
+          </div>
         </div>
-        <select class="custom-select" value.bind="pointOfSale">
-            <option>Alle salgssteder</option>
-            <option repeat.for="pos of pointsOfSale" model.bind="pos">${pos.name}</option>
-        </select>
-        <select class="custom-select" value.bind="terminal">
-            <option>Alle terminaler</option>
-            <option repeat.for="terminal of terminals" model.bind="terminal">${terminal.name}</option>
-        </select>
-    </div>
+      </li>
+      <li class="breadcrumb-item ${day ? '' : 'active'}" if.bind="month">
+        <a
+          if.bind="day"
+          route-href="route: month; params.bind: { year: year, month: month }"
+          >${periodStart | monthName}</a
+        >
+        <span else>${periodStart | monthName}</span>
+      </li>
+      <li class="breadcrumb-item active" if.bind="day">
+        <span>${periodStart | dayName}</span>
+      </li>
+    </ol>
+  </nav>
 
-    <div class="row">
-        <stats-widget class="col-12" value.bind="stats"></stats-widget>
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text"
+        ><font-awesome-icon icon="filter"></font-awesome-icon
+      ></span>
     </div>
+    <select class="custom-select" value.bind="pointOfSale">
+      <option>Alle salgssteder</option>
+      <option repeat.for="pos of pointsOfSale" model.bind="pos">
+        ${pos.name}
+      </option>
+    </select>
+    <select class="custom-select" value.bind="terminal">
+      <option>Alle terminaler</option>
+      <option repeat.for="terminal of terminals" model.bind="terminal">
+        ${terminal.name}
+      </option>
+    </select>
+  </div>
+
+  <div class="row">
+    <stats-widget class="col-12" value.bind="stats"></stats-widget>
+  </div>
 </template>

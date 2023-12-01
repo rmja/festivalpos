@@ -6,55 +6,55 @@ import { dateTimeConverter } from "./converters/date-time-converter";
 import { jsonProperty } from "@utiliread/json";
 
 class PaymentStats {
-    @jsonProperty()
-    method!: PaymentMethod;
+  @jsonProperty()
+  method!: PaymentMethod;
 
-    @jsonProperty()
-    payments!: number;
+  @jsonProperty()
+  payments!: number;
 
-    @jsonProperty({ converter: bigConverter })
-    total!: Big;
+  @jsonProperty({ converter: bigConverter })
+  total!: Big;
 }
 
 class ProductStats {
-    @jsonProperty()
-    productId!: number;
+  @jsonProperty()
+  productId!: number;
 
-    @jsonProperty()
-    productName!: string;
+  @jsonProperty()
+  productName!: string;
 
-    @jsonProperty()
-    orderCount!: number;
+  @jsonProperty()
+  orderCount!: number;
 
-    @jsonProperty()
-    saleQuantity!: number;
+  @jsonProperty()
+  saleQuantity!: number;
 
-    @jsonProperty({ converter: bigConverter })
-    saleTotal!: Big;
+  @jsonProperty({ converter: bigConverter })
+  saleTotal!: Big;
 
-    @jsonProperty()
-    servingCount!: number;
+  @jsonProperty()
+  servingCount!: number;
 
-    @jsonProperty()
-    servingQuantity!: number;
+  @jsonProperty()
+  servingQuantity!: number;
 }
 
 export class OrderStats {
-    @jsonProperty()
-    kind!: "yearly" | "monthly" | "daily" | "hourly";
-    
-    @jsonProperty({ converter: dateTimeConverter })
-    periodStart!: DateTime;
+  @jsonProperty()
+  kind!: "yearly" | "monthly" | "daily" | "hourly";
 
-    @jsonProperty()
-    orderCount!: number;
+  @jsonProperty({ converter: dateTimeConverter })
+  periodStart!: DateTime;
 
-    @jsonProperty({ converter: bigConverter })
-    total!: Big;
+  @jsonProperty()
+  orderCount!: number;
 
-    @jsonProperty({ type: PaymentStats })
-    payments!: PaymentStats[];
+  @jsonProperty({ converter: bigConverter })
+  total!: Big;
 
-    @jsonProperty({ type: ProductStats })
-    products!: ProductStats[];
+  @jsonProperty({ type: PaymentStats })
+  payments!: PaymentStats[];
+
+  @jsonProperty({ type: ProductStats })
+  products!: ProductStats[];
 }

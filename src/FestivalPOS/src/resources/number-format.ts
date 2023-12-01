@@ -1,9 +1,9 @@
 export class NumberValueConverter {
-    toView(value: number) {
-        return value;
-    }
+  toView(value: number) {
+    return value;
+  }
 
-    fromView(value: any) {
-        return Number(value);
-    }
+  fromView(value: any) {
+    return Number(value);
+  }
 }

@@ -1,18 +1,34 @@
 <template>
-    <top-navbar>
-        <ul class="navbar-nav">
-            <li repeat.for="route of router.navigation" class="nav-item ${route.isActive ? 'active' : ''}">
-                <a if.bind="route.config.name === 'cart'" href.bind="route.href" class="nav-link">
-                    <span class="fa-layers fa-fw">
-                        <font-awesome-icon icon="shopping-cart"></font-awesome-icon>
-                        <span class="fa-layers-counter" style="background:Tomato; zoom: 190%">${totalQuantity}</span>
-                    </span>
-                </a>
-                <a else href.bind="route.href" class="nav-link"><font-awesome-icon icon.bind="route.config.settings.icon" fixed-width="true"></font-awesome-icon></a>
-            </li>
-        </ul>
-    </top-navbar>
-    <page-body ref="page">
-        <router-view></router-view>
-    </page-body>
+  <top-navbar>
+    <ul class="navbar-nav">
+      <li
+        repeat.for="route of router.navigation"
+        class="nav-item ${route.isActive ? 'active' : ''}"
+      >
+        <a
+          if.bind="route.config.name === 'cart'"
+          href.bind="route.href"
+          class="nav-link"
+        >
+          <span class="fa-layers fa-fw">
+            <font-awesome-icon icon="shopping-cart"></font-awesome-icon>
+            <span
+              class="fa-layers-counter"
+              style="background: Tomato; zoom: 190%"
+              >${totalQuantity}</span
+            >
+          </span>
+        </a>
+        <a else href.bind="route.href" class="nav-link"
+          ><font-awesome-icon
+            icon.bind="route.config.settings.icon"
+            fixed-width="true"
+          ></font-awesome-icon
+        ></a>
+      </li>
+    </ul>
+  </top-navbar>
+  <page-body ref="page">
+    <router-view></router-view>
+  </page-body>
 </template>

@@ -1,17 +1,21 @@
 <template>
-    <div class="d-flex w-100 justify-content-between">
-        <h5>
-            <span if.bind="serving.tagNumber">Brik ${serving.tagNumber}</span>
-            <span else>Ingen brik</span>
-            <font-awesome-icon icon="exclamation" class="text-danger" if.bind="serving.highPriority"></font-awesome-icon>
-        </h5>
-        <small if.bind="now">${serving.created | timeAgo: now}</small>
-    </div>
-    <table class="table">
-        <tr repeat.for="line of serving.lines">
-            <td>${line.quantity}</td>
-            <td style="width: 100%">${line.name}</td>
-        </tr>
-    </table>
-    <slot></slot>
+  <div class="d-flex w-100 justify-content-between">
+    <h5>
+      <span if.bind="serving.tagNumber">Brik ${serving.tagNumber}</span>
+      <span else>Ingen brik</span>
+      <font-awesome-icon
+        icon="exclamation"
+        class="text-danger"
+        if.bind="serving.highPriority"
+      ></font-awesome-icon>
+    </h5>
+    <small if.bind="now">${serving.created | timeAgo: now}</small>
+  </div>
+  <table class="table">
+    <tr repeat.for="line of serving.lines">
+      <td>${line.quantity}</td>
+      <td style="width: 100%">${line.name}</td>
+    </tr>
+  </table>
+  <slot></slot>
 </template>

@@ -7,24 +7,24 @@ import { jsonProperty } from "@utiliread/json";
 export type PaymentMethod = "card" | "cash" | "account" | "mobilePay";
 
 export class Payment {
-    @jsonProperty()
-    id!: number;
+  @jsonProperty()
+  id!: number;
 
-    @jsonProperty()
-    orderId?: number;
+  @jsonProperty()
+  orderId?: number;
 
-    @jsonProperty()
-    method!: PaymentMethod;
+  @jsonProperty()
+  method!: PaymentMethod;
 
-    @jsonProperty({ converter: bigConverter })
-    amount!: Big;
+  @jsonProperty({ converter: bigConverter })
+  amount!: Big;
 
-    @jsonProperty()
-    transactionNumber?: string;
+  @jsonProperty()
+  transactionNumber?: string;
 
-    @jsonProperty()
-    accountId?: number;
+  @jsonProperty()
+  accountId?: number;
 
-    @jsonProperty({ converter: dateTimeConverter })
-    created!: DateTime;
+  @jsonProperty({ converter: dateTimeConverter })
+  created!: DateTime;
 }

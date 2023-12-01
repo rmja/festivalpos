@@ -1,28 +1,45 @@
 <template>
-    <form submit.delegate="submit()">
-        <div class="row">
-            <h3 class="col text-muted">Total</h3>
-            <h3 class="col text-right">${total | money} kr.</h3>
-        </div>
-        <div class="row" if.bind="amountDue.neq(total)">
-            <h3 class="col text-muted">Til betaling</h3>
-            <h3 class="col text-right">${amountDue | money} kr.</h3>
-        </div>
+  <form submit.delegate="submit()">
+    <div class="row">
+      <h3 class="col text-muted">Total</h3>
+      <h3 class="col text-right">${total | money} kr.</h3>
+    </div>
+    <div class="row" if.bind="amountDue.neq(total)">
+      <h3 class="col text-muted">Til betaling</h3>
+      <h3 class="col text-right">${amountDue | money} kr.</h3>
+    </div>
 
-        <div class="text-center">
-            <img src="/images/mobilepay-long.png" width="80%">
-        </div>
+    <div class="text-center">
+      <img src="/images/mobilepay-long.png" width="80%" />
+    </div>
 
-        <div class="d-flex justify-content-center">
-            <qr-code value.bind="qrValue" style="width: 90%; max-width: 200px;"></qr-code>
-        </div>
-        <div class="text-center">
-            <h3 class="text-muted">${mobilepayNumber}</h3>
-        </div>
+    <div class="d-flex justify-content-center">
+      <qr-code
+        value.bind="qrValue"
+        style="width: 90%; max-width: 200px"
+      ></qr-code>
+    </div>
+    <div class="text-center">
+      <h3 class="text-muted">${mobilepayNumber}</h3>
+    </div>
 
-        <div class="btn-group btn-block fixed-bottom">
-            <button type="button" class="btn btn-danger btn-lg col-4" click.delegate="cancel()" fast-click><font-awesome-icon icon="times"></font-awesome-icon> Fortryd</button>
-            <button type="submit" class="btn btn-success btn-lg col-8" disabled.bind="!canSubmit" fast-click><font-awesome-icon icon="check"></font-awesome-icon> Udfør</button>
-        </div>
-    </form>
+    <div class="btn-group btn-block fixed-bottom">
+      <button
+        type="button"
+        class="btn btn-danger btn-lg col-4"
+        click.delegate="cancel()"
+        fast-click
+      >
+        <font-awesome-icon icon="times"></font-awesome-icon> Fortryd
+      </button>
+      <button
+        type="submit"
+        class="btn btn-success btn-lg col-8"
+        disabled.bind="!canSubmit"
+        fast-click
+      >
+        <font-awesome-icon icon="check"></font-awesome-icon> Udfør
+      </button>
+    </div>
+  </form>
 </template>

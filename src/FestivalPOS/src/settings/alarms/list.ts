@@ -3,17 +3,16 @@ import { Api } from "../../api";
 
 @autoinject()
 export class AlarmsList {
-    feeds!: AlarmFeed[];
+  feeds!: AlarmFeed[];
 
-    constructor(private api: Api) {
-    }
+  constructor(private api: Api) {}
 
-    async activate() {
-        this.feeds = await this.api.getAllAlarmFeeds().transfer();
-    }
+  async activate() {
+    this.feeds = await this.api.getAllAlarmFeeds().transfer();
+  }
 }
 
 interface AlarmFeed {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 }

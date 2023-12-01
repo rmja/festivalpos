@@ -1,31 +1,54 @@
 <template>
-    <form submit.delegate="submit()">
-        <div class="row">
-            <h3 class="col text-muted">Total</h3>
-            <h3 class="col text-right">${total | money} kr.</h3>
-        </div>
-        <div class="row" if.bind="amountDue.neq(total)">
-            <h3 class="col text-muted">Til betaling</h3>
-            <h3 class="col text-right">${amountDue | money} kr.</h3>
-        </div>
-        <div class="row">
-            <h4 class="col text-muted">Tilbage</h4>
-            <h4 class="col text-right">${change | money} kr.</h4>
-        </div>
+  <form submit.delegate="submit()">
+    <div class="row">
+      <h3 class="col text-muted">Total</h3>
+      <h3 class="col text-right">${total | money} kr.</h3>
+    </div>
+    <div class="row" if.bind="amountDue.neq(total)">
+      <h3 class="col text-muted">Til betaling</h3>
+      <h3 class="col text-right">${amountDue | money} kr.</h3>
+    </div>
+    <div class="row">
+      <h4 class="col text-muted">Tilbage</h4>
+      <h4 class="col text-right">${change | money} kr.</h4>
+    </div>
 
-        <keypad-display title="Modtaget kontant" value.bind="received" money="true"></keypad-display>
+    <keypad-display
+      title="Modtaget kontant"
+      value.bind="received"
+      money="true"
+    ></keypad-display>
 
-        <keypad-input value.bind="received">
-            <div class="col-4">
-                <button type="button" class="btn btn-light" click.delegate="exactAmount()" fast-click>
-                    <h5>=</h5>
-                </button>
-            </div>
-        </keypad-input>
-        
-        <div class="btn-group btn-block fixed-bottom">
-            <button type="button" class="btn btn-danger btn-lg col-4" click.delegate="cancel()" fast-click><font-awesome-icon icon="times"></font-awesome-icon> Fortryd</button>
-            <button type="submit" class="btn btn-success btn-lg col-8" disabled.bind="!canSubmit" fast-click><font-awesome-icon icon="check"></font-awesome-icon> Udfør</button>
-        </div>
-    </form>
+    <keypad-input value.bind="received">
+      <div class="col-4">
+        <button
+          type="button"
+          class="btn btn-light"
+          click.delegate="exactAmount()"
+          fast-click
+        >
+          <h5>=</h5>
+        </button>
+      </div>
+    </keypad-input>
+
+    <div class="btn-group btn-block fixed-bottom">
+      <button
+        type="button"
+        class="btn btn-danger btn-lg col-4"
+        click.delegate="cancel()"
+        fast-click
+      >
+        <font-awesome-icon icon="times"></font-awesome-icon> Fortryd
+      </button>
+      <button
+        type="submit"
+        class="btn btn-success btn-lg col-8"
+        disabled.bind="!canSubmit"
+        fast-click
+      >
+        <font-awesome-icon icon="check"></font-awesome-icon> Udfør
+      </button>
+    </div>
+  </form>
 </template>

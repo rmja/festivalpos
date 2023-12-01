@@ -8,65 +8,62 @@ import { deserialize } from "@utiliread/json";
 
 @autoinject()
 export class ServingHub {
-    private connection: HubConnection;
-    private connectPromise?: Promise<void>;
-    private connectedUsers = 0;
-    
-    constructor(eventAggregator: EventAggregator) {
-        this.connection = new HubConnectionBuilder()
-            .withUrl("/Serving")
-            .withAutomaticReconnect()
-            .build();
+  private connection: HubConnection;
+  private connectPromise?: Promise<void>;
+  private connectedUsers = 0;
 
-        this.connection.on("ServingCreated", (serving: any) => {
-            serving = deserialize(serving, Serving);
-            eventAggregator.publish(new ServingCreated(serving));
-        });
+  constructor(eventAggregator: EventAggregator) {
+    this.connection = new HubConnectionBuilder()
+      .withUrl("/Serving")
+      .withAutomaticReconnect()
+      .build();
 
-        this.connection.on("ServingUpdated", (serving: any) => {
-            serving = deserialize(serving, Serving);
-            eventAggregator.publish(new ServingUpdated(serving));
-        });
+    this.connection.on("ServingCreated", (serving: any) => {
+      serving = deserialize(serving, Serving);
+      eventAggregator.publish(new ServingCreated(serving));
+    });
 
-        this.connection.on("PointOfSaleUpdated", (pos: any) => {
-            pos = deserialize(pos, PointOfSale);
-            eventAggregator.publish(new PointOfSaleUpdated(pos));
-        })
+    this.connection.on("ServingUpdated", (serving: any) => {
+      serving = deserialize(serving, Serving);
+      eventAggregator.publish(new ServingUpdated(serving));
+    });
+
+    this.connection.on("PointOfSaleUpdated", (pos: any) => {
+      pos = deserialize(pos, PointOfSale);
+      eventAggregator.publish(new PointOfSaleUpdated(pos));
+    });
+  }
+
+  async connect() {
+    if (!this.connectPromise) {
+      this.connectPromise = this.connection.start();
     }
 
-    async connect() {
-        if (!this.connectPromise) {
-            this.connectPromise = this.connection.start();
-        }
+    await this.connectPromise;
 
-        await this.connectPromise;
+    this.connectedUsers++;
+  }
 
-        this.connectedUsers++;
+  async disconnect() {
+    if (--this.connectedUsers === 0) {
+      delete this.connectPromise;
+      await this.connection.stop();
     }
+  }
 
-    async disconnect() {
-        if (--this.connectedUsers === 0) {
-            delete this.connectPromise;
-            await this.connection.stop();
-        }
-    }
-
-    async hello(pointOfSaleId: number) {
-        await this.connection.invoke("Hello", pointOfSaleId);
-    }
+  async hello(pointOfSaleId: number) {
+    await this.connection.invoke("Hello", pointOfSaleId);
+  }
 }
 
 export class ServingCreated {
-    constructor(public serving: Serving) {
-    }
+  constructor(public serving: Serving) {}
 }
 
 export class ServingUpdated {
-    constructor(public serving: Serving) {
-    }
+  constructor(public serving: Serving) {}
 }
 
 export class PointOfSaleUpdated {
-    constructor(public pos: PointOfSale) {
-    }
+  constructor(public pos: PointOfSale) {}
 }

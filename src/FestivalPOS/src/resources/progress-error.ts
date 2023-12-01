@@ -5,18 +5,17 @@ import { DialogController } from "aurelia-dialog";
 @autoinject()
 @useView("resources/progress-error.html")
 export class ProgressError {
-    title!: string;
-    message?: string;
+  title!: string;
+  message?: string;
 
-    constructor(private controller: DialogController) {
-    }
+  constructor(private controller: DialogController) {}
 
-    activate(model: { title: string, message?: string }) {
-        this.title = model.title;
-        this.message = model.message;
-    }
+  activate(model: { title: string; message?: string }) {
+    this.title = model.title;
+    this.message = model.message;
+  }
 
-    close() {
-        this.controller.ok();
-    }
+  close() {
+    this.controller.ok();
+  }
 }

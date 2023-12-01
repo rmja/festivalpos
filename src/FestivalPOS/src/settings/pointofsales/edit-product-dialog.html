@@ -1,27 +1,33 @@
 <template>
-    <form submit.delegate="submit()">
-        <ux-dialog>
-            <ux-dialog-header>
-                <button type="button" class="close" click.delegate="close()"><font-awesome-icon icon="times"></font-awesome-icon></button>
-                Ret produkt
-            </ux-dialog-header>
-            <ux-dialog-body>
-                <div class="form-group">
-                    <label class="form-check-label">
-                        <input type="checkbox" checked.bind="presale">
-                        Forsalg
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label class="form-check-label">
-                        <input type="checkbox" checked.bind="isServing" disabled.bind="presale">
-                        Servering
-                    </label>
-                </div>
-            </ux-dialog-body>
-            <ux-dialog-footer>
-                <button type="submit" class="btn btn-primary">Ret</button>
-            </ux-dialog-footer>
-        </ux-dialog>
-    </form>
+  <form submit.delegate="submit()">
+    <ux-dialog>
+      <ux-dialog-header>
+        <button type="button" class="close" click.delegate="close()">
+          <font-awesome-icon icon="times"></font-awesome-icon>
+        </button>
+        Ret produkt
+      </ux-dialog-header>
+      <ux-dialog-body>
+        <div class="form-group">
+          <label class="form-check-label">
+            <input type="checkbox" checked.bind="presale" />
+            Forsalg
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="form-check-label">
+            <input
+              type="checkbox"
+              checked.bind="isServing"
+              disabled.bind="presale"
+            />
+            Servering
+          </label>
+        </div>
+      </ux-dialog-body>
+      <ux-dialog-footer>
+        <button type="submit" class="btn btn-primary">Ret</button>
+      </ux-dialog-footer>
+    </ux-dialog>
+  </form>
 </template>

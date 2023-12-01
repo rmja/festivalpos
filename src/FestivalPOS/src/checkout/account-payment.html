@@ -1,25 +1,46 @@
 <template>
-    <form submit.delegate="submit()">
-        <div class="row">
-            <h3 class="col text-muted">Total</h3>
-            <h3 class="col text-right">${total | money} kr.</h3>
-        </div>
+  <form submit.delegate="submit()">
+    <div class="row">
+      <h3 class="col text-muted">Total</h3>
+      <h3 class="col text-right">${total | money} kr.</h3>
+    </div>
 
-        <keypad-display title="Kontonummer" value.bind="accountNumber"></keypad-display>
+    <keypad-display
+      title="Kontonummer"
+      value.bind="accountNumber"
+    ></keypad-display>
 
-        <div class="row">
-            <h4 class="col-12 text-center" style="white-space: nowrap;">${accountName || 'Ikke fundet'}</h4>
-        </div>
-        <div class="row">
-            <h4 class="col text-muted">Kredit</h4>
-            <h4 class="col text-right ${remainingCreditClass}">${remainingCredit | money} kr.</h4>
-        </div>
+    <div class="row">
+      <h4 class="col-12 text-center" style="white-space: nowrap">
+        ${accountName || 'Ikke fundet'}
+      </h4>
+    </div>
+    <div class="row">
+      <h4 class="col text-muted">Kredit</h4>
+      <h4 class="col text-right ${remainingCreditClass}">
+        ${remainingCredit | money} kr.
+      </h4>
+    </div>
 
-        <keypad-input value.bind="accountNumber"></keypad-input>
-        
-        <div class="btn-group btn-block fixed-bottom">
-            <button type="button" class="btn btn-danger btn-lg col-4" click.delegate="cancel()" fast-click><font-awesome-icon icon="times"></font-awesome-icon> Fortryd</button>
-            <button type="submit" class="btn btn-success btn-lg col-8" disabled.bind="!canSubmit" fast-click><font-awesome-icon icon="check"></font-awesome-icon> Udfør</button>
-        </div>
-    </form>
+    <keypad-input value.bind="accountNumber"></keypad-input>
+
+    <div class="btn-group btn-block fixed-bottom">
+      <button
+        type="button"
+        class="btn btn-danger btn-lg col-4"
+        click.delegate="cancel()"
+        fast-click
+      >
+        <font-awesome-icon icon="times"></font-awesome-icon> Fortryd
+      </button>
+      <button
+        type="submit"
+        class="btn btn-success btn-lg col-8"
+        disabled.bind="!canSubmit"
+        fast-click
+      >
+        <font-awesome-icon icon="check"></font-awesome-icon> Udfør
+      </button>
+    </div>
+  </form>
 </template>

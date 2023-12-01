@@ -4,20 +4,19 @@ import { Big } from "big.js";
 
 @autoinject()
 export class AccountsList {
-    accounts!: AccountViewModel[];
+  accounts!: AccountViewModel[];
 
-    constructor(private api: Api) {
-    }
+  constructor(private api: Api) {}
 
-    async activate() {
-        this.accounts = await this.api.getAllAccounts().transfer();
-    }
+  async activate() {
+    this.accounts = await this.api.getAllAccounts().transfer();
+  }
 }
 
 interface AccountViewModel {
-    id: number;
-    number: number;
-    name: string;
-    maxCredit: Big;
-    remainingCredit: Big;
+  id: number;
+  number: number;
+  name: string;
+  maxCredit: Big;
+  remainingCredit: Big;
 }

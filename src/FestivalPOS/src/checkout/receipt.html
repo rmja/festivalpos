@@ -1,36 +1,58 @@
 <template>
-    <div class="row" if.bind="tagNumber">
-        <h3 class="col text-muted">Brik</h3>
-        <h3 class="col text-right">${tagNumber}</h3>
-    </div>
-    <div class="row">
-        <h3 class="col text-muted">Ordrenr.</h3>
-        <h3 class="col text-right">${orderId}</h3>
-    </div>
-    <hr>
-    <div class="row">
-        <h3 class="col text-muted">Total</h3>
-        <h3 class="col text-right">${total | money} kr.</h3>
-    </div>
-    <div class="row" if.bind="change">
-        <h4 class="col text-muted">Tilbage</h4>
-        <h4 class="col text-right">${change | money} kr.</h4>
-    </div>
-    <div class="text-center">
-        <font-awesome-icon icon="check-circle" class="text-success" size="8x"></font-awesome-icon>
-        <h4 if.bind="servingId">Servering er lagt i kø</h4>
-    </div>
+  <div class="row" if.bind="tagNumber">
+    <h3 class="col text-muted">Brik</h3>
+    <h3 class="col text-right">${tagNumber}</h3>
+  </div>
+  <div class="row">
+    <h3 class="col text-muted">Ordrenr.</h3>
+    <h3 class="col text-right">${orderId}</h3>
+  </div>
+  <hr />
+  <div class="row">
+    <h3 class="col text-muted">Total</h3>
+    <h3 class="col text-right">${total | money} kr.</h3>
+  </div>
+  <div class="row" if.bind="change">
+    <h4 class="col text-muted">Tilbage</h4>
+    <h4 class="col text-right">${change | money} kr.</h4>
+  </div>
+  <div class="text-center">
+    <font-awesome-icon
+      icon="check-circle"
+      class="text-success"
+      size="8x"
+    ></font-awesome-icon>
+    <h4 if.bind="servingId">Servering er lagt i kø</h4>
+  </div>
 
-    <div class="text-center" if.bind="canPrintReceipt">
-        <button type="button" class="btn btn-secondary" click.delegate="printReceipt()"><font-awesome-icon icon="print"></font-awesome-icon> Udskriv kvittering</button>
-    </div>
+  <div class="text-center" if.bind="canPrintReceipt">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      click.delegate="printReceipt()"
+    >
+      <font-awesome-icon icon="print"></font-awesome-icon> Udskriv kvittering
+    </button>
+  </div>
 
-    <div class="btn-group btn-block fixed-bottom">
-        <button type="button" class="btn btn-secondary btn-lg" if.bind="servingId" click.delegate="complete(true)" fast-click>
-            <font-awesome-icon icon="check"></font-awesome-icon> Serveret
-        </button>
-        <button type="button" class="btn btn-primary btn-lg" click.delegate="complete()" fast-click>
-            <font-awesome-icon icon="check"></font-awesome-icon> Udført <span if.bind="secondsToAutocomplete">(${secondsToAutocomplete})</span>
-        </button>
-    </div>
+  <div class="btn-group btn-block fixed-bottom">
+    <button
+      type="button"
+      class="btn btn-secondary btn-lg"
+      if.bind="servingId"
+      click.delegate="complete(true)"
+      fast-click
+    >
+      <font-awesome-icon icon="check"></font-awesome-icon> Serveret
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary btn-lg"
+      click.delegate="complete()"
+      fast-click
+    >
+      <font-awesome-icon icon="check"></font-awesome-icon> Udført
+      <span if.bind="secondsToAutocomplete">(${secondsToAutocomplete})</span>
+    </button>
+  </div>
 </template>

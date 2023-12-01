@@ -1,14 +1,24 @@
 <template>
-    <form submit.delegate="submit()">
-        <keypad-display title="Brik" value.bind="tagNumber"></keypad-display>
+  <form submit.delegate="submit()">
+    <keypad-display title="Brik" value.bind="tagNumber"></keypad-display>
 
-        <div if.bind="notFound" class="text-center">
-            <font-awesome-icon icon="times-circle" class="text-danger" size="8x"></font-awesome-icon>
-            <h4>Ordren blev ikke fundet</h4>
-        </div>
+    <div if.bind="notFound" class="text-center">
+      <font-awesome-icon
+        icon="times-circle"
+        class="text-danger"
+        size="8x"
+      ></font-awesome-icon>
+      <h4>Ordren blev ikke fundet</h4>
+    </div>
 
-        <keypad-input value.bind="tagNumber"></keypad-input>
+    <keypad-input value.bind="tagNumber"></keypad-input>
 
-        <button type="submit" class="btn btn-success btn-lg btn-block fixed-bottom" fast-click><font-awesome-icon icon="search"></font-awesome-icon> Søg</button>
-    </form>
+    <button
+      type="submit"
+      class="btn btn-success btn-lg btn-block fixed-bottom"
+      fast-click
+    >
+      <font-awesome-icon icon="search"></font-awesome-icon> Søg
+    </button>
+  </form>
 </template>

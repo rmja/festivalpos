@@ -1,9 +1,52 @@
 <template>
-    <div class="btn-group btn-block">
-        <button class="btn btn-primary btn-lg" style="width: 6em" disabled="true" fast-click>kr. ${total | money:0}</button>
-        <button class="btn btn-primary btn-lg" click.delegate="doConfirm('account')" disabled.bind="!canConfirm" fast-click><font-awesome-icon icon="user" fixed-width="true"></font-awesome-icon></button>
-        <button class="btn btn-primary btn-lg" click.delegate="doConfirm('card')" disabled.bind="!canConfirm" if.bind="cardEnabled" fast-click><font-awesome-icon icon="credit-card" fixed-width="true"></font-awesome-icon></button>
-        <button class="btn btn-primary btn-lg" click.delegate="doConfirm('mobilepay')" disabled.bind="!canConfirm" if.bind="mobilepayEnabled" fast-click><font-awesome-icon icon="mobile-screen-button" fixed-width="true"></font-awesome-icon></button>
-        <button class="btn btn-primary btn-lg" click.delegate="doConfirm('cash')" disabled.bind="!canConfirm" fast-click><font-awesome-icon icon="coins" fixed-width="true"></font-awesome-icon></button>
-    </div>
+  <div class="btn-group btn-block">
+    <button
+      class="btn btn-primary btn-lg"
+      style="width: 6em"
+      disabled="true"
+      fast-click
+    >
+      kr. ${total | money:0}
+    </button>
+    <button
+      class="btn btn-primary btn-lg"
+      click.delegate="doConfirm('account')"
+      disabled.bind="!canConfirm"
+      fast-click
+    >
+      <font-awesome-icon icon="user" fixed-width="true"></font-awesome-icon>
+    </button>
+    <button
+      class="btn btn-primary btn-lg"
+      click.delegate="doConfirm('card')"
+      disabled.bind="!canConfirm"
+      if.bind="cardEnabled"
+      fast-click
+    >
+      <font-awesome-icon
+        icon="credit-card"
+        fixed-width="true"
+      ></font-awesome-icon>
+    </button>
+    <button
+      class="btn btn-primary btn-lg"
+      click.delegate="doConfirm('mobilepay')"
+      disabled.bind="!canConfirm"
+      if.bind="mobilepayEnabled"
+      fast-click
+    >
+      <font-awesome-icon
+        icon="mobile-screen-button"
+        fixed-width="true"
+      ></font-awesome-icon>
+    </button>
+    <button
+      class="btn btn-primary btn-lg"
+      click.delegate="doConfirm('cash')"
+      disabled.bind="!canConfirm"
+      fast-click
+    >
+      <font-awesome-icon icon="coins" fixed-width="true"></font-awesome-icon>
+    </button>
+  </div>
 </template>

@@ -5,18 +5,20 @@ import { Big } from "big.js";
 
 @autoinject()
 export class ProductList {
-    products!: ProductViewModel[];
+  products!: ProductViewModel[];
 
-    constructor(private api: Api, private dialog: DialogService) {
-    }
+  constructor(
+    private api: Api,
+    private dialog: DialogService,
+  ) {}
 
-    async activate() {
-        this.products = await this.api.getAllProducts().transfer();
-    }
+  async activate() {
+    this.products = await this.api.getAllProducts().transfer();
+  }
 }
 
 interface ProductViewModel {
-    id: number;
-    name: string;
-    price: Big;
+  id: number;
+  name: string;
+  price: Big;
 }

@@ -1,29 +1,37 @@
-import { RedirectToRoute, RouteConfig, RouterConfiguration } from "aurelia-router";
+import {
+  RedirectToRoute,
+  RouteConfig,
+  RouterConfiguration,
+} from "aurelia-router";
 import { State, isSetup } from "../state";
 
 import { PLATFORM } from "aurelia-pal";
 import { connectTo } from "aurelia-store";
 
 const routes: RouteConfig[] = [
-    { route: "", name: "dashboard", moduleId: PLATFORM.moduleName("./dashboard", "serving") },
-]
+  {
+    route: "",
+    name: "dashboard",
+    moduleId: PLATFORM.moduleName("./dashboard", "serving"),
+  },
+];
 
 @connectTo({
-    selector: store => store.state,
-    setup: "canActivate"
+  selector: (store) => store.state,
+  setup: "canActivate",
 })
 export class ServingRouter {
-    private state!: State;
+  private state!: State;
 
-    configureRouter(config: RouterConfiguration) {
-        config.map(routes);
+  configureRouter(config: RouterConfiguration) {
+    config.map(routes);
+  }
+
+  canActivate() {
+    if (!isSetup(this.state)) {
+      return new RedirectToRoute("setup");
     }
 
-    canActivate() {
-        if (!isSetup(this.state)) {
-            return new RedirectToRoute("setup");
-        }
-
-        return true;
-    }
+    return true;
+  }
 }

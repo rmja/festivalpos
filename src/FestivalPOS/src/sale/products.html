@@ -1,58 +1,104 @@
 <template>
-    <require from="./pay-button"></require>
+  <require from="./pay-button"></require>
 
-    <style>
-        .qty-badge {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            font-size: 100%;
-        }
-        .price-badge {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            font-weight: bold;
-            opacity: 0.8;
-        }
-        .presale-icon {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            opacity: 0.8;
-        }
-        .serving-icon {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            opacity: 0.8;
-        }
-    </style>
+  <style>
+    .qty-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      font-size: 100%;
+    }
+    .price-badge {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      font-weight: bold;
+      opacity: 0.8;
+    }
+    .presale-icon {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      opacity: 0.8;
+    }
+    .serving-icon {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      opacity: 0.8;
+    }
+  </style>
 
-    <div class="row pad-bottom" if.bind="products.length">
-        <div repeat.for="item of products" class="col-4 col-sm-3 col-md-2" style="display: flex">
-            <div class="card div-link mb-3" style="width: 100%" click.delegate="addToCart(item)" fast-click>
-                <div if.bind="item.product.thumbnailImageUrl" style="position: relative">
-                    <img class="card-img-top" src.one-time="item.product.thumbnailImageUrl">
-                    <small class="badge badge-secondary price-badge">${item.product.price}</small>
-                    <font-awesome-icon if.bind="item.isServing" icon="utensils" class="serving-icon"></font-awesome-icon>
-                </div>
-                <div else class="card-body text-center" style="position: relative; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 70px;">
-                    <strong class="text-muted">${item.product.name}</strong>
-                    <small class="badge badge-secondary price-badge">${item.product.price}</small>
-                    <font-awesome-icon if.bind="item.isServing" icon="utensils" class="serving-icon"></font-awesome-icon>
-                </div>
-                <span class="badge badge-info qty-badge" show.bind="item.qty">${item.qty}</span>
-                <font-awesome-icon if.bind="item.presale" icon="stopwatch" class="presale-icon"></font-awesome-icon>
-                <div class="card-footer text-center" style="padding: 0; white-space: nowrap; overflow: hidden">
-                    <small>${item.product.name}</small><small class="text-muted" if.bind="item.presale">, forsalg</small>
-                </div>
-            </div>
+  <div class="row pad-bottom" if.bind="products.length">
+    <div
+      repeat.for="item of products"
+      class="col-4 col-sm-3 col-md-2"
+      style="display: flex"
+    >
+      <div
+        class="card div-link mb-3"
+        style="width: 100%"
+        click.delegate="addToCart(item)"
+        fast-click
+      >
+        <div
+          if.bind="item.product.thumbnailImageUrl"
+          style="position: relative"
+        >
+          <img
+            class="card-img-top"
+            src.one-time="item.product.thumbnailImageUrl"
+          />
+          <small class="badge badge-secondary price-badge"
+            >${item.product.price}</small
+          >
+          <font-awesome-icon
+            if.bind="item.isServing"
+            icon="utensils"
+            class="serving-icon"
+          ></font-awesome-icon>
         </div>
+        <div
+          else
+          class="card-body text-center"
+          style="
+            position: relative;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 70px;
+          "
+        >
+          <strong class="text-muted">${item.product.name}</strong>
+          <small class="badge badge-secondary price-badge"
+            >${item.product.price}</small
+          >
+          <font-awesome-icon
+            if.bind="item.isServing"
+            icon="utensils"
+            class="serving-icon"
+          ></font-awesome-icon>
+        </div>
+        <span class="badge badge-info qty-badge" show.bind="item.qty"
+          >${item.qty}</span
+        >
+        <font-awesome-icon
+          if.bind="item.presale"
+          icon="stopwatch"
+          class="presale-icon"
+        ></font-awesome-icon>
+        <div
+          class="card-footer text-center"
+          style="padding: 0; white-space: nowrap; overflow: hidden"
+        >
+          <small>${item.product.name}</small
+          ><small class="text-muted" if.bind="item.presale">, forsalg</small>
+        </div>
+      </div>
     </div>
-    <empty-hint else>
-        Der er ingen produkter tilknyttet salgsstedet
-    </empty-hint>
+  </div>
+  <empty-hint else> Der er ingen produkter tilknyttet salgsstedet </empty-hint>
 
-    <pay-button class="fixed-bottom"></pay-button>
+  <pay-button class="fixed-bottom"></pay-button>
 </template>

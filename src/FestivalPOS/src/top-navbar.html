@@ -1,38 +1,60 @@
 <template>
-    <style>
-        .navbar {
-            z-index: 1;
-        }
-        .top-navbar-actions .navbar-nav {
-            flex-direction: row;
-            font-size: 1.7em
-        }
-        .top-navbar-actions .nav-item a.nav-link {
-            padding: 0 10px
-        }
-    </style>
-    <nav class="navbar navbar-dark bg-dark">
-        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+  <style>
+    .navbar {
+      z-index: 1;
+    }
+    .top-navbar-actions .navbar-nav {
+      flex-direction: row;
+      font-size: 1.7em;
+    }
+    .top-navbar-actions .nav-item a.nav-link {
+      padding: 0 10px;
+    }
+  </style>
+  <nav class="navbar navbar-dark bg-dark">
+    <button
+      class="navbar-toggler collapsed"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbar"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <div class="top-navbar-actions ml-auto">
-            <slot></slot>
-        </div>
+    <div class="top-navbar-actions ml-auto">
+      <slot></slot>
+    </div>
 
-        <div class="navbar-collapse collapse" id="navbar">
-            <small style="color: #bbb">${pointOfSaleName}</small>
-            <ul class="navbar-nav mr-auto">
-                <li repeat.for="nav of router.navigation" class="nav-item ${nav.active ? 'active' : ''} ${nav.settings.childRoutes ? 'dropdown' : ''}">
-                    <template if.bind="nav.settings.childRoutes">
-                        <a class="nav-link dropdown-toggle" href data-toggle="dropdown" fast-click>${nav.title}</a>
-                        <div class="dropdown-menu">
-                            <a repeat.for="route of nav.settings.childRoutes" class="dropdown-item" href="${nav.href}/${route.route}" fast-click>${route.title}</a>
-                        </div>
-                    </template>
-                    <a else class="nav-link" href="${nav.href}" fast-click>${nav.title}</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <div class="navbar-collapse collapse" id="navbar">
+      <small style="color: #bbb">${pointOfSaleName}</small>
+      <ul class="navbar-nav mr-auto">
+        <li
+          repeat.for="nav of router.navigation"
+          class="nav-item ${nav.active ? 'active' : ''} ${nav.settings.childRoutes ? 'dropdown' : ''}"
+        >
+          <template if.bind="nav.settings.childRoutes">
+            <a
+              class="nav-link dropdown-toggle"
+              href
+              data-toggle="dropdown"
+              fast-click
+              >${nav.title}</a
+            >
+            <div class="dropdown-menu">
+              <a
+                repeat.for="route of nav.settings.childRoutes"
+                class="dropdown-item"
+                href="${nav.href}/${route.route}"
+                fast-click
+                >${route.title}</a
+              >
+            </div>
+          </template>
+          <a else class="nav-link" href="${nav.href}" fast-click
+            >${nav.title}</a
+          >
+        </li>
+      </ul>
+    </div>
+  </nav>
 </template>

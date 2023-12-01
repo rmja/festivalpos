@@ -1,37 +1,50 @@
 <template>
-    <div class="row" if.bind="tagNumber">
-        <h3 class="col text-muted">Brik</h3>
-        <h3 class="col text-right">${tagNumber}</h3>
-    </div>
+  <div class="row" if.bind="tagNumber">
+    <h3 class="col text-muted">Brik</h3>
+    <h3 class="col text-right">${tagNumber}</h3>
+  </div>
 
-    <div>
-        <div class="row">
-            <h3 class="col text-muted">Ordrenr.</h3>
-            <h3 class="col text-right">${order.id}</h3>
-        </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th style="width: 100%">Vare</th>
-                    <th style="white-space: nowrap">Til gode</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr repeat.for="line of order.lines">
-                    <td><input type="checkbox" disabled.bind="!line.canRedeem" checked.bind="line.redeem"></td>
-                    <td>${line.quantity}</td>
-                    <td>${line.name}</td>
-                    <td>${line.receiveable}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="alert alert-warning" if.bind="keepTag">
-            <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Kunden må beholde nummerbrikken efter denne servering!
-        </div>
-        <button class="btn btn-primary btn-block fixed-bottom" disabled.bind="totalQuantity === 0" click.delegate="process()" fast-click>
-            <font-awesome-icon icon="check"></font-awesome-icon> Servér ${totalQuantity} markerede
-        </button>
+  <div>
+    <div class="row">
+      <h3 class="col text-muted">Ordrenr.</h3>
+      <h3 class="col text-right">${order.id}</h3>
     </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+          <th style="width: 100%">Vare</th>
+          <th style="white-space: nowrap">Til gode</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr repeat.for="line of order.lines">
+          <td>
+            <input
+              type="checkbox"
+              disabled.bind="!line.canRedeem"
+              checked.bind="line.redeem"
+            />
+          </td>
+          <td>${line.quantity}</td>
+          <td>${line.name}</td>
+          <td>${line.receiveable}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert alert-warning" if.bind="keepTag">
+      <font-awesome-icon icon="exclamation-triangle"></font-awesome-icon> Kunden
+      må beholde nummerbrikken efter denne servering!
+    </div>
+    <button
+      class="btn btn-primary btn-block fixed-bottom"
+      disabled.bind="totalQuantity === 0"
+      click.delegate="process()"
+      fast-click
+    >
+      <font-awesome-icon icon="check"></font-awesome-icon> Servér
+      ${totalQuantity} markerede
+    </button>
+  </div>
 </template>

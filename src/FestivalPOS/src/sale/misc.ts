@@ -8,34 +8,33 @@ import { computedFrom } from "aurelia-binding";
 @autoinject()
 @connectTo()
 export class Misc {
-    private state!: State;
-    private description = "";
-    
-    @computedFrom("state")
-    get amount() {
-        return this.state && this.state.currentMiscOrderLine.total;
-    }
+  private state!: State;
+  private description = "";
 
-    set amount(value: Big) {
-        if (this.state && !this.state.currentMiscOrderLine.total.eq(value)) {
-            this.store.dispatch(updateCurrentMisc, value)
-        }
-    }
+  @computedFrom("state")
+  get amount() {
+    return this.state && this.state.currentMiscOrderLine.total;
+  }
 
-    constructor(private store: Store<State>) {
+  set amount(value: Big) {
+    if (this.state && !this.state.currentMiscOrderLine.total.eq(value)) {
+      this.store.dispatch(updateCurrentMisc, value);
     }
+  }
 
-    activate() {
-        this.amount = new Big(0);
-    }
+  constructor(private store: Store<State>) {}
 
-    async deactivate() {
-        if (!this.amount.eq(0)) {
-            await this.pushLine();
-        }
-    }
+  activate() {
+    this.amount = new Big(0);
+  }
 
-    pushLine() {
-        return this.store.dispatch(addCurrentMiscOrderLine, this.description);
+  async deactivate() {
+    if (!this.amount.eq(0)) {
+      await this.pushLine();
     }
+  }
+
+  pushLine() {
+    return this.store.dispatch(addCurrentMiscOrderLine, this.description);
+  }
 }

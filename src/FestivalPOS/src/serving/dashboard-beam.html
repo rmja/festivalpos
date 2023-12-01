@@ -1,54 +1,48 @@
 <template>
-    <require from="./serving-item"></require>
-    <div class="container" style="width: 100%; max-width: 100%; padding: 20px;">
-        <div class="row">
-            <div class="col">
-                <!-- <p>
-                    <div class="list-group font-weight-bold">
-                        <div class="list-group-item list-group-item-warning">AFVENTER</div>
-                        <div class="list-group-item list-group-item-success">ANRETTES</div>
-                        <div class="list-group-item list-group-item-danger">FÆRDIG</div>
-                    </div>
-                </p> -->
-                <table class="table table-sm">
-                    <thead>
-                        <th>Vare</th>
-                        <th class="text-right">Antal</th>
-                    </thead>
-                    <tbody style="font-size: xx-large;">
-                        <tr repeat.for="[name, count] of pendingServingSummary">
-                            <td style="white-space: nowrap; display: block;">${name}</td>
-                            <td class="text-right">${count}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p>
-                    <div class="list-group">
-                        <div repeat.for="serving of pendingServings" class="list-group-item list-group-item-warning">
-                            <serving-item serving.bind="serving" now.bind="now"></serving-item>
-                        </div>
-                    </div>
-                </p>
-            </div>
-            <div class="col" repeat.for="staff of servingStaff">
-                <h6>${staff.name || staff.number}</h6>
-                <p>
-                    <ul class="list-group">
-                        <li class="list-group-item list-group-item-success"
-                            repeat.for="serving of staff.ongoingServings">
-                            <serving-item serving.bind="serving" now.bind="now"></serving-item>
-                        </li>
-                    </ul>
-                </p>
-                <p>
-                    <ul class="list-group">
-                        <li class="list-group-item list-group-item-danger"
-                            repeat.for="serving of staff.completedServings | last: 2 | inverse">
-                            <serving-item serving.bind="serving"></serving-item>
-                        </li>
-                    </ul>
-                </p>
-            </div>
+  <require from="./serving-item"></require>
+  <div class="container" style="width: 100%; max-width: 100%; padding: 20px">
+    <div class="row">
+      <div class="col">
+        <table class="table table-sm">
+          <thead>
+            <th>Vare</th>
+            <th class="text-right">Antal</th>
+          </thead>
+          <tbody style="font-size: xx-large">
+            <tr repeat.for="[name, count] of pendingServingSummary">
+              <td style="white-space: nowrap; display: block">${name}</td>
+              <td class="text-right">${count}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="list-group">
+          <div
+            repeat.for="serving of pendingServings"
+            class="list-group-item list-group-item-warning"
+          >
+            <serving-item serving.bind="serving" now.bind="now"></serving-item>
+          </div>
         </div>
+      </div>
+      <div class="col" repeat.for="staff of servingStaff">
+        <h6>${staff.name || staff.number}</h6>
+        <ul class="list-group">
+          <li
+            class="list-group-item list-group-item-success"
+            repeat.for="serving of staff.ongoingServings"
+          >
+            <serving-item serving.bind="serving" now.bind="now"></serving-item>
+          </li>
+        </ul>
+        <ul class="list-group">
+          <li
+            class="list-group-item list-group-item-danger"
+            repeat.for="serving of staff.completedServings | last: 2 | inverse"
+          >
+            <serving-item serving.bind="serving"></serving-item>
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
 </template>

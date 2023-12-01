@@ -38,7 +38,7 @@ registerRoute(
       }),
     ],
   }),
-  "GET"
+  "GET",
 );
 registerRoute(
   /\/api\/.*/,
@@ -51,5 +51,5 @@ registerRoute(
       : apiStrategies.staleWhileRevalidate;
     return strategy.handle(options);
   },
-  "GET"
+  "GET",
 );

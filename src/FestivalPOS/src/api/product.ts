@@ -1,26 +1,26 @@
-import { Big } from "big.js"
+import { Big } from "big.js";
 import { bigConverter } from "./converters/big-converter";
-import { jsonProperty } from "@utiliread/json"
+import { jsonProperty } from "@utiliread/json";
 
 export class Product {
-    @jsonProperty()
-    id!: number;
+  @jsonProperty()
+  id!: number;
 
-    @jsonProperty()
-    name!: string;
+  @jsonProperty()
+  name!: string;
 
-    @jsonProperty({ converter: bigConverter })
-    price!: Big;
+  @jsonProperty({ converter: bigConverter })
+  price!: Big;
 
-    @jsonProperty()
-    previewImageName?: string;
+  @jsonProperty()
+  previewImageName?: string;
 
-    @jsonProperty()
-    previewImageUrl?: string;
+  @jsonProperty()
+  previewImageUrl?: string;
 
-    @jsonProperty()
-    thumbnailImageName?: string;
+  @jsonProperty()
+  thumbnailImageName?: string;
 
-    @jsonProperty()
-    thumbnailImageUrl?: string;
+  @jsonProperty()
+  thumbnailImageUrl?: string;
 }

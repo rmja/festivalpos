@@ -27,7 +27,10 @@ export class EditProduct {
     return !!this.name.length;
   }
 
-  constructor(private api: Api, private router: Router) {}
+  constructor(
+    private api: Api,
+    private router: Router,
+  ) {}
 
   async activate(params: { productId: string }) {
     this.productId = Number(params.productId);

@@ -6,80 +6,85 @@ import { autoinject, LogManager } from "aurelia-framework";
 
 @autoinject()
 export class ProgressService {
-    private busyOpenPromise?: Promise<any>;
-    private logger = LogManager.getLogger("progress");
+  private busyOpenPromise?: Promise<any>;
+  private logger = LogManager.getLogger("progress");
 
-    public state: "idle" | "busy" | "error" = "idle";
+  public state: "idle" | "busy" | "error" = "idle";
 
-    public get isIdle() {
-        return this.state === "idle";
+  public get isIdle() {
+    return this.state === "idle";
+  }
+
+  constructor(private dialog: DialogService) {}
+
+  tryBusy(title: string, icon?: any) {
+    if (!this.isIdle) {
+      this.logger.warn("Unable to transition to busy state");
+      return false;
     }
 
-    constructor(private dialog: DialogService) {
-    }
+    this.setBusy(title, icon);
+    return true;
+  }
 
-    tryBusy(title: string, icon?: any) {
-        if (!this.isIdle) {
-            this.logger.warn("Unable to transition to busy state");
-            return false;
-        }
+  setBusy(title: string, icon?: any) {
+    this.logger.info("Setting state: busy");
+    this.state = "busy";
 
-        this.setBusy(title, icon);
-        return true;
-    }
-
-    setBusy(title: string, icon?: any) {
-        this.logger.info("Setting state: busy");
-        this.state = "busy";
-
-        if (this.busyOpenPromise) {
-            this.busyOpenPromise.then(async () => {
-                await this.dialog.closeAll();
-                this.busyOpenPromise = this.dialog.open({ viewModel: ProgressBusy, model: { icon, title } });
-            });
-        }
-        else {
-            this.busyOpenPromise = this.dialog.open({ viewModel: ProgressBusy, model: { icon, title } });
-        }
-    }
-
-    async done() {
-        if (this.busyOpenPromise) {
-            await this.busyOpenPromise.then(() => this.dialog.closeAll());
-        }
-        else {
-            await this.dialog.closeAll();
-        }
-
-        this.logger.info("Setting state: idle");
-        this.state = "idle";
-    }
-
-    async error(title: string, error: unknown) {
-        let message: string;
-        this.logger.info("Setting state: error");
-        this.state = "error";
-
-        if (typeof error === "string") {
-            message = error;
-        }
-        else if (error instanceof TypeError && error.message === "Failed to fetch") {
-            message = "Der kunne ikke oprettes forbindelse til serveren";
-        }
-        else if (error instanceof TimeoutError) {
-            message = "Intet svar indenfor tidsgrænsen";
-        }
-        else {
-            message = (<any>error).message;
-        }
-
-        if (this.busyOpenPromise) {
-            await this.busyOpenPromise;
-        }
+    if (this.busyOpenPromise) {
+      this.busyOpenPromise.then(async () => {
         await this.dialog.closeAll();
-        await this.dialog.open({ viewModel: ProgressError, model: { title, message } }).whenClosed();
-
-        this.logger.info("Setting state: idle");
-        this.state = "idle";
+        this.busyOpenPromise = this.dialog.open({
+          viewModel: ProgressBusy,
+          model: { icon, title },
+        });
+      });
+    } else {
+      this.busyOpenPromise = this.dialog.open({
+        viewModel: ProgressBusy,
+        model: { icon, title },
+      });
     }
+  }
+
+  async done() {
+    if (this.busyOpenPromise) {
+      await this.busyOpenPromise.then(() => this.dialog.closeAll());
+    } else {
+      await this.dialog.closeAll();
+    }
+
+    this.logger.info("Setting state: idle");
+    this.state = "idle";
+  }
+
+  async error(title: string, error: unknown) {
+    let message: string;
+    this.logger.info("Setting state: error");
+    this.state = "error";
+
+    if (typeof error === "string") {
+      message = error;
+    } else if (
+      error instanceof TypeError &&
+      error.message === "Failed to fetch"
+    ) {
+      message = "Der kunne ikke oprettes forbindelse til serveren";
+    } else if (error instanceof TimeoutError) {
+      message = "Intet svar indenfor tidsgrænsen";
+    } else {
+      message = (<any>error).message;
+    }
+
+    if (this.busyOpenPromise) {
+      await this.busyOpenPromise;
+    }
+    await this.dialog.closeAll();
+    await this.dialog
+      .open({ viewModel: ProgressError, model: { title, message } })
+      .whenClosed();
+
+    this.logger.info("Setting state: idle");
+    this.state = "idle";
+  }
 }

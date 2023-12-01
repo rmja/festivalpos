@@ -1,15 +1,29 @@
 <template>
-    <require from="./pay-button"></require>
+  <require from="./pay-button"></require>
 
-    <keypad-display value.bind="amount" money="true"></keypad-display>
+  <keypad-display value.bind="amount" money="true"></keypad-display>
 
-    <input type="text" class="form-control" placeholder="Beskrivelse" style="margin-top: 50px" value.bind="description">
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Beskrivelse"
+    style="margin-top: 50px"
+    value.bind="description"
+  />
 
-    <keypad-input value.bind="amount">
-        <div class="col-4">
-            <button type="button" class="btn btn-light" click.delegate="pushLine()" disabled.bind="amount.eq(0)" fast-click><font-awesome-icon icon="cart-plus"></font-awesome-icon></button>
-        </div>
-    </keypad-input>
+  <keypad-input value.bind="amount">
+    <div class="col-4">
+      <button
+        type="button"
+        class="btn btn-light"
+        click.delegate="pushLine()"
+        disabled.bind="amount.eq(0)"
+        fast-click
+      >
+        <font-awesome-icon icon="cart-plus"></font-awesome-icon>
+      </button>
+    </div>
+  </keypad-input>
 
-    <pay-button class="fixed-bottom" confirm.call="pushLine()"></pay-button>
+  <pay-button class="fixed-bottom" confirm.call="pushLine()"></pay-button>
 </template>

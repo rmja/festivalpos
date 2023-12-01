@@ -7,40 +7,37 @@ import { deserialize } from "@utiliread/json";
 
 @autoinject()
 export class AlarmsHub {
-    private connection: HubConnection;
-    private connectPromise?: Promise<void>;
-    private connectedUsers = 0;
-    
-    constructor(eventAggregator: EventAggregator) {
-        this.connection = new HubConnectionBuilder()
-            .withUrl("/Alarms")
-            .build();
+  private connection: HubConnection;
+  private connectPromise?: Promise<void>;
+  private connectedUsers = 0;
 
-        this.connection.on("EventCreated", (event: any) => {
-            event = deserialize(event, AlarmEvent);
-            eventAggregator.publish(new EventCreated(event));
-        });
+  constructor(eventAggregator: EventAggregator) {
+    this.connection = new HubConnectionBuilder().withUrl("/Alarms").build();
+
+    this.connection.on("EventCreated", (event: any) => {
+      event = deserialize(event, AlarmEvent);
+      eventAggregator.publish(new EventCreated(event));
+    });
+  }
+
+  async connect() {
+    if (!this.connectPromise) {
+      this.connectPromise = this.connection.start();
     }
 
-    async connect() {
-        if (!this.connectPromise) {
-            this.connectPromise = this.connection.start();
-        }
+    await this.connectPromise;
 
-        await this.connectPromise;
+    this.connectedUsers++;
+  }
 
-        this.connectedUsers++;
+  async disconnect() {
+    if (--this.connectedUsers === 0) {
+      delete this.connectPromise;
+      await this.connection.stop();
     }
-
-    async disconnect() {
-        if (--this.connectedUsers === 0) {
-            delete this.connectPromise;
-            await this.connection.stop();
-        }
-    }
+  }
 }
 
 export class EventCreated {
-    constructor(public event: AlarmEvent) {
-    }
+  constructor(public event: AlarmEvent) {}
 }

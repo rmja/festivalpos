@@ -5,20 +5,19 @@ import { DialogController } from "aurelia-dialog";
 @autoinject()
 @useView("checkout/tag-overwrite-dialog.html")
 export class TagOverwriteDialog {
-    protected tagNumber!: number;
+  protected tagNumber!: number;
 
-    constructor(private controller: DialogController) {
-    }
+  constructor(private controller: DialogController) {}
 
-    activate(tagNumber: number) {
-        this.tagNumber = tagNumber;
-    }
+  activate(tagNumber: number) {
+    this.tagNumber = tagNumber;
+  }
 
-    cancel() {
-        this.controller.cancel();
-    }
+  cancel() {
+    this.controller.cancel();
+  }
 
-    overwrite() {
-        this.controller.ok();
-    }
+  overwrite() {
+    this.controller.ok();
+  }
 }

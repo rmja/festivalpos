@@ -1,27 +1,32 @@
 <template>
-    <div class="card-deck" if.bind="pendingEvents.length">
-        <div class="card" repeat.for="event of pendingEvents">
-            <h4 class="card-header">${event.alarmFeedName}</h4>
-            <div class="card-body">
-                <div class="row">
-                    <h5 class="col-6 text-muted">Salgssted</h5>
-                    <h5 class="col-6">${event.pointOfSaleName}</h5>
-                </div>
-                <div class="row">
-                    <h5 class="col-6 text-muted">Terminal</h5>
-                    <h5 class="col-6">${event.terminalName}</h5>
-                </div>
-                <div class="row">
-                    <h5 class="col-6 text-muted">Afmeldt</h5>
-                    <div class="col-6">
-                        <h5 if.bind="event.cancelled">${event.cancelled | dateTime}</h5>
-                        <button else type="button" class="btn btn-warning btn-sm" click.delegate="cancel(event, $index)"><font-awesome-icon icon="times"></font-awesome-icon> Afmeld</button>
-                    </div>
-                </div>
-            </div>
+  <div class="card-deck" if.bind="pendingEvents.length">
+    <div class="card" repeat.for="event of pendingEvents">
+      <h4 class="card-header">${event.alarmFeedName}</h4>
+      <div class="card-body">
+        <div class="row">
+          <h5 class="col-6 text-muted">Salgssted</h5>
+          <h5 class="col-6">${event.pointOfSaleName}</h5>
         </div>
+        <div class="row">
+          <h5 class="col-6 text-muted">Terminal</h5>
+          <h5 class="col-6">${event.terminalName}</h5>
+        </div>
+        <div class="row">
+          <h5 class="col-6 text-muted">Afmeldt</h5>
+          <div class="col-6">
+            <h5 if.bind="event.cancelled">${event.cancelled | dateTime}</h5>
+            <button
+              else
+              type="button"
+              class="btn btn-warning btn-sm"
+              click.delegate="cancel(event, $index)"
+            >
+              <font-awesome-icon icon="times"></font-awesome-icon> Afmeld
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    <empty-hint else>
-        Der er ingen aktuelle alarmer
-    </empty-hint>
+  </div>
+  <empty-hint else> Der er ingen aktuelle alarmer </empty-hint>
 </template>

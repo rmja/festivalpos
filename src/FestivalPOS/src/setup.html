@@ -1,42 +1,63 @@
 <template>
-    <top-navbar></top-navbar>
-    <page-body>
-        <form submit.delegate="submit()" if.bind="terminals.length && pointOfSales.length">
-            <div class="form-group">
-                <label>Terminal</label>
-                <select value.bind="terminal" class="form-control">
-                    <option repeat.for="terminal of terminals" model.bind="terminal">${terminal.name}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Salgssted</label>
-                <select value.bind="pointOfSale" class="form-control">
-                    <option repeat.for="pointOfSale of pointOfSales" model.bind="pointOfSale">${pointOfSale.name}</option>
-                </select>
-            </div>
+  <top-navbar></top-navbar>
+  <page-body>
+    <form
+      submit.delegate="submit()"
+      if.bind="terminals.length && pointOfSales.length"
+    >
+      <div class="form-group">
+        <label>Terminal</label>
+        <select value.bind="terminal" class="form-control">
+          <option repeat.for="terminal of terminals" model.bind="terminal">
+            ${terminal.name}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Salgssted</label>
+        <select value.bind="pointOfSale" class="form-control">
+          <option
+            repeat.for="pointOfSale of pointOfSales"
+            model.bind="pointOfSale"
+          >
+            ${pointOfSale.name}
+          </option>
+        </select>
+      </div>
 
-            <div class="form-group">
-                <label>SumUp Affiliate</label>
-                <select value.bind="affiliate" class="form-control">
-                    <option>[ingen]</option>
-                    <option repeat.for="affiliate of affiliates" model.bind="affiliate">${affiliate.name} ${affiliate.key}</option>
-                </select>
-            </div>
+      <div class="form-group">
+        <label>SumUp Affiliate</label>
+        <select value.bind="affiliate" class="form-control">
+          <option>[ingen]</option>
+          <option repeat.for="affiliate of affiliates" model.bind="affiliate">
+            ${affiliate.name} ${affiliate.key}
+          </option>
+        </select>
+      </div>
 
-            <div class="form-group">
-                <label>SumUp Kvitteringsmail-adresse</label>
-                <input type="email" value.bind="receiptEmail" class="form-control">
-            </div>
+      <div class="form-group">
+        <label>SumUp Kvitteringsmail-adresse</label>
+        <input type="email" value.bind="receiptEmail" class="form-control" />
+      </div>
 
-            <div class="form-group">
-                <label>MobilePay nummer</label>
-                <input type="tel" value.bind="mobilepayNumber" class="form-control">
-            </div>
+      <div class="form-group">
+        <label>MobilePay nummer</label>
+        <input type="tel" value.bind="mobilepayNumber" class="form-control" />
+      </div>
 
-            <button type="submit" class="btn btn-primary btn-block fixed-bottom" fast-click><font-awesome-icon icon="save"></font-awesome-icon> Gem</button>
-        </form>
-        <div else>
-            Der skal være opsat med terminaler og salgssteder for at starte. <a href click.delegate="createDefaults()">Klik her for at oprette en af hver.</a>
-        </div>
-    </page-body>
+      <button
+        type="submit"
+        class="btn btn-primary btn-block fixed-bottom"
+        fast-click
+      >
+        <font-awesome-icon icon="save"></font-awesome-icon> Gem
+      </button>
+    </form>
+    <div else>
+      Der skal være opsat med terminaler og salgssteder for at starte.
+      <a href click.delegate="createDefaults()"
+        >Klik her for at oprette en af hver.</a
+      >
+    </div>
+  </page-body>
 </template>

@@ -3,40 +3,41 @@ import { autoinject } from "aurelia-framework";
 
 @autoinject()
 export class Sumup {
-    affiliates!: AffiliateViewModel[];
-    newKey = "";
-    newName = "";
+  affiliates!: AffiliateViewModel[];
+  newKey = "";
+  newName = "";
 
-    canSubmit() {
-        return !!this.newKey.length;
-    }
+  canSubmit() {
+    return !!this.newKey.length;
+  }
 
-    constructor(private api: Api) {
-    }
+  constructor(private api: Api) {}
 
-    async activate() {
-        this.affiliates = await this.api.getAllSumupAffiliates().transfer();
-    }
+  async activate() {
+    this.affiliates = await this.api.getAllSumupAffiliates().transfer();
+  }
 
-    delete(index: number) {
-        const affiliate = this.affiliates[index];
+  delete(index: number) {
+    const affiliate = this.affiliates[index];
 
-        this.affiliates.splice(index, 1);
+    this.affiliates.splice(index, 1);
 
-        return this.api.deleteSumupAffiliate(affiliate.key).send();
-    }
+    return this.api.deleteSumupAffiliate(affiliate.key).send();
+  }
 
-    async addAffiliate() {
-        const newAffiliate = await this.api.createSumupAffiliate({
-            key: this.newKey,
-            name: this.newName
-        }).transfer();
-        
-        this.affiliates.push(newAffiliate);
-    }
+  async addAffiliate() {
+    const newAffiliate = await this.api
+      .createSumupAffiliate({
+        key: this.newKey,
+        name: this.newName,
+      })
+      .transfer();
+
+    this.affiliates.push(newAffiliate);
+  }
 }
 
 interface AffiliateViewModel {
-    key: string;
-    name?: string;
+  key: string;
+  name?: string;
 }

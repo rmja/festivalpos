@@ -3,38 +3,38 @@ import { dateTimeConverter } from "./converters/date-time-converter";
 import { jsonProperty } from "@utiliread/json";
 
 export class AlarmFeed {
-    @jsonProperty()
-    id!: number;
+  @jsonProperty()
+  id!: number;
 
-    @jsonProperty()
-    name!: string;
+  @jsonProperty()
+  name!: string;
 }
 
 export class AlarmEvent {
-    @jsonProperty()
-    id!: number;
+  @jsonProperty()
+  id!: number;
 
-    @jsonProperty()
-    alarmFeedId!: number;
+  @jsonProperty()
+  alarmFeedId!: number;
 
-    @jsonProperty()
-    alarmFeedName!: string;
+  @jsonProperty()
+  alarmFeedName!: string;
 
-    @jsonProperty()
-    terminalId!: number;
+  @jsonProperty()
+  terminalId!: number;
 
-    @jsonProperty()
-    terminalName!: string;
+  @jsonProperty()
+  terminalName!: string;
 
-    @jsonProperty()
-    pointOfSaleId!: number;
+  @jsonProperty()
+  pointOfSaleId!: number;
 
-    @jsonProperty()
-    pointOfSaleName!: string;
+  @jsonProperty()
+  pointOfSaleName!: string;
 
-    @jsonProperty({ converter: dateTimeConverter })
-    cancelled?: DateTime;
+  @jsonProperty({ converter: dateTimeConverter })
+  cancelled?: DateTime;
 
-    @jsonProperty({ converter: dateTimeConverter })
-    created!: DateTime;
+  @jsonProperty({ converter: dateTimeConverter })
+  created!: DateTime;
 }

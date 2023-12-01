@@ -1,50 +1,67 @@
 <template>
-    <div class="card">
-        <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action" repeat.for="bin of value" href.bind="getHref(bin)">
-                <h3>${bin.periodStart | periodStartFormat: bin.kind}</h3>
+  <div class="card">
+    <div class="list-group list-group-flush">
+      <a
+        class="list-group-item list-group-item-action"
+        repeat.for="bin of value"
+        href.bind="getHref(bin)"
+      >
+        <h3>${bin.periodStart | periodStartFormat: bin.kind}</h3>
 
-                <div class="row">
-                    <div class="col-lg-2">
-                        <div class="card bg-dark text-white">
-                            <div class="card-body">
-                                <h5 class="card-title">${bin.total | money} kr.</h5>
-                                <h6 class="card-subtitle text-muted">${bin.orderCount || 'Ingen'} ordrer</h6>
-                                <small>Omsætning</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-2" repeat.for="stats of bin.payments | ensureAllPaymentMethods">
-                        <div class="card bg-light">
-                            <div class="card-body">
-                                <h5 class="card-title">${stats.total | money} kr.</h5>
-                                <h6 class="card-subtitle text-muted">${stats.payments || 'Ingen'} betalinger</h6>
-                                <small style="white-space: nowrap;"><font-awesome-icon icon.bind="getPaymentMethodIcon(stats.method)" fixed-width="true"></font-awesome-icon> ${getPaymentMethodName(stats.method)}</small>
-                            </div>
-                        </div>                        
-                    </div>
-                    <div class="col-lg-4">
-                        <table class="table table-sm table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Vare</th>
-                                    <th>Omsætning</th>
-                                    <th>Solgt</th>
-                                    <th>Serveret</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr repeat.for="stats of bin.products">
-                                    <td>${stats.productName}</td>
-                                    <td>${stats.saleTotal | money} kr.</td>
-                                    <td>${stats.saleQuantity}</td>
-                                    <td>${stats.servingQuantity}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </a>
+        <div class="row">
+          <div class="col-lg-2">
+            <div class="card bg-dark text-white">
+              <div class="card-body">
+                <h5 class="card-title">${bin.total | money} kr.</h5>
+                <h6 class="card-subtitle text-muted">
+                  ${bin.orderCount || 'Ingen'} ordrer
+                </h6>
+                <small>Omsætning</small>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-lg-2"
+            repeat.for="stats of bin.payments | ensureAllPaymentMethods"
+          >
+            <div class="card bg-light">
+              <div class="card-body">
+                <h5 class="card-title">${stats.total | money} kr.</h5>
+                <h6 class="card-subtitle text-muted">
+                  ${stats.payments || 'Ingen'} betalinger
+                </h6>
+                <small style="white-space: nowrap"
+                  ><font-awesome-icon
+                    icon.bind="getPaymentMethodIcon(stats.method)"
+                    fixed-width="true"
+                  ></font-awesome-icon>
+                  ${getPaymentMethodName(stats.method)}</small
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <table class="table table-sm table-striped">
+              <thead>
+                <tr>
+                  <th>Vare</th>
+                  <th>Omsætning</th>
+                  <th>Solgt</th>
+                  <th>Serveret</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr repeat.for="stats of bin.products">
+                  <td>${stats.productName}</td>
+                  <td>${stats.saleTotal | money} kr.</td>
+                  <td>${stats.saleQuantity}</td>
+                  <td>${stats.servingQuantity}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+      </a>
     </div>
+  </div>
 </template>

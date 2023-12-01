@@ -7,28 +7,32 @@ import { Router } from "aurelia-router";
 @autoinject()
 @useView("./edit.html")
 export class CreatePointOfSale {
-    name = "";
-    printers!: PrinterViewModel[];
-    receiptPrinter?: PrinterViewModel;
+  name = "";
+  printers!: PrinterViewModel[];
+  receiptPrinter?: PrinterViewModel;
 
-    get canSubmit() {
-        return !!this.name.length;
-    }
+  get canSubmit() {
+    return !!this.name.length;
+  }
 
-    constructor(private api: Api, private router: Router) {
-    }
+  constructor(
+    private api: Api,
+    private router: Router,
+  ) {}
 
-    async activate() {
-        this.printers = await this.api.getAllPrinters().transfer();
-    }
+  async activate() {
+    this.printers = await this.api.getAllPrinters().transfer();
+  }
 
-    async submit() {
-        const pos = await this.api.createPointOfSale({
-            name: this.name,
-            receiptPrinterId: this.receiptPrinter && this.receiptPrinter.id,
-        }).transfer();
-        this.router.navigateToRoute("details", {
-            pointOfSaleId: pos.id
-        });
-    }
+  async submit() {
+    const pos = await this.api
+      .createPointOfSale({
+        name: this.name,
+        receiptPrinterId: this.receiptPrinter && this.receiptPrinter.id,
+      })
+      .transfer();
+    this.router.navigateToRoute("details", {
+      pointOfSaleId: pos.id,
+    });
+  }
 }

@@ -22,7 +22,10 @@ export class CreateProduct {
     return !!this.name.length;
   }
 
-  constructor(private api: Api, private router: Router) {}
+  constructor(
+    private api: Api,
+    private router: Router,
+  ) {}
 
   deactivate() {
     if (this.croppie) {

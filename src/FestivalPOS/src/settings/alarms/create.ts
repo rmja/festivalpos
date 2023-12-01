@@ -5,17 +5,19 @@ import { Router } from "aurelia-router";
 @autoinject()
 @useView("./edit.html")
 export class CreateAlarmFeed {
-    name = "";
+  name = "";
 
-    get canSubmit() {
-        return !!this.name.length;
-    }
+  get canSubmit() {
+    return !!this.name.length;
+  }
 
-    constructor(private api: Api, private router: Router) {
-    }
+  constructor(
+    private api: Api,
+    private router: Router,
+  ) {}
 
-    async submit() {
-        await this.api.createAlarmFeed({ name: this.name }).send();
-        this.router.navigateToRoute("list");
-    }
+  async submit() {
+    await this.api.createAlarmFeed({ name: this.name }).send();
+    this.router.navigateToRoute("list");
+  }
 }

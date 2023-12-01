@@ -1,10 +1,19 @@
 <template>
-    <ux-dialog>
-        <ux-dialog-header>
-            <font-awesome-icon if.bind="icon" icon.bind="icon" fixed-width="true"></font-awesome-icon> ${title}
-        </ux-dialog-header>
-        <ux-dialog-body class="text-center">
-            <font-awesome-icon icon="spinner" spin="true" size="2x"></font-awesome-icon>
-        </ux-dialog-body>
-    </ux-dialog>
+  <ux-dialog>
+    <ux-dialog-header>
+      <font-awesome-icon
+        if.bind="icon"
+        icon.bind="icon"
+        fixed-width="true"
+      ></font-awesome-icon>
+      ${title}
+    </ux-dialog-header>
+    <ux-dialog-body class="text-center">
+      <font-awesome-icon
+        icon="spinner"
+        spin="true"
+        size="2x"
+      ></font-awesome-icon>
+    </ux-dialog-body>
+  </ux-dialog>
 </template>

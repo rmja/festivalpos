@@ -3,17 +3,16 @@ import { Api } from "../../api";
 
 @autoinject()
 export class TerminalsList {
-    terminals!: TerminalViewModel[];
+  terminals!: TerminalViewModel[];
 
-    constructor(private api: Api) {
-    }
+  constructor(private api: Api) {}
 
-    async activate() {
-        this.terminals = await this.api.getAllTerminals().transfer();
-    }
+  async activate() {
+    this.terminals = await this.api.getAllTerminals().transfer();
+  }
 }
 
 interface TerminalViewModel {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 }
