@@ -1,7 +1,7 @@
-import { Big, RoundingMode } from "big.js";
 import { bindable, bindingMode } from "aurelia-framework";
 
 import { BACKSPACE } from "../keys";
+import { Big } from "big.js";
 
 export class KeypadDisplay {
     @bindable() title?: string;
@@ -21,7 +21,7 @@ export class KeypadDisplay {
     }
 
     backspace() {
-        this.value = this.value.div(10).round(0, RoundingMode.RoundDown);
+        this.value = this.value.div(10).round(0, Big.roundDown);
     }
 
     private keyup(event: KeyboardEvent) {

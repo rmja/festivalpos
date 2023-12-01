@@ -48,7 +48,7 @@
   "dependencies": {
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
-    "@microsoft/signalr": "^7.0.7",
+    "@microsoft/signalr": "^8.0.0",
     "@utiliread/http": "^1.17.7",
     "@utiliread/json": "^1.1.1",
     "@utiliread/jsonpatch": "^1.0.3",

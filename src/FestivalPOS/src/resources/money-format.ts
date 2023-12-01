@@ -1,4 +1,4 @@
-import Big from "big.js";
+import { Big } from "big.js";
 
 export class MoneyValueConverter {
     toView(value: Big, decimals = 2) {
