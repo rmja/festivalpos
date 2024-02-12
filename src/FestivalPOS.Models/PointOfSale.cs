@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace FestivalPOS.Models
@@ -10,7 +9,7 @@ namespace FestivalPOS.Models
 
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; } = default!;
+        public required string Name { get; set; }
         public int? ReceiptPrinterId { get; set; }
 
         [JsonIgnore]

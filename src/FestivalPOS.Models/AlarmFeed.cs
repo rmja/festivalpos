@@ -8,7 +8,7 @@ namespace FestivalPOS.Models
 
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; } = default!;
+        public required string Name { get; set; }
         public string? SubscriberEmail { get; set; }
         public bool IsDeleted { get; set; }
         public ICollection<AlarmEvent>? Events { get; set; }

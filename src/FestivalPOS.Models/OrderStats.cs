@@ -42,7 +42,7 @@ namespace FestivalPOS.Models
     public class ProductStats
     {
         public int ProductId { get; set; }
-        public string ProductName { get; set; } = default!;
+        public required string ProductName { get; set; }
         public int OrderCount { get; set; }
         public int SaleQuantity { get; set; }
         public decimal SaleTotal { get; set; }

@@ -9,7 +9,7 @@ namespace FestivalPOS.Models
 
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; } = default!;
+        public required string Name { get; set; }
         public decimal MaxCredit { get; set; }
         public decimal RemainingCredit { get; set; }
         public bool HighPriorityServing { get; set; }
