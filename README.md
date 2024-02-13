@@ -4,7 +4,7 @@ It is designed to be easy to use for non-technical volunteer staff, while suppor
 
 * Super fast and friction free transaction flow
 * Allow for multiple points of sale with individual statistics
-* Buy using predefined customer credit accounts, creditcard using SumUp, and cash payments.
+* Buy using predefined customer credit accounts, creditcard using SumUp or Vibrant.io, and cash payments.
 * Receipt printing
 * Food order management
 * Easily message organizing staff in case of technical issues, supply outages, etc.
