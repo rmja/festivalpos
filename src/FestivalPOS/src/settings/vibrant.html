@@ -1,0 +1,57 @@
+<template>
+  <top-navbar></top-navbar>
+  <page-body>
+    <h2>Vibrant konti</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Navn</th>
+          <th>Sandbox</th>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr repeat.for="account of accounts">
+          <td>${account.id}</td>
+          <td>${account.name}</td>
+          <td>${account.sandbox}</td>
+          <td>
+            <button class="btn btn-danger" click.delegate="delete($index)">
+              <font-awesome-icon icon="trash"></font-awesome-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>Tilføj ny</h4>
+    <form submit.delegate="addAccount()">
+      <div class="form-group">
+        <label>ID</label>
+        <input type="text" class="form-control" value.bind="newId" />
+      </div>
+      <div class="form-group">
+        <label>Navn</label>
+        <input type="text" class="form-control" value.bind="newName" />
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" checked.bind="newSandbox" />
+          Sandbox
+        </label>
+      </div>
+      <div class="form-group">
+        <label>API Key</label>
+        <input type="text" class="form-control" value.bind="newApiKey" />
+      </div>
+      <button
+        type="submit"
+        class="btn btn-secondary"
+        disabled.bind="!canSubmit"
+      >
+        <font-awesome-icon icon="plus"></font-awesome-icon> Tilføj konto
+      </button>
+    </form>
+  </page-body>
+</template>

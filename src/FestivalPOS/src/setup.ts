@@ -22,6 +22,9 @@ export class Setup {
   affiliates!: SumUpAffiliateViewModel[];
   receiptEmail?: string;
 
+  vibrantTerminal?: VibrantTerminalViewModel;
+  vibrantTerminals!: VibrantTerminalViewModel[];
+
   mobilepayNumber?: number;
 
   get canSubmit() {
@@ -38,6 +41,15 @@ export class Setup {
     this.terminals = await this.api.getAllTerminals().transfer();
     this.pointOfSales = await this.api.getAllPointOfSales().transfer();
     this.affiliates = await this.api.getAllSumupAffiliates().transfer();
+    const vibrantAccounts = await this.api.getAllVibrantAccounts().transfer();
+
+    this.vibrantTerminals = [];
+    for (const account of vibrantAccounts) {
+      const accountTerminals = await this.api
+        .getAllVibrantTerminals(account.id)
+        .transfer();
+      this.vibrantTerminals.push(...accountTerminals.map(x => Object.assign(x, { accountName: account.name})));
+    }
 
     this.terminal = this.terminals.find((x) => x.id === this.state.terminalId);
     this.pointOfSale = this.pointOfSales.find(
@@ -47,6 +59,9 @@ export class Setup {
       (x) => x.key === this.state.sumupAffiliateKey,
     );
     this.receiptEmail = this.state.sumupReceiptEmail;
+    this.vibrantTerminal = this.vibrantTerminals.find(
+      (x) => x.accountId === this.state.vibrantAccountId && x.id === this.state.vibrantTerminalId,
+    );
     this.mobilepayNumber = this.state.mobilepayNumber;
   }
 
@@ -69,6 +84,8 @@ export class Setup {
       pointOfSaleId: this.pointOfSale.id,
       sumupAffiliateKey: this.affiliate?.key,
       sumupReceiptEmail: this.receiptEmail || undefined,
+      vibrantAccountId: this.vibrantTerminal?.accountId,
+      vibrantTerminalId: this.vibrantTerminal?.id,
       mobilepayNumber: this.mobilepayNumber && this.mobilepayNumber,
     });
 
@@ -89,4 +106,11 @@ interface PointOfSaleViewModel {
 interface SumUpAffiliateViewModel {
   key: string;
   name?: string;
+}
+
+interface VibrantTerminalViewModel {
+  id: string;
+  name: string;
+  accountName: string;
+  accountId: string;
 }

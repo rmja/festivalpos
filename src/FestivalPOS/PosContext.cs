@@ -24,6 +24,7 @@ namespace FestivalPOS
         public DbSet<ServingStaff> ServingStaff { get; set; }
         public DbSet<Terminal> Terminals { get; set; }
         public DbSet<SumUpAffiliate> SumUpAffiliates { get; set; }
+        public DbSet<VibrantAccount> VibrantAccounts { get; set; }
 
         public PosContext(IOptions<PosOptions> options)
         {
@@ -110,6 +111,8 @@ namespace FestivalPOS
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<SumUpAffiliate>().HasKey(x => x.Key);
+
+            modelBuilder.Entity<VibrantAccount>().HasKey(x => x.Id);
         }
     }
 }

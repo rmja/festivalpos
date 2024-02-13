@@ -23,7 +23,6 @@ namespace FestivalPOS.Controllers
         public async Task<Terminal> Create(Terminal terminal)
         {
             _db.Terminals.Add(terminal);
-
             await _db.SaveChangesAsync();
 
             return terminal;
@@ -39,8 +38,7 @@ namespace FestivalPOS.Controllers
         public async Task<ActionResult<Terminal>> GetById(int id)
         {
             var terminal = await _db.Terminals.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (terminal == null)
+            if (terminal is null)
             {
                 return NotFound();
             }
@@ -52,8 +50,7 @@ namespace FestivalPOS.Controllers
         public async Task<ActionResult<Terminal>> Update(int id, JsonPatchDocument<Terminal> patch)
         {
             var terminal = await _db.Terminals.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (terminal == null)
+            if (terminal is null)
             {
                 return NotFound();
             }
@@ -67,14 +64,13 @@ namespace FestivalPOS.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var pos = await _db.Terminals.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (pos == null)
+            var terminal = await _db.Terminals.FirstOrDefaultAsync(x => x.Id == id);
+            if (terminal is null)
             {
                 return NotFound();
             }
 
-            pos.IsDeleted = true;
+            terminal.IsDeleted = true;
             await _db.SaveChangesAsync();
 
             return NoContent();

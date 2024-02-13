@@ -14,7 +14,10 @@ namespace FestivalPOS.Models
         public PaymentMethod Method { get; set; }
         public decimal Amount { get; set; }
 
-        [MaxLength(20)]
+        [MaxLength(10)]
+        public string? Provider { get; set; }
+
+        [MaxLength(30)]
         public string? TransactionNumber { get; set; }
         public int? AccountId { get; set; }
 

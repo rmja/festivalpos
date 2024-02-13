@@ -52,6 +52,13 @@ export const routes: RouteConfig[] = [
     nav: true,
     title: "SumUp",
   },
+  {
+    route: "vibrant",
+    name: "vibrant",
+    moduleId: PLATFORM.moduleName("./vibrant", "settings"),
+    nav: true,
+    title: "Vibrant.io",
+  },
 ];
 
 export class SettingsRouter {

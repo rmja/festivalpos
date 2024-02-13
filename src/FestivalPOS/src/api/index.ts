@@ -1,5 +1,6 @@
 import { AlarmEvent, AlarmFeed } from "./alarms";
 import { DateTime, Duration } from "luxon";
+import { VibrantAccount, VibrantPaymentIntent, VibrantTerminal } from "./vibrant";
 
 import { Account } from "./account";
 import { Big } from "big.js";
@@ -29,7 +30,8 @@ enum K {
   Accounts = "acc",
   Alarms = "alarm",
   AlarmEvents = "event",
-  Affiliates = "aff",
+  SumupAffiliates = "suaff",
+  VibrantAccounts = "vacc",
 }
 
 @autoinject()
@@ -58,7 +60,7 @@ export class Api {
         this.tag((result) => [
           K.PointOfSales,
           ...result.map((x) => `${K.PointOfSales}:${x.id}`),
-        ]),
+        ])
       );
   }
 
@@ -99,7 +101,7 @@ export class Api {
         this.tag((result) => [
           K.Terminals,
           ...result.map((x) => `${K.Terminals}:${x.id}`),
-        ]),
+        ])
       );
   }
 
@@ -144,7 +146,7 @@ export class Api {
         this.tag((result) => [
           K.Printers,
           ...result.map((x) => `${K.Printers}:${x.id}`),
-        ]),
+        ])
       );
   }
 
@@ -185,7 +187,7 @@ export class Api {
         this.tag((result) => [
           K.Products,
           ...result.map((x) => `${K.Products}:${x.id}`),
-        ]),
+        ])
       );
   }
 
@@ -233,7 +235,7 @@ export class Api {
         this.tag((result) => [
           K.Products,
           ...result.map((x) => `${K.Products}:${x.product.id}`),
-        ]),
+        ])
       );
   }
 
@@ -310,9 +312,10 @@ export class Api {
     payment: {
       method: "card" | "cash" | "account" | "mobilePay";
       amount: Big;
+      provider?: "sumup" | "vibrant",
       transactionNumber?: string;
       accountId?: number;
-    },
+    }
   ) {
     return http
       .post(`/Orders/${orderId}/Payments`)
@@ -347,7 +350,7 @@ export class Api {
       pointOfSaleId: number;
       highPriorityServing?: boolean;
       lines: { orderLineId: number; quantity: number }[];
-    },
+    }
   ) {
     return http
       .post(`/Orders/${orderId}/Servings`)
@@ -373,7 +376,7 @@ export class Api {
     periodEnd: DateTime,
     kind: "yearly" | "monthly" | "daily" | "hourly",
     offset: Duration,
-    filter: { terminalId?: number; pointOfSaleId?: number },
+    filter: { terminalId?: number; pointOfSaleId?: number }
   ) {
     const shifted = offset.shiftTo("hours", "minutes");
     return http
@@ -381,7 +384,7 @@ export class Api {
         `/Stats/${periodStart}/${periodEnd}/${kind}${
           shifted.valueOf() !== 0 ? shifted.toFormat("hh:mm") : ""
         }`,
-        filter,
+        filter
       )
       .expectJsonArray(OrderStats);
   }
@@ -424,7 +427,7 @@ export class Api {
 
   createAlarmEvent(
     alarmFeedId: number,
-    event: { terminalId: number; pointOfSaleId: number },
+    event: { terminalId: number; pointOfSaleId: number }
   ) {
     return http
       .post(`/Alarms/Feeds/${alarmFeedId}/Events`)
@@ -472,7 +475,7 @@ export class Api {
           K.Accounts,
           K.Payments,
           ...result.map((x) => `${K.Accounts}:${x.id}`),
-        ]),
+        ])
       );
   }
 
@@ -481,7 +484,7 @@ export class Api {
       .get(`/Accounts/${accountId}`)
       .expectJson(Account)
       .onReceived(
-        this.tag((result) => [K.Payments, `${K.Accounts}:${result.id}`]),
+        this.tag((result) => [K.Payments, `${K.Accounts}:${result.id}`])
       );
   }
 
@@ -514,20 +517,75 @@ export class Api {
       .post("/SumUp/Affiliates")
       .withJson(affiliate)
       .expectJson(SumUpAffiliate)
-      .onSent(this.bust([K.Affiliates]));
+      .onSent(this.bust([K.SumupAffiliates]));
   }
 
   getAllSumupAffiliates() {
     return http
       .get("/SumUp/Affiliates")
       .expectJsonArray(SumUpAffiliate)
-      .onReceived(this.tag((result) => [K.Affiliates]));
+      .onReceived(this.tag((result) => [K.SumupAffiliates]));
   }
 
   deleteSumupAffiliate(key: string) {
     return http
       .delete(`/SumUp/Affiliates/${key}`)
-      .onSent(this.bust([K.Affiliates]));
+      .onSent(this.bust([K.SumupAffiliates]));
+  }
+
+  createVibrantAccount(account: {
+    id: string;
+    name: string;
+    sandbox: boolean;
+    apiKey: string;
+  }) {
+    return http
+      .post("/Vibrant/Accounts")
+      .withJson(account)
+      .expectJson(VibrantAccount)
+      .onSent(this.bust([K.VibrantAccounts]));
+  }
+
+  getAllVibrantAccounts() {
+    return http
+      .get("/Vibrant/Accounts")
+      .expectJsonArray(VibrantAccount)
+      .onReceived(this.tag((result) => [K.VibrantAccounts]));
+  }
+
+  deleteVibrantAccount(key: string) {
+    return http
+      .delete(`/Vibrant/Accounts/${key}`)
+      .onSent(this.bust([K.VibrantAccounts]));
+  }
+
+  getAllVibrantTerminals(accountId: string) {
+    return http
+      .get(`/Vibrant/Accounts/${accountId}/Terminals`)
+      .expectJsonArray(VibrantTerminal);
+  }
+
+  createVibrantPaymentIntent(
+    accountId: string,
+    paymentIntent: { terminalId: string, amount: number, description: string }
+  ) {
+    return http
+      .post(
+        `/Vibrant/Accounts/${accountId}/PaymentIntents`
+      )
+      .withJson(paymentIntent)
+      .expectJson<string>();
+  }
+
+  getVibrantPaymentIntent(
+    accountId: string,
+    paymentIntentId: string
+  ) {
+    return http
+      .get(
+        `/Vibrant/Accounts/${accountId}/PaymentIntents/${paymentIntentId}`
+      )
+      .expectJson(VibrantPaymentIntent);
   }
 
   private bust(tags: string[]) {

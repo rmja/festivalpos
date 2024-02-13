@@ -41,6 +41,16 @@
       </div>
 
       <div class="form-group">
+        <label>Vibrant Terminal</label>
+        <select value.bind="vibrantTerminal" class="form-control">
+          <option>[ingen]</option>
+          <option repeat.for="term of vibrantTerminals" model.bind="term">
+            ${term.name} #${term.id} (${term.accountName})
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
         <label>MobilePay nummer</label>
         <input type="tel" value.bind="mobilepayNumber" class="form-control" />
       </div>

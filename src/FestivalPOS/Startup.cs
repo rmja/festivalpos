@@ -59,6 +59,8 @@ namespace FestivalPOS
                     optionsLifetime: ServiceLifetime.Scoped
                 );
 
+            services.AddHttpClient();
+
             services
                 .AddSignalR()
                 .AddJsonProtocol(options =>

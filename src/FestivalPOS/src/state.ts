@@ -5,6 +5,8 @@ export interface State {
   pointOfSaleId: number;
   sumupAffiliateKey?: string;
   sumupReceiptEmail?: string;
+  vibrantAccountId?: string;
+  vibrantTerminalId?: string;
   mobilepayNumber?: number;
   orderLines: OrderLineState[];
   currentMiscOrderLine: {
@@ -50,6 +52,8 @@ export function setup(
     pointOfSaleId: number;
     sumupAffiliateKey?: string;
     sumupReceiptEmail?: string;
+    vibrantAccountId?: string;
+    vibrantTerminalId?: string;
     mobilepayNumber?: number;
   },
 ) {
@@ -59,6 +63,8 @@ export function setup(
   newState.pointOfSaleId = options.pointOfSaleId;
   newState.sumupAffiliateKey = options.sumupAffiliateKey;
   newState.sumupReceiptEmail = options.sumupReceiptEmail;
+  newState.vibrantAccountId = options.vibrantAccountId;
+  newState.vibrantTerminalId = options.vibrantTerminalId;
   newState.mobilepayNumber = options.mobilepayNumber;
 
   return newState;
