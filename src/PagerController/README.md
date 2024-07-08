@@ -1,7 +1,7 @@
-To run the pager controller from linux, first install the dotnet runtime:
+To run the pager controller from linux, first install the dotnet sdk and runtime:
 
 ```
-sudo apt install dotnet-sdk-7.0
+sudo apt install dotnet-sdk-8.0
 ```
 
 The pager controller can then be installed as a global tool using
