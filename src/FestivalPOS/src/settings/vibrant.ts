@@ -10,7 +10,9 @@ export class Vibrant {
   newApiKey = "";
 
   canSubmit() {
-    return !!this.newId.length && !!this.newName.length && !!this.newApiKey.length;
+    return (
+      !!this.newId.length && !!this.newName.length && !!this.newApiKey.length
+    );
   }
 
   constructor(private api: Api) {}

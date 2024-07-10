@@ -15,7 +15,7 @@ export class EditTerminal {
 
   constructor(
     private api: Api,
-    private router: Router
+    private router: Router,
   ) {}
 
   async activate(params: { terminalId: string }) {

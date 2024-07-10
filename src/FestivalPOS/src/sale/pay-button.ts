@@ -41,7 +41,8 @@ export class PayButtonCustomElement {
   ) {}
 
   bind() {
-    this.cardEnabled = !!this.state.sumupAffiliateKey || !!this.state.vibrantAccountId;
+    this.cardEnabled =
+      !!this.state.sumupAffiliateKey || !!this.state.vibrantAccountId;
     this.mobilepayEnabled = !!this.state.mobilepayNumber;
   }
 

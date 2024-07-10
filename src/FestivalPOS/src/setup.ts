@@ -48,7 +48,11 @@ export class Setup {
       const accountTerminals = await this.api
         .getAllVibrantTerminals(account.id)
         .transfer();
-      this.vibrantTerminals.push(...accountTerminals.map(x => Object.assign(x, { accountName: account.name})));
+      this.vibrantTerminals.push(
+        ...accountTerminals.map((x) =>
+          Object.assign(x, { accountName: account.name }),
+        ),
+      );
     }
 
     this.terminal = this.terminals.find((x) => x.id === this.state.terminalId);
@@ -60,7 +64,9 @@ export class Setup {
     );
     this.receiptEmail = this.state.sumupReceiptEmail;
     this.vibrantTerminal = this.vibrantTerminals.find(
-      (x) => x.accountId === this.state.vibrantAccountId && x.id === this.state.vibrantTerminalId,
+      (x) =>
+        x.accountId === this.state.vibrantAccountId &&
+        x.id === this.state.vibrantTerminalId,
     );
     this.mobilepayNumber = this.state.mobilepayNumber;
   }

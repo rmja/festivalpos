@@ -17,7 +17,7 @@ export class CardPayment {
 
   constructor(
     private api: Api,
-    private progress: ProgressService
+    private progress: ProgressService,
   ) {}
 
   async canActivate(params: { orderId: string; tagNumber?: string }) {
@@ -55,7 +55,7 @@ export class CardPayment {
       await this.progress.done();
 
       let appUrl = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${encodeURIComponent(
-        title
+        title,
       )}&skip-screen-success=true&callback=${encodeURIComponent(callbackUrl)}`;
       if (receiptEmail) {
         appUrl += `&receipt-email=${encodeURIComponent(receiptEmail)}`;
@@ -75,14 +75,11 @@ export class CardPayment {
       const pos = await this.api.getPointOfSale(order.pointOfSaleId).transfer();
 
       const id = await this.api
-        .createVibrantPaymentIntent(
-          this.state.vibrantAccountId!,
-          {
-            terminalId: this.state.vibrantTerminalId!,
-            amount: +order.amountDue.mul(100),
-            description: `Kajfest ${pos.name}`,
-          }
-        )
+        .createVibrantPaymentIntent(this.state.vibrantAccountId!, {
+          terminalId: this.state.vibrantTerminalId!,
+          amount: +order.amountDue.mul(100),
+          description: `Kajfest ${pos.name}`,
+        })
         .transfer();
 
       let callbackUrl = `${window.location.origin}/#/checkout/orders/${order.id}/pay/card-callback?provider=vibrant&amount=${order.amountDue}&paymentIntentId=${id}`;

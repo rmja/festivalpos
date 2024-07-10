@@ -1,6 +1,10 @@
 import { AlarmEvent, AlarmFeed } from "./alarms";
 import { DateTime, Duration } from "luxon";
-import { VibrantAccount, VibrantPaymentIntent, VibrantTerminal } from "./vibrant";
+import {
+  VibrantAccount,
+  VibrantPaymentIntent,
+  VibrantTerminal,
+} from "./vibrant";
 
 import { Account } from "./account";
 import { Big } from "big.js";
@@ -60,7 +64,7 @@ export class Api {
         this.tag((result) => [
           K.PointOfSales,
           ...result.map((x) => `${K.PointOfSales}:${x.id}`),
-        ])
+        ]),
       );
   }
 
@@ -101,7 +105,7 @@ export class Api {
         this.tag((result) => [
           K.Terminals,
           ...result.map((x) => `${K.Terminals}:${x.id}`),
-        ])
+        ]),
       );
   }
 
@@ -146,7 +150,7 @@ export class Api {
         this.tag((result) => [
           K.Printers,
           ...result.map((x) => `${K.Printers}:${x.id}`),
-        ])
+        ]),
       );
   }
 
@@ -187,7 +191,7 @@ export class Api {
         this.tag((result) => [
           K.Products,
           ...result.map((x) => `${K.Products}:${x.id}`),
-        ])
+        ]),
       );
   }
 
@@ -235,7 +239,7 @@ export class Api {
         this.tag((result) => [
           K.Products,
           ...result.map((x) => `${K.Products}:${x.product.id}`),
-        ])
+        ]),
       );
   }
 
@@ -312,10 +316,10 @@ export class Api {
     payment: {
       method: "card" | "cash" | "account" | "mobilePay";
       amount: Big;
-      provider?: "sumup" | "vibrant",
+      provider?: "sumup" | "vibrant";
       transactionNumber?: string;
       accountId?: number;
-    }
+    },
   ) {
     return http
       .post(`/Orders/${orderId}/Payments`)
@@ -350,7 +354,7 @@ export class Api {
       pointOfSaleId: number;
       highPriorityServing?: boolean;
       lines: { orderLineId: number; quantity: number }[];
-    }
+    },
   ) {
     return http
       .post(`/Orders/${orderId}/Servings`)
@@ -376,7 +380,7 @@ export class Api {
     periodEnd: DateTime,
     kind: "yearly" | "monthly" | "daily" | "hourly",
     offset: Duration,
-    filter: { terminalId?: number; pointOfSaleId?: number }
+    filter: { terminalId?: number; pointOfSaleId?: number },
   ) {
     const shifted = offset.shiftTo("hours", "minutes");
     return http
@@ -384,7 +388,7 @@ export class Api {
         `/Stats/${periodStart}/${periodEnd}/${kind}${
           shifted.valueOf() !== 0 ? shifted.toFormat("hh:mm") : ""
         }`,
-        filter
+        filter,
       )
       .expectJsonArray(OrderStats);
   }
@@ -427,7 +431,7 @@ export class Api {
 
   createAlarmEvent(
     alarmFeedId: number,
-    event: { terminalId: number; pointOfSaleId: number }
+    event: { terminalId: number; pointOfSaleId: number },
   ) {
     return http
       .post(`/Alarms/Feeds/${alarmFeedId}/Events`)
@@ -475,7 +479,7 @@ export class Api {
           K.Accounts,
           K.Payments,
           ...result.map((x) => `${K.Accounts}:${x.id}`),
-        ])
+        ]),
       );
   }
 
@@ -484,7 +488,7 @@ export class Api {
       .get(`/Accounts/${accountId}`)
       .expectJson(Account)
       .onReceived(
-        this.tag((result) => [K.Payments, `${K.Accounts}:${result.id}`])
+        this.tag((result) => [K.Payments, `${K.Accounts}:${result.id}`]),
       );
   }
 
@@ -567,24 +571,17 @@ export class Api {
 
   createVibrantPaymentIntent(
     accountId: string,
-    paymentIntent: { terminalId: string, amount: number, description: string }
+    paymentIntent: { terminalId: string; amount: number; description: string },
   ) {
     return http
-      .post(
-        `/Vibrant/Accounts/${accountId}/PaymentIntents`
-      )
+      .post(`/Vibrant/Accounts/${accountId}/PaymentIntents`)
       .withJson(paymentIntent)
       .expectJson<string>();
   }
 
-  getVibrantPaymentIntent(
-    accountId: string,
-    paymentIntentId: string
-  ) {
+  getVibrantPaymentIntent(accountId: string, paymentIntentId: string) {
     return http
-      .get(
-        `/Vibrant/Accounts/${accountId}/PaymentIntents/${paymentIntentId}`
-      )
+      .get(`/Vibrant/Accounts/${accountId}/PaymentIntents/${paymentIntentId}`)
       .expectJson(VibrantPaymentIntent);
   }
 

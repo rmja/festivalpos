@@ -34,7 +34,7 @@ export class CardCallback {
 
   constructor(
     private api: Api,
-    private progress: ProgressService
+    private progress: ProgressService,
   ) {}
 
   // Example callback url: https://example.com/?smp-status=success&smp-message=Transaction%20successful.&smp-receipt-sent=false&smp-tx-code=TDT3L2XDGM#/checkout/orders/87/pay/card-callback?amount=40
@@ -83,7 +83,7 @@ export class CardCallback {
           },
           {
             replace: true,
-          }
+          },
         );
       } catch (error) {
         await this.progress.error("Betalingen kunne ikke registreres", error);
@@ -98,7 +98,7 @@ export class CardCallback {
         },
         {
           replace: true,
-        }
+        },
       );
     }
   }
@@ -110,7 +110,7 @@ export class CardCallback {
     const intent = await this.api
       .getVibrantPaymentIntent(
         this.state.vibrantAccountId!,
-        params.paymentIntentId
+        params.paymentIntentId,
       )
       .transfer();
 
@@ -138,7 +138,7 @@ export class CardCallback {
           },
           {
             replace: true,
-          }
+          },
         );
       } catch (error) {
         await this.progress.error("Betalingen kunne ikke registreres", error);
@@ -157,7 +157,7 @@ export class CardCallback {
         },
         {
           replace: true,
-        }
+        },
       );
     }
   }
