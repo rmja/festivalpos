@@ -10,6 +10,7 @@ import {
 
 import { AureliaPlugin } from "aurelia-webpack-plugin";
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
+import { DateTime } from "luxon";
 import { InjectManifest } from "workbox-webpack-plugin";
 import { addTemplatedURLs } from "ur-workbox-utils";
 import { resolve } from "path";
@@ -120,6 +121,7 @@ const config = (
       new MiniCssExtractPlugin(),
       new DefinePlugin({
         __DEBUG__: JSON.stringify(!isRelease),
+        __VERSION__: JSON.stringify(DateTime.local().toJSON()),
       }),
       new ProvidePlugin({
         $: "jquery",

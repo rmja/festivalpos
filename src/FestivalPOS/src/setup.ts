@@ -27,6 +27,8 @@ export class Setup {
 
   mobilepayNumber?: number;
 
+  version = __VERSION__;
+
   get canSubmit() {
     return this.terminal && this.pointOfSale;
   }
