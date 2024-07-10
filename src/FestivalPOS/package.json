@@ -7,7 +7,7 @@
     "watch": "webpack --mode development --watch",
     "prettier": "prettier --write src/**/*.ts src/**/*.html",
     "release": "webpack --mode production",
-    "clean": "rimraf wwwroot/dist"
+    "clean": "rimraf --glob wwwroot/dist wwwroot/service-worker.js* wwwroot/workbox-*.js"
   },
   "repository": {
     "type": "git",
