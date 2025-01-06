@@ -2,112 +2,109 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace FestivalPOS
+namespace FestivalPOS;
+
+public class PosContext(IOptions<PosOptions> options) : DbContext
 {
-    public class PosContext(IOptions<PosOptions> options) : DbContext
+    private readonly PosOptions _options = options.Value;
+
+    public DbSet<Account> Accounts { get; set; }
+    public DbSet<AlarmEvent> AlarmEvents { get; set; }
+    public DbSet<AlarmFeed> AlarmFeeds { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderLine> OrderLines { get; set; }
+    public DbSet<OrderTag> OrderTags { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<PointOfSale> PointOfSales { get; set; }
+    public DbSet<PointOfSaleProduct> PointOfSaleProducts { get; set; }
+    public DbSet<Printer> Printers { get; set; }
+    public DbSet<Serving> Servings { get; set; }
+    public DbSet<ServingLine> ServingLines { get; set; }
+    public DbSet<ServingStaff> ServingStaff { get; set; }
+    public DbSet<Terminal> Terminals { get; set; }
+    public DbSet<SumUpAffiliate> SumUpAffiliates { get; set; }
+    public DbSet<VibrantAccount> VibrantAccounts { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        private readonly PosOptions _options = options.Value;
+        base.OnConfiguring(optionsBuilder);
 
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<AlarmEvent> AlarmEvents { get; set; }
-        public DbSet<AlarmFeed> AlarmFeeds { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderLine> OrderLines { get; set; }
-        public DbSet<OrderTag> OrderTags { get; set; }
-        public DbSet<Payment> Payments { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<PointOfSale> PointOfSales { get; set; }
-        public DbSet<PointOfSaleProduct> PointOfSaleProducts { get; set; }
-        public DbSet<Printer> Printers { get; set; }
-        public DbSet<Serving> Servings { get; set; }
-        public DbSet<ServingLine> ServingLines { get; set; }
-        public DbSet<ServingStaff> ServingStaff { get; set; }
-        public DbSet<Terminal> Terminals { get; set; }
-        public DbSet<SumUpAffiliate> SumUpAffiliates { get; set; }
-        public DbSet<VibrantAccount> VibrantAccounts { get; set; }
+        optionsBuilder.UseSqlServer(_options.SqlServerConnectionString);
+    }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-            optionsBuilder.UseSqlServer(_options.SqlServerConnectionString);
-        }
+        modelBuilder.Entity<Account>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<Account>().Property(x => x.MaxCredit).HasColumnType("decimal(9,2)");
+        modelBuilder
+            .Entity<Account>()
+            .Property(x => x.RemainingCredit)
+            .HasColumnType("decimal(9,2)");
+        modelBuilder
+            .Entity<Account>()
+            .HasIndex(x => x.Number)
+            .IsUnique()
+            .HasFilter("IsDeleted = 0");
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<AlarmFeed>().HasQueryFilter(x => !x.IsDeleted);
 
-            modelBuilder.Entity<Account>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Account>().Property(x => x.MaxCredit).HasColumnType("decimal(9,2)");
-            modelBuilder
-                .Entity<Account>()
-                .Property(x => x.RemainingCredit)
-                .HasColumnType("decimal(9,2)");
-            modelBuilder
-                .Entity<Account>()
-                .HasIndex(x => x.Number)
-                .IsUnique()
-                .HasFilter("IsDeleted = 0");
+        modelBuilder.Entity<Order>().HasIndex(x => x.AmountDue);
+        modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<OrderLine>().Property(x => x.Total).HasColumnType("decimal(9,2)");
+        modelBuilder.Entity<Payment>().Property(x => x.Amount).HasColumnType("decimal(9,2)");
+        modelBuilder
+            .Entity<Order>()
+            .HasMany(x => x.Tags)
+            .WithOne(x => x.Order)
+            .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<AlarmFeed>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<OrderTag>().HasIndex(x => x.Number).HasFilter("Detached IS NULL");
+        modelBuilder
+            .Entity<OrderTag>()
+            .HasIndex(x => new { x.Number, x.OrderId })
+            .HasFilter("Detached IS NULL")
+            .IsUnique();
 
-            modelBuilder.Entity<Order>().HasIndex(x => x.AmountDue);
-            modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<OrderLine>().Property(x => x.Total).HasColumnType("decimal(9,2)");
-            modelBuilder.Entity<Payment>().Property(x => x.Amount).HasColumnType("decimal(9,2)");
-            modelBuilder
-                .Entity<Order>()
-                .HasMany(x => x.Tags)
-                .WithOne(x => x.Order)
-                .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<PointOfSale>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder
+            .Entity<PointOfSale>()
+            .HasOne(x => x.ReceiptPrinter)
+            .WithMany()
+            .OnDelete(DeleteBehavior.SetNull);
+        modelBuilder
+            .Entity<PointOfSale>()
+            .HasMany(x => x.ServingStaff)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<PointOfSaleProduct>().HasKey(x => new { x.PointOfSaleId, x.ProductId });
 
-            modelBuilder.Entity<OrderTag>().HasIndex(x => x.Number).HasFilter("Detached IS NULL");
-            modelBuilder
-                .Entity<OrderTag>()
-                .HasIndex(x => new { x.Number, x.OrderId })
-                .HasFilter("Detached IS NULL")
-                .IsUnique();
+        modelBuilder
+            .Entity<Printer>()
+            .HasOne(x => x.Terminal)
+            .WithMany(x => x.Printers)
+            .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<PointOfSale>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder
-                .Entity<PointOfSale>()
-                .HasOne(x => x.ReceiptPrinter)
-                .WithMany()
-                .OnDelete(DeleteBehavior.SetNull);
-            modelBuilder
-                .Entity<PointOfSale>()
-                .HasMany(x => x.ServingStaff)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder
-                .Entity<PointOfSaleProduct>()
-                .HasKey(x => new { x.PointOfSaleId, x.ProductId });
+        modelBuilder.Entity<Product>().Property(x => x.Price).HasColumnType("decimal(9,2)");
+        modelBuilder.Entity<Product>().HasQueryFilter(x => !x.IsDeleted);
 
-            modelBuilder
-                .Entity<Printer>()
-                .HasOne(x => x.Terminal)
-                .WithMany(x => x.Printers)
-                .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Terminal>().HasQueryFilter(x => !x.IsDeleted);
 
-            modelBuilder.Entity<Product>().Property(x => x.Price).HasColumnType("decimal(9,2)");
-            modelBuilder.Entity<Product>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder
+            .Entity<Serving>()
+            .HasOne(x => x.PointOfSale)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder
+            .Entity<ServingLine>()
+            .HasOne(x => x.OrderLine)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Terminal>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<SumUpAffiliate>().HasKey(x => x.Key);
 
-            modelBuilder
-                .Entity<Serving>()
-                .HasOne(x => x.PointOfSale)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder
-                .Entity<ServingLine>()
-                .HasOne(x => x.OrderLine)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<SumUpAffiliate>().HasKey(x => x.Key);
-
-            modelBuilder.Entity<VibrantAccount>().HasKey(x => x.Id);
-        }
+        modelBuilder.Entity<VibrantAccount>().HasKey(x => x.Id);
     }
 }

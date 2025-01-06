@@ -3,67 +3,66 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SystemTextJsonPatch;
 
-namespace FestivalPOS.Controllers
+namespace FestivalPOS.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class TerminalsController(PosContext db) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TerminalsController(PosContext db) : ControllerBase
+    [HttpPost]
+    public async Task<Terminal> Create(Terminal terminal)
     {
-        [HttpPost]
-        public async Task<Terminal> Create(Terminal terminal)
-        {
-            db.Terminals.Add(terminal);
-            await db.SaveChangesAsync();
+        db.Terminals.Add(terminal);
+        await db.SaveChangesAsync();
 
-            return terminal;
+        return terminal;
+    }
+
+    [HttpGet]
+    public Task<List<Terminal>> GetAll()
+    {
+        return db.Terminals.OrderBy(x => x.Name).ToListAsync();
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Terminal>> GetById(int id)
+    {
+        var terminal = await db.Terminals.FirstOrDefaultAsync(x => x.Id == id);
+        if (terminal is null)
+        {
+            return NotFound();
         }
 
-        [HttpGet]
-        public Task<List<Terminal>> GetAll()
+        return terminal;
+    }
+
+    [HttpPatch("{id:int}")]
+    public async Task<ActionResult<Terminal>> Update(int id, JsonPatchDocument<Terminal> patch)
+    {
+        var terminal = await db.Terminals.FirstOrDefaultAsync(x => x.Id == id);
+        if (terminal is null)
         {
-            return db.Terminals.OrderBy(x => x.Name).ToListAsync();
+            return NotFound();
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<Terminal>> GetById(int id)
-        {
-            var terminal = await db.Terminals.FirstOrDefaultAsync(x => x.Id == id);
-            if (terminal is null)
-            {
-                return NotFound();
-            }
+        patch.ApplyTo(terminal);
+        await db.SaveChangesAsync();
 
-            return terminal;
+        return terminal;
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var terminal = await db.Terminals.FirstOrDefaultAsync(x => x.Id == id);
+        if (terminal is null)
+        {
+            return NotFound();
         }
 
-        [HttpPatch("{id:int}")]
-        public async Task<ActionResult<Terminal>> Update(int id, JsonPatchDocument<Terminal> patch)
-        {
-            var terminal = await db.Terminals.FirstOrDefaultAsync(x => x.Id == id);
-            if (terminal is null)
-            {
-                return NotFound();
-            }
+        terminal.IsDeleted = true;
+        await db.SaveChangesAsync();
 
-            patch.ApplyTo(terminal);
-            await db.SaveChangesAsync();
-
-            return terminal;
-        }
-
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var terminal = await db.Terminals.FirstOrDefaultAsync(x => x.Id == id);
-            if (terminal is null)
-            {
-                return NotFound();
-            }
-
-            terminal.IsDeleted = true;
-            await db.SaveChangesAsync();
-
-            return NoContent();
-        }
+        return NoContent();
     }
 }

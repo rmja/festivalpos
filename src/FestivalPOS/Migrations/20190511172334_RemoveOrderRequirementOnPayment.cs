@@ -1,23 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace FestivalPOS.Migrations
-{
-    public partial class RemoveOrderRequirementOnPayment : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterColumn<int>(
-                name: "OrderId",
-                table: "Payments",
-                nullable: true);
-        }
+namespace FestivalPOS.Migrations;
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterColumn<int>(
-                name: "OrderId",
-                table: "Payments",
-                nullable: false);
-        }
+public partial class RemoveOrderRequirementOnPayment : Migration
+{
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AlterColumn<int>(
+            name: "OrderId",
+            table: "Payments",
+            nullable: true);
+    }
+
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AlterColumn<int>(
+            name: "OrderId",
+            table: "Payments",
+            nullable: false);
     }
 }

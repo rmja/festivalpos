@@ -5,146 +5,145 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SystemTextJsonPatch;
 
-namespace FestivalPOS.Controllers
+namespace FestivalPOS.Controllers;
+
+[Route("api/Alarms")]
+[ApiController]
+public class AlarmsController(PosContext db, IHubContext<AlarmsHub> hub) : ControllerBase
 {
-    [Route("api/Alarms")]
-    [ApiController]
-    public class AlarmsController(PosContext db, IHubContext<AlarmsHub> hub) : ControllerBase
+    [HttpPost("Feeds")]
+    public async Task<AlarmFeed> CreateFeed(AlarmFeed feed)
     {
-        [HttpPost("Feeds")]
-        public async Task<AlarmFeed> CreateFeed(AlarmFeed feed)
-        {
-            db.AlarmFeeds.Add(feed);
-            await db.SaveChangesAsync();
+        db.AlarmFeeds.Add(feed);
+        await db.SaveChangesAsync();
 
-            return feed;
+        return feed;
+    }
+
+    [HttpGet("Feeds")]
+    public Task<List<AlarmFeed>> GetAllFeeds()
+    {
+        return db.AlarmFeeds.ToListAsync();
+    }
+
+    [HttpGet("Feeds/{id:int}")]
+    public async Task<ActionResult<AlarmFeed>> GetFeedById(int id)
+    {
+        var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (feed == null)
+        {
+            return NotFound();
         }
 
-        [HttpGet("Feeds")]
-        public Task<List<AlarmFeed>> GetAllFeeds()
+        return feed;
+    }
+
+    [HttpPatch("Feeds/{id:int}")]
+    public async Task<ActionResult<AlarmFeed>> UpdateFeed(
+        int id,
+        JsonPatchDocument<AlarmFeed> patch
+    )
+    {
+        var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (feed == null)
         {
-            return db.AlarmFeeds.ToListAsync();
+            return NotFound();
         }
 
-        [HttpGet("Feeds/{id:int}")]
-        public async Task<ActionResult<AlarmFeed>> GetFeedById(int id)
+        patch.ApplyTo(feed);
+        await db.SaveChangesAsync();
+
+        return feed;
+    }
+
+    [HttpDelete("Feeds/{id:int}")]
+    public async Task<ActionResult<AlarmFeed>> DeleteFeed(int id)
+    {
+        var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (feed == null)
         {
-            var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (feed == null)
-            {
-                return NotFound();
-            }
-
-            return feed;
+            return NotFound();
         }
 
-        [HttpPatch("Feeds/{id:int}")]
-        public async Task<ActionResult<AlarmFeed>> UpdateFeed(
-            int id,
-            JsonPatchDocument<AlarmFeed> patch
-        )
+        feed.IsDeleted = true;
+        await db.SaveChangesAsync();
+
+        return feed;
+    }
+
+    [HttpPost("Feeds/{alarmFeedId:int}/Events")]
+    public async Task<ActionResult<AlarmEvent>> CreateEvent(int alarmFeedId, AlarmEvent @event)
+    {
+        var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == alarmFeedId);
+
+        if (feed == null)
         {
-            var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (feed == null)
-            {
-                return NotFound();
-            }
-
-            patch.ApplyTo(feed);
-            await db.SaveChangesAsync();
-
-            return feed;
+            return NotFound();
         }
 
-        [HttpDelete("Feeds/{id:int}")]
-        public async Task<ActionResult<AlarmFeed>> DeleteFeed(int id)
+        @event.AlarmFeedId = feed.Id;
+        @event.Created = LocalClock.Now;
+
+        db.AlarmEvents.Add(@event);
+        await db.SaveChangesAsync();
+
+        var created = await db
+            .AlarmEvents.Include(x => x.AlarmFeed)
+            .Include(x => x.Terminal)
+            .Include(x => x.PointOfSale)
+            .FirstAsync(x => x.Id == @event.Id);
+
+        //feed.SubscriberEmails
+
+        await hub.Clients.All.SendAsync("EventCreated", created);
+
+        return created;
+    }
+
+    [HttpGet("Events/Pending")]
+    public Task<List<AlarmEvent>> GetAllPendingAlarms(int? terminalId, int? pointOfSaleId)
+    {
+        var query = db
+            .AlarmEvents.Include(x => x.AlarmFeed)
+            .Include(x => x.Terminal)
+            .Include(x => x.PointOfSale)
+            .Where(x => x.Cancelled == null);
+
+        if (terminalId != null)
         {
-            var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (feed == null)
-            {
-                return NotFound();
-            }
-
-            feed.IsDeleted = true;
-            await db.SaveChangesAsync();
-
-            return feed;
+            query = query.Where(x => x.TerminalId == terminalId);
         }
 
-        [HttpPost("Feeds/{alarmFeedId:int}/Events")]
-        public async Task<ActionResult<AlarmEvent>> CreateEvent(int alarmFeedId, AlarmEvent @event)
+        if (pointOfSaleId != null)
         {
-            var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == alarmFeedId);
-
-            if (feed == null)
-            {
-                return NotFound();
-            }
-
-            @event.AlarmFeedId = feed.Id;
-            @event.Created = LocalClock.Now;
-
-            db.AlarmEvents.Add(@event);
-            await db.SaveChangesAsync();
-
-            var created = await db
-                .AlarmEvents.Include(x => x.AlarmFeed)
-                .Include(x => x.Terminal)
-                .Include(x => x.PointOfSale)
-                .FirstAsync(x => x.Id == @event.Id);
-
-            //feed.SubscriberEmails
-
-            await hub.Clients.All.SendAsync("EventCreated", created);
-
-            return created;
+            query = query.Where(x => x.PointOfSaleId == pointOfSaleId);
         }
 
-        [HttpGet("Events/Pending")]
-        public Task<List<AlarmEvent>> GetAllPendingAlarms(int? terminalId, int? pointOfSaleId)
+        return query.OrderBy(x => x.Id).ToListAsync();
+    }
+
+    [HttpDelete("Events/{alarmEventId:int}")]
+    public async Task<ActionResult<AlarmEvent>> CancelEvent(int alarmEventId)
+    {
+        var @event = await db.AlarmEvents.FirstOrDefaultAsync(x => x.Id == alarmEventId);
+
+        if (@event == null)
         {
-            var query = db
-                .AlarmEvents.Include(x => x.AlarmFeed)
-                .Include(x => x.Terminal)
-                .Include(x => x.PointOfSale)
-                .Where(x => x.Cancelled == null);
-
-            if (terminalId != null)
-            {
-                query = query.Where(x => x.TerminalId == terminalId);
-            }
-
-            if (pointOfSaleId != null)
-            {
-                query = query.Where(x => x.PointOfSaleId == pointOfSaleId);
-            }
-
-            return query.OrderBy(x => x.Id).ToListAsync();
+            return NotFound();
         }
 
-        [HttpDelete("Events/{alarmEventId:int}")]
-        public async Task<ActionResult<AlarmEvent>> CancelEvent(int alarmEventId)
-        {
-            var @event = await db.AlarmEvents.FirstOrDefaultAsync(x => x.Id == alarmEventId);
+        @event.Cancelled = LocalClock.Now;
+        await db.SaveChangesAsync();
 
-            if (@event == null)
-            {
-                return NotFound();
-            }
+        var cancelled = await db
+            .AlarmEvents.Include(x => x.AlarmFeed)
+            .Include(x => x.Terminal)
+            .Include(x => x.PointOfSale)
+            .FirstAsync(x => x.Id == @event.Id);
 
-            @event.Cancelled = LocalClock.Now;
-            await db.SaveChangesAsync();
-
-            var cancelled = await db
-                .AlarmEvents.Include(x => x.AlarmFeed)
-                .Include(x => x.Terminal)
-                .Include(x => x.PointOfSale)
-                .FirstAsync(x => x.Id == @event.Id);
-
-            return cancelled;
-        }
+        return cancelled;
     }
 }

@@ -1,10 +1,9 @@
 ﻿using MediatR;
 
-namespace FestivalPOS.Notifications
+namespace FestivalPOS.Notifications;
+
+public class OrderPayedNotification(int orderId, int paymentId) : INotification
 {
-    public class OrderPayedNotification(int orderId, int paymentId) : INotification
-    {
-        public int OrderId { get; } = orderId;
-        public int PaymentId { get; } = paymentId;
-    }
+    public int OrderId { get; } = orderId;
+    public int PaymentId { get; } = paymentId;
 }

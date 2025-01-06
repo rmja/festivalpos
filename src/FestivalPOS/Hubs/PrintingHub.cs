@@ -2,26 +2,25 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
-namespace FestivalPOS.Hubs
+namespace FestivalPOS.Hubs;
+
+public class PrintingHub(PosContext db, PrintQueue printQueue) : Hub
 {
-    public class PrintingHub(PosContext db, PrintQueue printQueue) : Hub
+    public async Task Hello(int terminalId)
     {
-        public async Task Hello(int terminalId)
+        var printerIds = await db
+            .Printers.Where(x => x.TerminalId == terminalId)
+            .Select(x => x.Id)
+            .ToListAsync();
+
+        foreach (var printerId in printerIds)
         {
-            var printerIds = await db
-                .Printers.Where(x => x.TerminalId == terminalId)
-                .Select(x => x.Id)
-                .ToListAsync();
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"Printers:{printerId}");
 
-            foreach (var printerId in printerIds)
+            PrintJob? job;
+            while ((job = await printQueue.DequeueAsync(printerId)) != null)
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, $"Printers:{printerId}");
-
-                PrintJob? job;
-                while ((job = await printQueue.DequeueAsync(printerId)) != null)
-                {
-                    await Clients.Caller.SendAsync("Print", job);
-                }
+                await Clients.Caller.SendAsync("Print", job);
             }
         }
     }

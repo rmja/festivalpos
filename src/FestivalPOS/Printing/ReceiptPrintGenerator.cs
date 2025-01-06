@@ -1,13 +1,12 @@
 ﻿using System.Text;
 using FestivalPOS.Models;
 
-namespace FestivalPOS.Printing
+namespace FestivalPOS.Printing;
+
+public class ReceiptPrintGenerator
 {
-    public class ReceiptPrintGenerator
+    public byte[] Generate(Order order)
     {
-        public byte[] Generate(Order order)
-        {
-            return Encoding.ASCII.GetBytes("ESC/POS");
-        }
+        return Encoding.ASCII.GetBytes("ESC/POS");
     }
 }

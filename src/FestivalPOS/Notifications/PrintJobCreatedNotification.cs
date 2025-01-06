@@ -1,9 +1,8 @@
 ﻿using MediatR;
 
-namespace FestivalPOS.Notifications
+namespace FestivalPOS.Notifications;
+
+public class PrintJobCreatedNotification(int printerId) : INotification
 {
-    public class PrintJobCreatedNotification(int printerId) : INotification
-    {
-        public int PrinterId { get; } = printerId;
-    }
+    public int PrinterId { get; } = printerId;
 }

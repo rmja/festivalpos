@@ -7,83 +7,82 @@ using FestivalPOS.Printing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace FestivalPOS
+namespace FestivalPOS;
+
+public class Startup(IConfiguration configuration)
 {
-    public class Startup(IConfiguration configuration)
+    public IConfiguration Configuration { get; } = configuration;
+
+    public void ConfigureServices(IServiceCollection services)
     {
-        public IConfiguration Configuration { get; } = configuration;
+        services.Configure<PosOptions>(Configuration);
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.Configure<PosOptions>(Configuration);
-
-            services
-                .AddMvc()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(
-                        new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-                    );
-                    options.JsonSerializerOptions.Converters.Add(new DecimalConverter());
-                });
-
-            services
-                .AddEntityFrameworkSqlServer()
-                .AddDbContext<PosContext>(
-                    contextLifetime: ServiceLifetime.Transient,
-                    optionsLifetime: ServiceLifetime.Scoped
-                );
-
-            services.AddHttpClient();
-
-            services
-                .AddSignalR()
-                .AddJsonProtocol(options =>
-                {
-                    options.PayloadSerializerOptions.Converters.Add(
-                        new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-                    );
-                    options.PayloadSerializerOptions.Converters.Add(new DecimalConverter());
-                });
-
-            services.AddMediatR(config =>
-                config.RegisterServicesFromAssembly(typeof(Startup).Assembly)
-            );
-
-            services.AddVibrantApi();
-
-            services.AddSingleton(sp =>
+        services
+            .AddMvc()
+            .AddJsonOptions(options =>
             {
-                var options = sp.GetRequiredService<IOptions<PosOptions>>().Value;
-                return new BlobServiceClient(options.StorageConnectionString);
+                options.JsonSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                );
+                options.JsonSerializerOptions.Converters.Add(new DecimalConverter());
             });
 
-            services
-                .AddScoped<PrintDispatcher>()
-                .AddSingleton<PrintQueue>()
-                .AddSingleton<ReceiptPrintGenerator>();
-        }
+        services
+            .AddEntityFrameworkSqlServer()
+            .AddDbContext<PosContext>(
+                contextLifetime: ServiceLifetime.Transient,
+                optionsLifetime: ServiceLifetime.Scoped
+            );
 
-        public void Configure(IApplicationBuilder app, IServiceScopeFactory serviceScopeFactory)
-        {
-            using (var scope = serviceScopeFactory.CreateScope())
+        services.AddHttpClient();
+
+        services
+            .AddSignalR()
+            .AddJsonProtocol(options =>
             {
-                var db = scope.ServiceProvider.GetRequiredService<PosContext>();
-                db.Database.Migrate();
-            }
+                options.PayloadSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                );
+                options.PayloadSerializerOptions.Converters.Add(new DecimalConverter());
+            });
 
-            app.UseDeveloperExceptionPage()
-                .UseHttpsRedirection()
-                .UseStaticFiles()
-                .UseRouting()
-                .UseEndpoints(endpoints =>
-                {
-                    endpoints.MapHub<AlarmsHub>("/Alarms");
-                    endpoints.MapHub<PrintingHub>("/Printing");
-                    endpoints.MapHub<ServingHub>("/Serving");
-                    endpoints.MapControllers();
-                    endpoints.MapRazorPages();
-                });
+        services.AddMediatR(config =>
+            config.RegisterServicesFromAssembly(typeof(Startup).Assembly)
+        );
+
+        services.AddVibrantApi();
+
+        services.AddSingleton(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<PosOptions>>().Value;
+            return new BlobServiceClient(options.StorageConnectionString);
+        });
+
+        services
+            .AddScoped<PrintDispatcher>()
+            .AddSingleton<PrintQueue>()
+            .AddSingleton<ReceiptPrintGenerator>();
+    }
+
+    public void Configure(IApplicationBuilder app, IServiceScopeFactory serviceScopeFactory)
+    {
+        using (var scope = serviceScopeFactory.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<PosContext>();
+            db.Database.Migrate();
         }
+
+        app.UseDeveloperExceptionPage()
+            .UseHttpsRedirection()
+            .UseStaticFiles()
+            .UseRouting()
+            .UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<AlarmsHub>("/Alarms");
+                endpoints.MapHub<PrintingHub>("/Printing");
+                endpoints.MapHub<ServingHub>("/Serving");
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
+            });
     }
 }

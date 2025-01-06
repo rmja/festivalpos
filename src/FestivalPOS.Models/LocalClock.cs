@@ -1,31 +1,29 @@
 ﻿using NodaTime;
 
-namespace FestivalPOS
+namespace FestivalPOS;
+
+public static class LocalClock
 {
-    public static class LocalClock
+    private static readonly TimeZoneInfo _timezone =
+        TryGetTimezone("Romance Standard Time")
+        ?? TryGetTimezone("Europe/Copenhagen")
+        ?? throw new TimeZoneNotFoundException("Unable to get timezone");
+
+    public static DateTimeOffset Now => TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timezone);
+
+    public static DateTimeZone TimeZone { get; } =
+        DateTimeZoneProviders.Tzdb.GetZoneOrNull("Europe/Copenhagen")
+        ?? throw new TimeZoneNotFoundException("Unable to get timezone");
+
+    private static TimeZoneInfo? TryGetTimezone(string id)
     {
-        private static readonly TimeZoneInfo _timezone =
-            TryGetTimezone("Romance Standard Time")
-            ?? TryGetTimezone("Europe/Copenhagen")
-            ?? throw new TimeZoneNotFoundException("Unable to get timezone");
-
-        public static DateTimeOffset Now =>
-            TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timezone);
-
-        public static DateTimeZone TimeZone { get; } =
-            DateTimeZoneProviders.Tzdb.GetZoneOrNull("Europe/Copenhagen")
-            ?? throw new TimeZoneNotFoundException("Unable to get timezone");
-
-        private static TimeZoneInfo? TryGetTimezone(string id)
+        try
         {
-            try
-            {
-                return TimeZoneInfo.FindSystemTimeZoneById(id);
-            }
-            catch
-            {
-                return null;
-            }
+            return TimeZoneInfo.FindSystemTimeZoneById(id);
+        }
+        catch
+        {
+            return null;
         }
     }
 }
