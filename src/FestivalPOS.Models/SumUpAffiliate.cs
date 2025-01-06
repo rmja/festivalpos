@@ -4,7 +4,6 @@ namespace FestivalPOS.Models
 {
     public class SumUpAffiliate
     {
-        [Required]
         [MaxLength(100)]
         public required string Key { get; set; }
 

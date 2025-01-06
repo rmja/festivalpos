@@ -6,7 +6,6 @@ namespace FestivalPOS.Models
     {
         public int Id { get; set; }
 
-        [Required]
         [MaxLength(100)]
         public required string Name { get; set; }
         public int TerminalId { get; set; }

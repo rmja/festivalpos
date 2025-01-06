@@ -15,8 +15,7 @@ namespace FestivalPOS.Models
         [NotMapped]
         public string? AlarmFeedName => AlarmFeed?.Name;
 
-        [Required]
-        public int TerminalId { get; set; }
+        public required int TerminalId { get; set; }
 
         [NotMapped]
         public string? TerminalName => Terminal?.Name;
@@ -24,8 +23,7 @@ namespace FestivalPOS.Models
         [JsonIgnore]
         public Terminal? Terminal { get; set; }
 
-        [Required]
-        public int PointOfSaleId { get; set; }
+        public required int PointOfSaleId { get; set; }
 
         [JsonIgnore]
         public PointOfSale? PointOfSale { get; set; }
