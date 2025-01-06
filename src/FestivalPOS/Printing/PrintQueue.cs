@@ -3,16 +3,11 @@ using StackExchange.Redis;
 
 namespace FestivalPOS.Printing
 {
-    public class PrintQueue
+    public class PrintQueue(IOptions<PosOptions> options)
     {
-        private readonly PosOptions _options;
+        private readonly PosOptions _options = options.Value;
         private volatile IDatabase? _database;
         private SemaphoreSlim _lock = new SemaphoreSlim(1);
-
-        public PrintQueue(IOptions<PosOptions> options)
-        {
-            _options = options.Value;
-        }
 
         public async Task<long> EnqueueAsync(PrintJob job)
         {

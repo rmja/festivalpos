@@ -2,18 +2,11 @@
 
 namespace FestivalPOS.Hubs
 {
-    public class ServingHub : Hub
+    public class ServingHub(ILogger<ServingHub> logger) : Hub
     {
-        private readonly ILogger<ServingHub> _logger;
-
-        public ServingHub(ILogger<ServingHub> logger)
-        {
-            _logger = logger;
-        }
-
         public async Task Hello(int pointOfSaleId)
         {
-            _logger.LogInformation("Point of sale {} is joining", pointOfSaleId);
+            logger.LogInformation("Point of sale {} is joining", pointOfSaleId);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, $"PointsOfSale:{pointOfSaleId}");
         }

@@ -2,13 +2,8 @@
 
 namespace FestivalPOS.Notifications
 {
-    public class PrintJobCreatedNotification : INotification
+    public class PrintJobCreatedNotification(int printerId) : INotification
     {
-        public int PrinterId { get; }
-
-        public PrintJobCreatedNotification(int printerId)
-        {
-            PrinterId = printerId;
-        }
+        public int PrinterId { get; } = printerId;
     }
 }

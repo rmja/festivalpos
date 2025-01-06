@@ -4,9 +4,9 @@ using Microsoft.Extensions.Options;
 
 namespace FestivalPOS
 {
-    public class PosContext : DbContext
+    public class PosContext(IOptions<PosOptions> options) : DbContext
     {
-        private readonly PosOptions _options;
+        private readonly PosOptions _options = options.Value;
 
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AlarmEvent> AlarmEvents { get; set; }
@@ -25,11 +25,6 @@ namespace FestivalPOS
         public DbSet<Terminal> Terminals { get; set; }
         public DbSet<SumUpAffiliate> SumUpAffiliates { get; set; }
         public DbSet<VibrantAccount> VibrantAccounts { get; set; }
-
-        public PosContext(IOptions<PosOptions> options)
-        {
-            _options = options.Value;
-        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

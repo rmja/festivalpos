@@ -9,22 +9,13 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/Alarms")]
     [ApiController]
-    public class AlarmsController : ControllerBase
+    public class AlarmsController(PosContext db, IHubContext<AlarmsHub> hub) : ControllerBase
     {
-        private readonly PosContext _db;
-        private readonly IHubContext<AlarmsHub> _hub;
-
-        public AlarmsController(PosContext db, IHubContext<AlarmsHub> hub)
-        {
-            _db = db;
-            _hub = hub;
-        }
-
         [HttpPost("Feeds")]
         public async Task<AlarmFeed> CreateFeed(AlarmFeed feed)
         {
-            _db.AlarmFeeds.Add(feed);
-            await _db.SaveChangesAsync();
+            db.AlarmFeeds.Add(feed);
+            await db.SaveChangesAsync();
 
             return feed;
         }
@@ -32,13 +23,13 @@ namespace FestivalPOS.Controllers
         [HttpGet("Feeds")]
         public Task<List<AlarmFeed>> GetAllFeeds()
         {
-            return _db.AlarmFeeds.ToListAsync();
+            return db.AlarmFeeds.ToListAsync();
         }
 
         [HttpGet("Feeds/{id:int}")]
         public async Task<ActionResult<AlarmFeed>> GetFeedById(int id)
         {
-            var feed = await _db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
+            var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
 
             if (feed == null)
             {
@@ -54,7 +45,7 @@ namespace FestivalPOS.Controllers
             JsonPatchDocument<AlarmFeed> patch
         )
         {
-            var feed = await _db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
+            var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
 
             if (feed == null)
             {
@@ -62,7 +53,7 @@ namespace FestivalPOS.Controllers
             }
 
             patch.ApplyTo(feed);
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return feed;
         }
@@ -70,7 +61,7 @@ namespace FestivalPOS.Controllers
         [HttpDelete("Feeds/{id:int}")]
         public async Task<ActionResult<AlarmFeed>> DeleteFeed(int id)
         {
-            var feed = await _db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
+            var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == id);
 
             if (feed == null)
             {
@@ -78,7 +69,7 @@ namespace FestivalPOS.Controllers
             }
 
             feed.IsDeleted = true;
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return feed;
         }
@@ -86,7 +77,7 @@ namespace FestivalPOS.Controllers
         [HttpPost("Feeds/{alarmFeedId:int}/Events")]
         public async Task<ActionResult<AlarmEvent>> CreateEvent(int alarmFeedId, AlarmEvent @event)
         {
-            var feed = await _db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == alarmFeedId);
+            var feed = await db.AlarmFeeds.FirstOrDefaultAsync(x => x.Id == alarmFeedId);
 
             if (feed == null)
             {
@@ -96,10 +87,10 @@ namespace FestivalPOS.Controllers
             @event.AlarmFeedId = feed.Id;
             @event.Created = LocalClock.Now;
 
-            _db.AlarmEvents.Add(@event);
-            await _db.SaveChangesAsync();
+            db.AlarmEvents.Add(@event);
+            await db.SaveChangesAsync();
 
-            var created = await _db
+            var created = await db
                 .AlarmEvents.Include(x => x.AlarmFeed)
                 .Include(x => x.Terminal)
                 .Include(x => x.PointOfSale)
@@ -107,7 +98,7 @@ namespace FestivalPOS.Controllers
 
             //feed.SubscriberEmails
 
-            await _hub.Clients.All.SendAsync("EventCreated", created);
+            await hub.Clients.All.SendAsync("EventCreated", created);
 
             return created;
         }
@@ -115,7 +106,7 @@ namespace FestivalPOS.Controllers
         [HttpGet("Events/Pending")]
         public Task<List<AlarmEvent>> GetAllPendingAlarms(int? terminalId, int? pointOfSaleId)
         {
-            var query = _db
+            var query = db
                 .AlarmEvents.Include(x => x.AlarmFeed)
                 .Include(x => x.Terminal)
                 .Include(x => x.PointOfSale)
@@ -137,7 +128,7 @@ namespace FestivalPOS.Controllers
         [HttpDelete("Events/{alarmEventId:int}")]
         public async Task<ActionResult<AlarmEvent>> CancelEvent(int alarmEventId)
         {
-            var @event = await _db.AlarmEvents.FirstOrDefaultAsync(x => x.Id == alarmEventId);
+            var @event = await db.AlarmEvents.FirstOrDefaultAsync(x => x.Id == alarmEventId);
 
             if (@event == null)
             {
@@ -145,9 +136,9 @@ namespace FestivalPOS.Controllers
             }
 
             @event.Cancelled = LocalClock.Now;
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
-            var cancelled = await _db
+            var cancelled = await db
                 .AlarmEvents.Include(x => x.AlarmFeed)
                 .Include(x => x.Terminal)
                 .Include(x => x.PointOfSale)

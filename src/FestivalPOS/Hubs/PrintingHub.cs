@@ -4,20 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FestivalPOS.Hubs
 {
-    public class PrintingHub : Hub
+    public class PrintingHub(PosContext db, PrintQueue printQueue) : Hub
     {
-        private readonly PosContext _db;
-        private readonly PrintQueue _printQueue;
-
-        public PrintingHub(PosContext db, PrintQueue printQueue)
-        {
-            _db = db;
-            _printQueue = printQueue;
-        }
-
         public async Task Hello(int terminalId)
         {
-            var printerIds = await _db
+            var printerIds = await db
                 .Printers.Where(x => x.TerminalId == terminalId)
                 .Select(x => x.Id)
                 .ToListAsync();
@@ -27,7 +18,7 @@ namespace FestivalPOS.Hubs
                 await Groups.AddToGroupAsync(Context.ConnectionId, $"Printers:{printerId}");
 
                 PrintJob? job;
-                while ((job = await _printQueue.DequeueAsync(printerId)) != null)
+                while ((job = await printQueue.DequeueAsync(printerId)) != null)
                 {
                     await Clients.Caller.SendAsync("Print", job);
                 }

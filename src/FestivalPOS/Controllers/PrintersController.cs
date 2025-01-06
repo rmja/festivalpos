@@ -7,21 +7,14 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PrintersController : ControllerBase
+    public class PrintersController(PosContext db) : ControllerBase
     {
-        private readonly PosContext _db;
-
-        public PrintersController(PosContext db)
-        {
-            _db = db;
-        }
-
         [HttpPost]
         public async Task<Printer> Create(Printer printer)
         {
-            _db.Printers.Add(printer);
+            db.Printers.Add(printer);
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return printer;
         }
@@ -29,13 +22,13 @@ namespace FestivalPOS.Controllers
         [HttpGet]
         public Task<List<Printer>> GetAll()
         {
-            return _db.Printers.OrderBy(x => x.Name).ToListAsync();
+            return db.Printers.OrderBy(x => x.Name).ToListAsync();
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Printer>> GetById(int id)
         {
-            var printer = await _db.Printers.FirstOrDefaultAsync(x => x.Id == id);
+            var printer = await db.Printers.FirstOrDefaultAsync(x => x.Id == id);
 
             if (printer == null)
             {
@@ -48,7 +41,7 @@ namespace FestivalPOS.Controllers
         [HttpPatch("{id:int}")]
         public async Task<ActionResult<Printer>> Update(int id, JsonPatchDocument<Printer> patch)
         {
-            var printer = await _db.Printers.FirstOrDefaultAsync(x => x.Id == id);
+            var printer = await db.Printers.FirstOrDefaultAsync(x => x.Id == id);
 
             if (printer == null)
             {
@@ -56,7 +49,7 @@ namespace FestivalPOS.Controllers
             }
 
             patch.ApplyTo(printer);
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return printer;
         }
@@ -64,14 +57,14 @@ namespace FestivalPOS.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var printer = await _db.Printers.FirstOrDefaultAsync(x => x.Id == id);
+            var printer = await db.Printers.FirstOrDefaultAsync(x => x.Id == id);
 
             if (printer == null)
             {
                 return NotFound();
             }
 
-            var pointsOfSale = await _db
+            var pointsOfSale = await db
                 .PointOfSales.Where(x => x.ReceiptPrinterId == printer.Id)
                 .ToListAsync();
 
@@ -80,8 +73,8 @@ namespace FestivalPOS.Controllers
                 pos.ReceiptPrinterId = null;
             }
 
-            _db.Printers.Remove(printer);
-            await _db.SaveChangesAsync();
+            db.Printers.Remove(printer);
+            await db.SaveChangesAsync();
 
             return NoContent();
         }

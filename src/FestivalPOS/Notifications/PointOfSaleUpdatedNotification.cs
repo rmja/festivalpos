@@ -2,13 +2,8 @@
 
 namespace FestivalPOS.Notifications
 {
-    public class PointOfSaleUpdatedNotification : INotification
+    public class PointOfSaleUpdatedNotification(int pointOfSaleId) : INotification
     {
-        public int PointOfSaleId { get; set; }
-
-        public PointOfSaleUpdatedNotification(int pointOfSaleId)
-        {
-            PointOfSaleId = pointOfSaleId;
-        }
+        public int PointOfSaleId { get; set; } = pointOfSaleId;
     }
 }

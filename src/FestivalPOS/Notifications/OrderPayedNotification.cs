@@ -2,15 +2,9 @@
 
 namespace FestivalPOS.Notifications
 {
-    public class OrderPayedNotification : INotification
+    public class OrderPayedNotification(int orderId, int paymentId) : INotification
     {
-        public int OrderId { get; }
-        public int PaymentId { get; }
-
-        public OrderPayedNotification(int orderId, int paymentId)
-        {
-            OrderId = orderId;
-            PaymentId = paymentId;
-        }
+        public int OrderId { get; } = orderId;
+        public int PaymentId { get; } = paymentId;
     }
 }

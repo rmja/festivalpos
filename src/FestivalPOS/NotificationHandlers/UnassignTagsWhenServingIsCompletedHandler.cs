@@ -5,27 +5,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FestivalPOS.NotificationHandlers
 {
-    public class UnassignTagsWhenServingIsCompletedHandler
+    public class UnassignTagsWhenServingIsCompletedHandler(PosContext db)
         : INotificationHandler<ServingUpdatedNotification>
     {
-        private readonly PosContext _db;
-
-        public UnassignTagsWhenServingIsCompletedHandler(PosContext db)
-        {
-            _db = db;
-        }
-
         public async Task Handle(
             ServingUpdatedNotification notification,
             CancellationToken cancellationToken
         )
         {
-            var serving = await _db.Servings.FirstAsync(x => x.Id == notification.ServingId);
+            var serving = await db.Servings.FirstAsync(x => x.Id == notification.ServingId);
 
             if (serving.State == ServingState.Completed)
             {
                 var now = LocalClock.Now;
-                var tags = await _db
+                var tags = await db
                     .OrderTags.Where(x => x.OrderId == serving.OrderId && x.Detached == null)
                     .ToListAsync();
 
@@ -34,7 +27,7 @@ namespace FestivalPOS.NotificationHandlers
                     tag.Detached = now;
                 }
 
-                await _db.SaveChangesAsync();
+                await db.SaveChangesAsync();
             }
         }
     }

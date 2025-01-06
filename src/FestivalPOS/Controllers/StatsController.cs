@@ -8,15 +8,8 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StatsController
+    public class StatsController(PosContext db)
     {
-        private readonly PosContext _db;
-
-        public StatsController(PosContext db)
-        {
-            _db = db;
-        }
-
         [HttpGet("{periodStart}/{periodEnd}/{kind}")]
         [HttpGet("{periodStart}/{periodEnd}/{kind}-{offset}")]
         public async Task<List<OrderStats>> GetHourlyStats(
@@ -28,7 +21,7 @@ namespace FestivalPOS.Controllers
             int? pointOfSaleId
         )
         {
-            var connection = _db.Database.GetDbConnection();
+            var connection = db.Database.GetDbConnection();
 
             var param = new
             {

@@ -6,21 +6,14 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SumUpController : ControllerBase
+    public class SumUpController(PosContext db) : ControllerBase
     {
-        private readonly PosContext _db;
-
-        public SumUpController(PosContext db)
-        {
-            _db = db;
-        }
-
         [HttpPost("Affiliates")]
         public async Task<SumUpAffiliate> CreateAffiliate(SumUpAffiliate affiliate)
         {
-            _db.SumUpAffiliates.Add(affiliate);
+            db.SumUpAffiliates.Add(affiliate);
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return affiliate;
         }
@@ -28,22 +21,22 @@ namespace FestivalPOS.Controllers
         [HttpGet("Affiliates")]
         public Task<List<SumUpAffiliate>> GetAllAffiliates()
         {
-            return _db.SumUpAffiliates.ToListAsync();
+            return db.SumUpAffiliates.ToListAsync();
         }
 
         [HttpDelete("Affiliates/{key}")]
         public async Task<ActionResult> DeleteAffiliate(string key)
         {
-            var affiliate = await _db.SumUpAffiliates.FirstOrDefaultAsync(x => x.Key == key);
+            var affiliate = await db.SumUpAffiliates.FirstOrDefaultAsync(x => x.Key == key);
 
             if (affiliate == null)
             {
                 return NotFound();
             }
 
-            _db.SumUpAffiliates.Remove(affiliate);
+            db.SumUpAffiliates.Remove(affiliate);
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return NoContent();
         }

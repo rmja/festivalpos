@@ -2,18 +2,11 @@
 
 namespace FestivalPOS.Printing
 {
-    public class PrintDispatcher
+    public class PrintDispatcher(PosContext db)
     {
-        private readonly PosContext _db;
-
-        public PrintDispatcher(PosContext db)
-        {
-            _db = db;
-        }
-
         public async Task<int?> GetReceiptPrinterAsync(int pointOfSaleId)
         {
-            var pos = await _db.PointOfSales.FirstOrDefaultAsync(x => x.Id == pointOfSaleId);
+            var pos = await db.PointOfSales.FirstOrDefaultAsync(x => x.Id == pointOfSaleId);
 
             return pos?.ReceiptPrinterId;
         }

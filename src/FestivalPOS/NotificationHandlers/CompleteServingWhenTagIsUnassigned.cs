@@ -5,24 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FestivalPOS.NotificationHandlers
 {
-    public class CompleteServingWhenTagIsUnassigned
+    public class CompleteServingWhenTagIsUnassigned(IMediator mediator, PosContext db)
         : INotificationHandler<OrderTagUnassignedNotification>
     {
-        private readonly IMediator _mediator;
-        private readonly PosContext _db;
-
-        public CompleteServingWhenTagIsUnassigned(IMediator mediator, PosContext db)
-        {
-            _mediator = mediator;
-            _db = db;
-        }
-
         public async Task Handle(
             OrderTagUnassignedNotification notification,
             CancellationToken cancellationToken
         )
         {
-            var servings = await _db
+            var servings = await db
                 .Servings.Where(x =>
                     x.OrderId == notification.OrderId
                     && x.State != ServingState.Completed
@@ -42,9 +33,9 @@ namespace FestivalPOS.NotificationHandlers
                     notifications.Add(new ServingUpdatedNotification(serving.Id));
                 }
 
-                await _db.SaveChangesAsync();
+                await db.SaveChangesAsync();
 
-                await Task.WhenAll(notifications.Select(x => _mediator.Publish(x)));
+                await Task.WhenAll(notifications.Select(x => mediator.Publish(x)));
             }
         }
     }

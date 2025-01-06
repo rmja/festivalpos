@@ -9,17 +9,8 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PointOfSales : ControllerBase
+    public class PointOfSales(PosContext db, IMediator mediator) : ControllerBase
     {
-        private readonly PosContext _db;
-        private readonly IMediator _mediator;
-
-        public PointOfSales(PosContext db, IMediator mediator)
-        {
-            _db = db;
-            _mediator = mediator;
-        }
-
         [HttpPost]
         public async Task<PointOfSale> Create(PointOfSale pos)
         {
@@ -29,9 +20,9 @@ namespace FestivalPOS.Controllers
                 staff.Number = number++;
             }
 
-            _db.PointOfSales.Add(pos);
+            db.PointOfSales.Add(pos);
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return pos;
         }
@@ -39,7 +30,7 @@ namespace FestivalPOS.Controllers
         [HttpGet]
         public async Task<List<PointOfSale>> GetAll()
         {
-            var poss = await _db
+            var poss = await db
                 .PointOfSales.Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .OrderBy(x => x.Name)
                 .ToListAsync();
@@ -50,7 +41,7 @@ namespace FestivalPOS.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<PointOfSale>> GetById(int id)
         {
-            var pos = await _db
+            var pos = await db
                 .PointOfSales.Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -68,7 +59,7 @@ namespace FestivalPOS.Controllers
             JsonPatchDocument<PointOfSale> patch
         )
         {
-            var pos = await _db
+            var pos = await db
                 .PointOfSales.Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -85,8 +76,8 @@ namespace FestivalPOS.Controllers
                 staff.Number = number++;
             }
 
-            await _db.SaveChangesAsync();
-            await _mediator.Publish(new PointOfSaleUpdatedNotification(pos.Id));
+            await db.SaveChangesAsync();
+            await mediator.Publish(new PointOfSaleUpdatedNotification(pos.Id));
 
             return pos;
         }
@@ -94,7 +85,7 @@ namespace FestivalPOS.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var pos = await _db.PointOfSales.FirstOrDefaultAsync(x => x.Id == id);
+            var pos = await db.PointOfSales.FirstOrDefaultAsync(x => x.Id == id);
 
             if (pos == null)
             {
@@ -102,7 +93,7 @@ namespace FestivalPOS.Controllers
             }
 
             pos.IsDeleted = true;
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return NoContent();
         }

@@ -6,30 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FestivalPOS.NotificationHandlers
 {
-    public class SendToServingHubHandler
+    public class SendToServingHubHandler(PosContext db, IHubContext<ServingHub> hub)
         : INotificationHandler<ServingCreatedNotification>,
             INotificationHandler<ServingUpdatedNotification>,
             INotificationHandler<PointOfSaleUpdatedNotification>
     {
-        private readonly PosContext _db;
-        private readonly IHubContext<ServingHub> _hub;
-
-        public SendToServingHubHandler(PosContext db, IHubContext<ServingHub> hub)
-        {
-            _db = db;
-            _hub = hub;
-        }
-
         public async Task Handle(
             ServingCreatedNotification notification,
             CancellationToken cancellationToken
         )
         {
-            var serving = await _db
+            var serving = await db
                 .Servings.Include(x => x.Lines.OrderBy(l => l.Position))
                 .FirstAsync(x => x.Id == notification.ServingId, cancellationToken);
 
-            var clients = _hub.Clients.Groups(
+            var clients = hub.Clients.Groups(
                 new[] { $"PointsOfSale:{serving.PointOfSaleId}", "PointsOfSale:All" }
             );
 
@@ -41,11 +32,11 @@ namespace FestivalPOS.NotificationHandlers
             CancellationToken cancellationToken
         )
         {
-            var serving = await _db
+            var serving = await db
                 .Servings.Include(x => x.Lines.OrderBy(l => l.Position))
                 .FirstAsync(x => x.Id == notification.ServingId, cancellationToken);
 
-            var clients = _hub.Clients.Groups(
+            var clients = hub.Clients.Groups(
                 new[] { $"PointsOfSale:{serving.PointOfSaleId}", "PointsOfSale:All" }
             );
 
@@ -57,11 +48,11 @@ namespace FestivalPOS.NotificationHandlers
             CancellationToken cancellationToken
         )
         {
-            var pos = await _db
+            var pos = await db
                 .PointOfSales.Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .FirstAsync(x => x.Id == notification.PointOfSaleId, cancellationToken);
 
-            var clients = _hub.Clients.Groups(
+            var clients = hub.Clients.Groups(
                 new[] { $"PointsOfSale:{pos.Id}", "PointsOfSale:All" }
             );
 

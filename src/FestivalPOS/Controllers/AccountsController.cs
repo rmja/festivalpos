@@ -7,15 +7,8 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountsController : ControllerBase
+    public class AccountsController(PosContext db) : ControllerBase
     {
-        private readonly PosContext _db;
-
-        public AccountsController(PosContext db)
-        {
-            _db = db;
-        }
-
         [HttpPost]
         public async Task<Account> Create(Account account)
         {
@@ -28,9 +21,9 @@ namespace FestivalPOS.Controllers
                     Created = LocalClock.Now
                 }
             );
-            _db.Accounts.Add(account);
+            db.Accounts.Add(account);
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return account;
         }
@@ -38,13 +31,13 @@ namespace FestivalPOS.Controllers
         [HttpGet]
         public Task<List<Account>> GetAll()
         {
-            return _db.Accounts.OrderBy(x => x.Number).ToListAsync();
+            return db.Accounts.OrderBy(x => x.Number).ToListAsync();
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Account>> GetById(int id)
         {
-            var account = await _db.Accounts.FirstOrDefaultAsync(x => x.Id == id);
+            var account = await db.Accounts.FirstOrDefaultAsync(x => x.Id == id);
 
             if (account == null)
             {
@@ -57,7 +50,7 @@ namespace FestivalPOS.Controllers
         [HttpPatch("{id:int}")]
         public async Task<ActionResult<Account>> Update(int id, JsonPatchDocument<Account> patch)
         {
-            var account = await _db
+            var account = await db
                 .Accounts.Include(x => x.Payments)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -85,7 +78,7 @@ namespace FestivalPOS.Controllers
                 );
             }
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return account;
         }
@@ -93,7 +86,7 @@ namespace FestivalPOS.Controllers
         [HttpPost("Reset")]
         public async Task ResetAll()
         {
-            var accounts = await _db.Accounts.Include(x => x.Payments).ToListAsync();
+            var accounts = await db.Accounts.Include(x => x.Payments).ToListAsync();
 
             foreach (var account in accounts)
             {
@@ -110,13 +103,13 @@ namespace FestivalPOS.Controllers
                 );
             }
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var account = await _db.Accounts.FirstOrDefaultAsync(x => x.Id == id);
+            var account = await db.Accounts.FirstOrDefaultAsync(x => x.Id == id);
 
             if (account == null)
             {
@@ -124,7 +117,7 @@ namespace FestivalPOS.Controllers
             }
 
             account.IsDeleted = true;
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return NoContent();
         }

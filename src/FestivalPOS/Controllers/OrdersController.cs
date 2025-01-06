@@ -9,29 +9,14 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrdersController(
+        IMediator mediator,
+        PosContext db,
+        PrintDispatcher printDispatcher,
+        ReceiptPrintGenerator receiptPrintGenerator,
+        PrintQueue printQueue
+    ) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly PosContext _db;
-        private readonly PrintDispatcher _printDispatcher;
-        private readonly ReceiptPrintGenerator _receiptPrintGenerator;
-        private readonly PrintQueue _printQueue;
-
-        public OrdersController(
-            IMediator mediator,
-            PosContext db,
-            PrintDispatcher printDispatcher,
-            ReceiptPrintGenerator receiptPrintGenerator,
-            PrintQueue printQueue
-        )
-        {
-            _mediator = mediator;
-            _db = db;
-            _printDispatcher = printDispatcher;
-            _receiptPrintGenerator = receiptPrintGenerator;
-            _printQueue = printQueue;
-        }
-
         [HttpPost]
         public async Task<ActionResult<Order>> Create(Order order)
         {
@@ -45,9 +30,9 @@ namespace FestivalPOS.Controllers
                 line.Position = position++;
             }
 
-            _db.Orders.Add(order);
+            db.Orders.Add(order);
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return order;
         }
@@ -55,7 +40,7 @@ namespace FestivalPOS.Controllers
         [HttpGet]
         public async Task<List<Order>> GetAll(int? terminalId, int? pointOfSaleId)
         {
-            var orders = await _db
+            var orders = await db
                 .Orders.Where(x => terminalId == null || x.TerminalId == terminalId)
                 .Where(x => pointOfSaleId == null || x.PointOfSaleId == pointOfSaleId)
                 .OrderByDescending(x => x.Created)
@@ -68,7 +53,7 @@ namespace FestivalPOS.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Order>> GetById(int id)
         {
-            var order = await _db
+            var order = await db
                 .Orders.Include(x => x.Lines.OrderBy(l => l.Position))
                 .Include(x => x.Payments)
                 .Include(x => x.Servings)
@@ -85,7 +70,7 @@ namespace FestivalPOS.Controllers
         [HttpGet("/api/Tags/{tagNumber:int}/CurrentOrder")]
         public async Task<ActionResult<Order>> GetCurrentByTag(int tagNumber)
         {
-            var order = await _db
+            var order = await db
                 .OrderTags.Where(x => x.Number == tagNumber && x.Detached == null)
                 .Include(x => x.Order.Lines.OrderBy(l => l.Position))
                 .Include(x => x.Order.Payments)
@@ -105,7 +90,7 @@ namespace FestivalPOS.Controllers
         public async Task<ActionResult> AssignTag(int id, int tagNumber, bool force)
         {
             var now = LocalClock.Now;
-            var currentTags = await _db
+            var currentTags = await db
                 .OrderTags.Where(x => x.Number == tagNumber && x.Detached == null)
                 .ToListAsync();
 
@@ -124,7 +109,7 @@ namespace FestivalPOS.Controllers
                 }
             }
 
-            _db.OrderTags.Add(
+            db.OrderTags.Add(
                 new OrderTag()
                 {
                     Number = tagNumber,
@@ -133,7 +118,7 @@ namespace FestivalPOS.Controllers
                 }
             );
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             var notifications = new List<INotification>(1 + currentTags.Count)
             {
@@ -145,7 +130,7 @@ namespace FestivalPOS.Controllers
                 notifications.Add(new OrderTagUnassignedNotification(tag.OrderId, tag.Number));
             }
 
-            await Task.WhenAll(notifications.Select(x => _mediator.Publish(x)));
+            await Task.WhenAll(notifications.Select(x => mediator.Publish(x)));
 
             return NoContent();
         }
@@ -153,16 +138,16 @@ namespace FestivalPOS.Controllers
         [HttpDelete("{id:int}/Tags/{tagNumber:int}")]
         public async Task<ActionResult> UnassignTag(int id, int tagNumber)
         {
-            var tag = await _db.OrderTags.FirstOrDefaultAsync(x =>
+            var tag = await db.OrderTags.FirstOrDefaultAsync(x =>
                 x.Number == tagNumber && x.OrderId == id && x.Detached == null
             );
 
             if (tag != null)
             {
                 tag.Detached = LocalClock.Now;
-                await _db.SaveChangesAsync();
+                await db.SaveChangesAsync();
 
-                await _mediator.Publish(new OrderTagUnassignedNotification(id, tag.Number));
+                await mediator.Publish(new OrderTagUnassignedNotification(id, tag.Number));
             }
 
             return NoContent();
@@ -171,14 +156,14 @@ namespace FestivalPOS.Controllers
         [HttpPost("{id:int}/Receipt")]
         public async Task<ActionResult> Receipt(int id, int? pointOfSaleId)
         {
-            var order = await _db.Orders.Include(x => x.Lines).FirstOrDefaultAsync(x => x.Id == id);
+            var order = await db.Orders.Include(x => x.Lines).FirstOrDefaultAsync(x => x.Id == id);
 
             if (order == null)
             {
                 return NotFound();
             }
 
-            var printerId = await _printDispatcher.GetReceiptPrinterAsync(
+            var printerId = await printDispatcher.GetReceiptPrinterAsync(
                 pointOfSaleId ?? order.PointOfSaleId
             );
 
@@ -187,8 +172,8 @@ namespace FestivalPOS.Controllers
                 return BadRequest();
             }
 
-            var data = _receiptPrintGenerator.Generate(order);
-            await _printQueue.EnqueueAsync(
+            var data = receiptPrintGenerator.Generate(order);
+            await printQueue.EnqueueAsync(
                 new PrintJob()
                 {
                     PrinterId = printerId.Value,
@@ -196,7 +181,7 @@ namespace FestivalPOS.Controllers
                     Data = data
                 }
             );
-            await _mediator.Publish(new PrintJobCreatedNotification(printerId.Value));
+            await mediator.Publish(new PrintJobCreatedNotification(printerId.Value));
 
             return NoContent();
         }
@@ -204,7 +189,7 @@ namespace FestivalPOS.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var order = await _db
+            var order = await db
                 .Orders.Include(x => x.Payments)
                 .Include(x => x.Servings)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -215,7 +200,7 @@ namespace FestivalPOS.Controllers
             }
 
             order.IsDeleted = true;
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return NoContent();
         }
@@ -226,7 +211,7 @@ namespace FestivalPOS.Controllers
             CancellationToken cancellationToken
         )
         {
-            await _db
+            await db
                 .Orders.Where(x => x.Created >= notBefore)
                 .ExecuteUpdateAsync(u => u.SetProperty(x => x.IsDeleted, true), cancellationToken);
 

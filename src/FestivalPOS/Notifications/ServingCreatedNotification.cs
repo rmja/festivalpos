@@ -2,13 +2,8 @@
 
 namespace FestivalPOS.Notifications
 {
-    public class ServingCreatedNotification : INotification
+    public class ServingCreatedNotification(int servingId) : INotification
     {
-        public int ServingId { get; }
-
-        public ServingCreatedNotification(int servingId)
-        {
-            ServingId = servingId;
-        }
+        public int ServingId { get; } = servingId;
     }
 }

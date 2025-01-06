@@ -9,21 +9,12 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServingsController : ControllerBase
+    public class ServingsController(IMediator mediator, PosContext db) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly PosContext _db;
-
-        public ServingsController(IMediator mediator, PosContext db)
-        {
-            _mediator = mediator;
-            _db = db;
-        }
-
         [HttpPost("/api/Orders/{orderId:int}/Servings")]
         public async Task<ActionResult<Serving>> Create(int orderId, Serving serving)
         {
-            var order = await _db
+            var order = await db
                 .Orders.Include(x => x.Lines)
                 .FirstOrDefaultAsync(x => x.Id == orderId);
 
@@ -32,7 +23,7 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            var newestTag = await _db
+            var newestTag = await db
                 .OrderTags.OrderByDescending(x => x.Attached)
                 .FirstOrDefaultAsync(x => x.OrderId == order.Id && x.Detached == null);
 
@@ -63,11 +54,11 @@ namespace FestivalPOS.Controllers
                 }
             }
 
-            _db.Servings.Add(serving);
+            db.Servings.Add(serving);
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
-            await _mediator.Publish(new ServingCreatedNotification(serving.Id));
+            await mediator.Publish(new ServingCreatedNotification(serving.Id));
 
             return serving;
         }
@@ -75,7 +66,7 @@ namespace FestivalPOS.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Serving>> GetById(int id)
         {
-            var serving = await _db
+            var serving = await db
                 .Servings.Include(x => x.Lines.OrderBy(l => l.Position))
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -90,7 +81,7 @@ namespace FestivalPOS.Controllers
         [HttpPatch("{id:int}")]
         public async Task<ActionResult<Serving>> Update(int id, JsonPatchDocument<Serving> patch)
         {
-            var serving = await _db.Servings.FirstOrDefaultAsync(x => x.Id == id);
+            var serving = await db.Servings.FirstOrDefaultAsync(x => x.Id == id);
 
             if (serving == null)
             {
@@ -109,9 +100,9 @@ namespace FestivalPOS.Controllers
                 serving.Completed = LocalClock.Now;
             }
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
-            await _mediator.Publish(new ServingUpdatedNotification(serving.Id));
+            await mediator.Publish(new ServingUpdatedNotification(serving.Id));
 
             return serving;
         }
@@ -121,7 +112,7 @@ namespace FestivalPOS.Controllers
         {
             var completedThreshold = LocalClock.Now.AddSeconds(-60);
 
-            var servings = await _db
+            var servings = await db
                 .Servings.Include(x => x.Lines.OrderBy(l => l.Position))
                 .Where(x => x.PointOfSaleId == pointOfSaleId)
                 .Where(x => !x.Order.IsDeleted)

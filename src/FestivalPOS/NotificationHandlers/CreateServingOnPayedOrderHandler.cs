@@ -5,26 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FestivalPOS.NotificationHandlers
 {
-    public class CreateServingOnPayedOrderHandler : INotificationHandler<OrderPayedNotification>
+    public class CreateServingOnPayedOrderHandler(IMediator mediator, PosContext db)
+        : INotificationHandler<OrderPayedNotification>
     {
-        private readonly IMediator _mediator;
-        private readonly PosContext _db;
-
-        public CreateServingOnPayedOrderHandler(IMediator mediator, PosContext db)
-        {
-            _mediator = mediator;
-            _db = db;
-        }
-
         public async Task Handle(
             OrderPayedNotification notification,
             CancellationToken cancellationToken
         )
         {
-            var order = await _db
+            var order = await db
                 .Orders.Include(x => x.Lines)
                 .FirstAsync(x => x.Id == notification.OrderId);
-            var payment = await _db
+            var payment = await db
                 .Payments.Include(x => x.Account)
                 .FirstAsync(x => x.Id == notification.PaymentId);
 
@@ -50,7 +42,7 @@ namespace FestivalPOS.NotificationHandlers
 
             if (servingLines.Count > 0)
             {
-                var newestTag = await _db
+                var newestTag = await db
                     .OrderTags.OrderByDescending(x => x.Attached)
                     .FirstOrDefaultAsync(x => x.OrderId == order.Id && x.Detached == null);
 
@@ -65,11 +57,11 @@ namespace FestivalPOS.NotificationHandlers
                     Lines = servingLines.ToList()
                 };
 
-                _db.Servings.Add(serving);
+                db.Servings.Add(serving);
 
-                await _db.SaveChangesAsync();
+                await db.SaveChangesAsync();
 
-                await _mediator.Publish(new ServingCreatedNotification(serving.Id));
+                await mediator.Publish(new ServingCreatedNotification(serving.Id));
             }
         }
     }

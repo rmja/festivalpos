@@ -8,21 +8,12 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PaymentsController : ControllerBase
+    public class PaymentsController(PosContext db, IMediator mediator) : ControllerBase
     {
-        private readonly PosContext _db;
-        private readonly IMediator _mediator;
-
-        public PaymentsController(PosContext db, IMediator mediator)
-        {
-            _db = db;
-            _mediator = mediator;
-        }
-
         [HttpPost("/api/Orders/{orderId:int}/Payments")]
         public async Task<ActionResult<Payment>> CreateOnOrder(int orderId, Payment payment)
         {
-            var order = await _db.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+            var order = await db.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
 
             if (order == null)
             {
@@ -36,9 +27,7 @@ namespace FestivalPOS.Controllers
                     return BadRequest();
                 }
 
-                var account = await _db.Accounts.FirstOrDefaultAsync(x =>
-                    x.Id == payment.AccountId
-                );
+                var account = await db.Accounts.FirstOrDefaultAsync(x => x.Id == payment.AccountId);
 
                 if (account is null)
                 {
@@ -60,11 +49,11 @@ namespace FestivalPOS.Controllers
             order.Payments.Add(payment);
             order.AmountDue -= payment.Amount;
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             if (order.AmountDue == 0)
             {
-                await _mediator.Publish(new OrderPayedNotification(order.Id, payment.Id));
+                await mediator.Publish(new OrderPayedNotification(order.Id, payment.Id));
             }
 
             return payment;
@@ -73,7 +62,7 @@ namespace FestivalPOS.Controllers
         [HttpPost("/api/Accounts/{accountId:int}/Deposit")]
         public async Task<ActionResult<Payment>> DepositOnAccount(int accountId, decimal amount)
         {
-            var account = await _db.Accounts.FirstOrDefaultAsync(x => x.Id == accountId);
+            var account = await db.Accounts.FirstOrDefaultAsync(x => x.Id == accountId);
 
             if (account == null)
             {
@@ -90,8 +79,8 @@ namespace FestivalPOS.Controllers
                 Created = LocalClock.Now
             };
 
-            _db.Payments.Add(payment);
-            await _db.SaveChangesAsync();
+            db.Payments.Add(payment);
+            await db.SaveChangesAsync();
 
             return payment;
         }
@@ -105,7 +94,7 @@ namespace FestivalPOS.Controllers
             DateTimeOffset? to
         )
         {
-            var query = _db.Payments.AsQueryable();
+            var query = db.Payments.AsQueryable();
 
             if (terminalId != null)
             {

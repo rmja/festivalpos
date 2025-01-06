@@ -13,24 +13,17 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductsController(PosContext db, BlobServiceClient storageAccount)
+        : ControllerBase
     {
-        private readonly PosContext _db;
-        private readonly BlobServiceClient _storageAccount;
         private static bool _productImagesContainerExists = false;
-
-        public ProductsController(PosContext db, BlobServiceClient storageAccount)
-        {
-            _db = db;
-            _storageAccount = storageAccount;
-        }
 
         [HttpPost]
         public async Task<Product> Create(Product product)
         {
-            _db.Products.Add(product);
+            db.Products.Add(product);
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return product;
         }
@@ -38,13 +31,13 @@ namespace FestivalPOS.Controllers
         [HttpGet]
         public Task<List<Product>> GetAll()
         {
-            return _db.Products.OrderBy(x => x.Name).ToListAsync();
+            return db.Products.OrderBy(x => x.Name).ToListAsync();
         }
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Product>> GetById(int id)
         {
-            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var product = await db.Products.FirstOrDefaultAsync(x => x.Id == id);
 
             if (product == null)
             {
@@ -60,7 +53,7 @@ namespace FestivalPOS.Controllers
             JsonPatchDocument<Product> patch
         )
         {
-            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var product = await db.Products.FirstOrDefaultAsync(x => x.Id == id);
 
             if (product == null)
             {
@@ -69,7 +62,7 @@ namespace FestivalPOS.Controllers
 
             patch.ApplyTo(product);
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return product;
         }
@@ -81,10 +74,7 @@ namespace FestivalPOS.Controllers
             CancellationToken cancellationToken = default
         )
         {
-            var product = await _db.Products.FirstOrDefaultAsync(
-                x => x.Id == id,
-                cancellationToken
-            );
+            var product = await db.Products.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
             if (product == null)
             {
                 return NotFound();
@@ -132,7 +122,7 @@ namespace FestivalPOS.Controllers
         [HttpPut("{id:int}/Image")]
         public async Task<ActionResult<Product>> UploadImage(int id, [FromForm] IFormFile file)
         {
-            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var product = await db.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (product == null)
             {
                 return NotFound();
@@ -151,7 +141,7 @@ namespace FestivalPOS.Controllers
                 await UploadAsync(thumbnailImage, product.ThumbnailImageName);
             }
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return product;
 
@@ -173,7 +163,7 @@ namespace FestivalPOS.Controllers
 
         private async Task<BlobContainerClient> GetImagesBlobContainerClientAsync()
         {
-            var container = _storageAccount.GetBlobContainerClient("product-images");
+            var container = storageAccount.GetBlobContainerClient("product-images");
 
             if (!_productImagesContainerExists)
             {
@@ -188,7 +178,7 @@ namespace FestivalPOS.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var product = await _db.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var product = await db.Products.FirstOrDefaultAsync(x => x.Id == id);
 
             if (product == null)
             {
@@ -197,7 +187,7 @@ namespace FestivalPOS.Controllers
 
             product.IsDeleted = true;
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return NoContent();
         }
@@ -205,7 +195,7 @@ namespace FestivalPOS.Controllers
         [HttpGet("/api/PointOfSales/{pointOfSaleId:int}/Products")]
         public Task<List<PointOfSaleProduct>> GetProductsByPointOfSaleId(int pointOfSaleId)
         {
-            return _db
+            return db
                 .PointOfSaleProducts.Include(x => x.Product)
                 .Where(x => x.PointOfSaleId == pointOfSaleId)
                 .OrderBy(x => x.Position)
@@ -218,7 +208,7 @@ namespace FestivalPOS.Controllers
             JsonPatchDocument<IList<PointOfSaleProduct>> patch
         )
         {
-            var items = await _db
+            var items = await db
                 .PointOfSaleProducts.Where(x => x.PointOfSaleId == pointOfSaleId)
                 .OrderBy(x => x.Position)
                 .Include(x => x.Product)
@@ -227,8 +217,8 @@ namespace FestivalPOS.Controllers
 
             patch.ApplyTo(patchedItems);
 
-            _db.Products.AddRange(patchedItems.Select(x => x.Product).Where(x => x.Id == default));
-            _db.PointOfSaleProducts.RemoveRange(items);
+            db.Products.AddRange(patchedItems.Select(x => x.Product).Where(x => x.Id == default));
+            db.PointOfSaleProducts.RemoveRange(items);
 
             foreach (var item in patchedItems)
             {
@@ -240,7 +230,7 @@ namespace FestivalPOS.Controllers
             {
                 var item = patchedItems[position];
 
-                _db.PointOfSaleProducts.Add(
+                db.PointOfSaleProducts.Add(
                     new PointOfSaleProduct()
                     {
                         PointOfSaleId = item.PointOfSaleId,
@@ -252,7 +242,7 @@ namespace FestivalPOS.Controllers
                 );
             }
 
-            await _db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return patchedItems;
         }

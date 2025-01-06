@@ -2,15 +2,9 @@
 
 namespace FestivalPOS.Notifications
 {
-    public class OrderTagAssignedNotification : INotification
+    public class OrderTagAssignedNotification(int orderId, int tagNumber) : INotification
     {
-        public int OrderId { get; }
-        public int TagNumber { get; }
-
-        public OrderTagAssignedNotification(int orderId, int tagNumber)
-        {
-            OrderId = orderId;
-            TagNumber = tagNumber;
-        }
+        public int OrderId { get; } = orderId;
+        public int TagNumber { get; } = tagNumber;
     }
 }

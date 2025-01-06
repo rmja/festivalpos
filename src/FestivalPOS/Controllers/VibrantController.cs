@@ -7,20 +7,13 @@ namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VibrantController : ControllerBase
+    public class VibrantController(PosContext db) : ControllerBase
     {
-        private readonly PosContext _db;
-
-        public VibrantController(PosContext db)
-        {
-            _db = db;
-        }
-
         [HttpPost("Accounts")]
         public async Task<VibrantAccount> CreateAccount(VibrantAccount account)
         {
-            _db.VibrantAccounts.Add(account);
-            await _db.SaveChangesAsync();
+            db.VibrantAccounts.Add(account);
+            await db.SaveChangesAsync();
 
             return account;
         }
@@ -28,20 +21,20 @@ namespace FestivalPOS.Controllers
         [HttpGet("Accounts")]
         public Task<List<VibrantAccount>> GetAllAccounts()
         {
-            return _db.VibrantAccounts.ToListAsync();
+            return db.VibrantAccounts.ToListAsync();
         }
 
         [HttpDelete("Accounts/{accountId}")]
         public async Task<ActionResult> DeleteAccount(string accountId)
         {
-            var account = await _db.VibrantAccounts.FirstOrDefaultAsync(x => x.Id == accountId);
+            var account = await db.VibrantAccounts.FirstOrDefaultAsync(x => x.Id == accountId);
             if (account is null)
             {
                 return NotFound();
             }
 
-            _db.VibrantAccounts.Remove(account);
-            await _db.SaveChangesAsync();
+            db.VibrantAccounts.Remove(account);
+            await db.SaveChangesAsync();
 
             return NoContent();
         }
@@ -52,7 +45,7 @@ namespace FestivalPOS.Controllers
             CancellationToken cancellationToken
         )
         {
-            var account = await _db.VibrantAccounts.FirstOrDefaultAsync(
+            var account = await db.VibrantAccounts.FirstOrDefaultAsync(
                 x => x.Id == accountId,
                 cancellationToken
             );
@@ -78,7 +71,7 @@ namespace FestivalPOS.Controllers
             CancellationToken cancellationToken
         )
         {
-            var account = await _db.VibrantAccounts.FirstOrDefaultAsync(
+            var account = await db.VibrantAccounts.FirstOrDefaultAsync(
                 x => x.Id == accountId,
                 cancellationToken
             );
@@ -104,7 +97,7 @@ namespace FestivalPOS.Controllers
             CancellationToken cancellationToken
         )
         {
-            var account = await _db.VibrantAccounts.FirstOrDefaultAsync(
+            var account = await db.VibrantAccounts.FirstOrDefaultAsync(
                 x => x.Id == accountId,
                 cancellationToken
             );
