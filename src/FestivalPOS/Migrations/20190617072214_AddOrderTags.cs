@@ -43,7 +43,7 @@ namespace FestivalPOS.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_OrderTags_Number_OrderId",
                 table: "OrderTags",
-                columns: new[] { "Number", "OrderId" },
+                columns: ["Number", "OrderId"],
                 unique: true,
                 filter: "Detached IS NULL");
         }

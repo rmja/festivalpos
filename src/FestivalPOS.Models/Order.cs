@@ -15,10 +15,10 @@ namespace FestivalPOS.Models
         public PointOfSale? PointOfSale { get; set; }
         public decimal Total { get; set; }
         public decimal AmountDue { get; set; }
-        public List<OrderLine> Lines { get; set; } = new List<OrderLine>();
-        public IList<Payment> Payments { get; set; } = new List<Payment>();
+        public List<OrderLine> Lines { get; set; } = [];
+        public IList<Payment> Payments { get; set; } = [];
         public IList<OrderTag>? Tags { get; set; }
-        public IList<Serving> Servings { get; set; } = new List<Serving>();
+        public IList<Serving> Servings { get; set; } = [];
         public bool IsDeleted { get; set; }
         public DateTimeOffset Created { get; set; }
     }

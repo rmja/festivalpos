@@ -16,6 +16,6 @@ namespace FestivalPOS.Models
         public Printer? ReceiptPrinter { get; set; }
         public bool IsDeleted { get; set; }
 
-        public List<ServingStaff> ServingStaff { get; set; } = new List<ServingStaff>();
+        public List<ServingStaff> ServingStaff { get; set; } = [];
     }
 }

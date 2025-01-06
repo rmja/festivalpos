@@ -14,6 +14,6 @@ namespace FestivalPOS.Models
         public decimal RemainingCredit { get; set; }
         public bool HighPriorityServing { get; set; }
         public bool IsDeleted { get; set; }
-        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public ICollection<Payment> Payments { get; set; } = [];
     }
 }

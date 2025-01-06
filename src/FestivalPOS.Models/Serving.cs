@@ -20,7 +20,7 @@ namespace FestivalPOS.Models
         public int? StaffNumber { get; set; }
         public DateTimeOffset? Accepted { get; set; }
         public DateTimeOffset? Completed { get; set; }
-        public List<ServingLine> Lines { get; set; } = new List<ServingLine>();
+        public List<ServingLine> Lines { get; set; } = [];
     }
 
     public enum ServingState

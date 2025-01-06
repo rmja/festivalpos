@@ -21,7 +21,7 @@ namespace FestivalPOS.NotificationHandlers
                 .FirstAsync(x => x.Id == notification.ServingId, cancellationToken);
 
             var clients = hub.Clients.Groups(
-                new[] { $"PointsOfSale:{serving.PointOfSaleId}", "PointsOfSale:All" }
+                [$"PointsOfSale:{serving.PointOfSaleId}", "PointsOfSale:All"]
             );
 
             await clients.SendAsync("ServingCreated", serving, cancellationToken);
@@ -37,7 +37,7 @@ namespace FestivalPOS.NotificationHandlers
                 .FirstAsync(x => x.Id == notification.ServingId, cancellationToken);
 
             var clients = hub.Clients.Groups(
-                new[] { $"PointsOfSale:{serving.PointOfSaleId}", "PointsOfSale:All" }
+                [$"PointsOfSale:{serving.PointOfSaleId}", "PointsOfSale:All"]
             );
 
             await clients.SendAsync("ServingUpdated", serving, cancellationToken);
@@ -52,9 +52,7 @@ namespace FestivalPOS.NotificationHandlers
                 .PointOfSales.Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .FirstAsync(x => x.Id == notification.PointOfSaleId, cancellationToken);
 
-            var clients = hub.Clients.Groups(
-                new[] { $"PointsOfSale:{pos.Id}", "PointsOfSale:All" }
-            );
+            var clients = hub.Clients.Groups([$"PointsOfSale:{pos.Id}", "PointsOfSale:All"]);
 
             await clients.SendAsync("PointOfSaleUpdated", pos, cancellationToken);
         }

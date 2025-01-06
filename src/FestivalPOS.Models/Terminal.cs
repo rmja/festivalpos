@@ -10,6 +10,6 @@ namespace FestivalPOS.Models
         [MaxLength(100)]
         public required string Name { get; set; }
         public bool IsDeleted { get; set; }
-        public ICollection<Printer> Printers { get; set; } = new List<Printer>();
+        public ICollection<Printer> Printers { get; set; } = [];
     }
 }
