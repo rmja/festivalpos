@@ -1,5 +1,5 @@
-﻿using FestivalPOS.Models;
-using System.Text;
+﻿using System.Text;
+using FestivalPOS.Models;
 
 namespace FestivalPOS.Printing
 {

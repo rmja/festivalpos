@@ -1,13 +1,16 @@
 ﻿using FestivalPOS.Models;
-using FestivalPOS.VibrantApi;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using VibrantApi;
+using VibrantApi.Extensions;
+using VibrantApi.Models;
 
 namespace FestivalPOS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VibrantController(PosContext db) : ControllerBase
+    public class VibrantController(PosContext db, IVibrantApiClientFactory clientFactory)
+        : ControllerBase
     {
         [HttpPost("Accounts")]
         public async Task<VibrantAccount> CreateAccount(VibrantAccount account)
@@ -40,7 +43,7 @@ namespace FestivalPOS.Controllers
         }
 
         [HttpGet("Accounts/{accountId}/Terminals")]
-        public async Task<ActionResult<VibrantApi.Terminal[]>> GetVibrantTerminalsAsync(
+        public async Task<ActionResult<List<VibrantApi.Models.Terminal>>> GetVibrantTerminalsAsync(
             string accountId,
             CancellationToken cancellationToken
         )
@@ -54,20 +57,21 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            var client = ActivatorUtilities.CreateInstance<VibrantApiClient>(
-                HttpContext.RequestServices
+            var client = clientFactory.Create(
+                new() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
             );
-            client.ApiKey = account.ApiKey;
-            client.Sandbox = account.Sandbox;
 
-            var terminals = await client.GetTerminalsAsync(cancellationToken);
+            var terminals = await client
+                .Terminals.GetAllAsync(cancellationToken)
+                .ToListAsync(cancellationToken);
             return terminals;
         }
 
-        [HttpPost("Accounts/{accountId}/PaymentIntents")]
+        [HttpPost("Accounts/{accountId}/Terminals/{terminalId}/PaymentIntents")]
         public async Task<ActionResult<string>> CreatePaymentIntent(
             string accountId,
-            PaymentIntent paymentIntent,
+            string terminalId,
+            PaymentIntentInit paymentIntent,
             CancellationToken cancellationToken
         )
         {
@@ -80,14 +84,16 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            var client = ActivatorUtilities.CreateInstance<VibrantApiClient>(
-                HttpContext.RequestServices
+            var client = clientFactory.Create(
+                new() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
             );
-            client.ApiKey = account.ApiKey;
-            client.Sandbox = account.Sandbox;
 
-            var id = await client.CreatePaymentIntentAsync(paymentIntent, cancellationToken);
-            return id;
+            var ppi = await client.Terminals.ProcessPaymentIntentAsync(
+                terminalId,
+                new() { PaymentIntent = paymentIntent },
+                cancellationToken
+            );
+            return ppi.ObjectIdToProcess;
         }
 
         [HttpGet("Accounts/{accountId}/PaymentIntents/{paymentIntentId}")]
@@ -106,13 +112,11 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            var client = ActivatorUtilities.CreateInstance<VibrantApiClient>(
-                HttpContext.RequestServices
+            var client = clientFactory.Create(
+                new() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
             );
-            client.ApiKey = account.ApiKey;
-            client.Sandbox = account.Sandbox;
 
-            var paymentIntent = await client.GetPaymentIntentAsync(
+            var paymentIntent = await client.PaymentIntents.GetByIdAsync(
                 paymentIntentId,
                 cancellationToken
             );

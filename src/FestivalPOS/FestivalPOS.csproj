@@ -49,6 +49,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FestivalPOS.Models\FestivalPOS.Models.csproj" />
+    <ProjectReference Include="..\VibrantApi\VibrantApi.csproj" />
   </ItemGroup>
 
   <Target Name="ClearnWebpackArtifacts" AfterTargets="Clean">

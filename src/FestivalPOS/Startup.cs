@@ -50,6 +50,8 @@ namespace FestivalPOS
                 config.RegisterServicesFromAssembly(typeof(Startup).Assembly)
             );
 
+            services.AddVibrantApi();
+
             services.AddSingleton(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<PosOptions>>().Value;

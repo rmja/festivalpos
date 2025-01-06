@@ -571,10 +571,11 @@ export class Api {
 
   createVibrantPaymentIntent(
     accountId: string,
-    paymentIntent: { terminalId: string; amount: number; description: string },
+    terminalId: string,
+    paymentIntent: { amount: number; description: string },
   ) {
     return http
-      .post(`/Vibrant/Accounts/${accountId}/PaymentIntents`)
+      .post(`/Vibrant/Accounts/${accountId}/Terminals/${terminalId}/PaymentIntents`)
       .withJson(paymentIntent)
       .expectJson<string>();
   }

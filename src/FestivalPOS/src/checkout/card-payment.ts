@@ -2,7 +2,9 @@ import { autoinject, noView } from "aurelia-framework";
 
 import { Api } from "../api";
 import { ProgressService } from "../resources/progress-service";
+import { Redirect } from "aurelia-router";
 import { State } from "../state";
+import { VibrantPaymentIntent } from "../api/vibrant";
 import { connectTo } from "aurelia-store";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 
@@ -17,7 +19,7 @@ export class CardPayment {
 
   constructor(
     private api: Api,
-    private progress: ProgressService,
+    private progress: ProgressService
   ) {}
 
   async canActivate(params: { orderId: string; tagNumber?: string }) {
@@ -55,15 +57,16 @@ export class CardPayment {
       await this.progress.done();
 
       let appUrl = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${encodeURIComponent(
-        title,
+        title
       )}&skip-screen-success=true&callback=${encodeURIComponent(callbackUrl)}`;
       if (receiptEmail) {
         appUrl += `&receipt-email=${encodeURIComponent(receiptEmail)}`;
       }
 
-      window.location.href = appUrl;
+      window.location.assign(appUrl);
     } catch (error) {
       await this.progress.error("Kortbetaling kunne ikke gennemføres", error);
+      return false;
     }
   }
 
@@ -71,12 +74,14 @@ export class CardPayment {
     try {
       this.progress.setBusy("Viderestiller til kortbetaling", faCreditCard);
 
+      const accountId = this.state.vibrantAccountId!;
+      const terminalId = this.state.vibrantTerminalId!;
+
       const order = await this.api.getOrderById(orderId).transfer();
       const pos = await this.api.getPointOfSale(order.pointOfSaleId).transfer();
 
       const id = await this.api
-        .createVibrantPaymentIntent(this.state.vibrantAccountId!, {
-          terminalId: this.state.vibrantTerminalId!,
+        .createVibrantPaymentIntent(accountId, terminalId, {
           amount: +order.amountDue.mul(100),
           description: `Kajfest ${pos.name}`,
         })
@@ -87,11 +92,44 @@ export class CardPayment {
         callbackUrl += `&tagNumber=${tagNumber}`;
       }
 
-      const appUrl =
-        "vibrantio://a2a?callbackUrl=" + encodeURIComponent(callbackUrl);
-      window.location.href = appUrl;
+      this.progress.setBusy("Afventer betaling i vibrant app", faCreditCard);
+
+      if (!navigator.userAgent.includes("Windows")) {
+        // App switch
+        window.location.assign(
+          "vibrantio://a2a?callbackUrl=" + encodeURIComponent(callbackUrl)
+        );
+      }
+
+      // Only for debugging from pc, or if vibrant does not call the callback, e.g. when we manually switch back to here
+
+      let paymentIntent: VibrantPaymentIntent;
+      const trials = 20;
+      for (let trial = 1; trial <= trials; trial++) {
+        this.progress.setBusy(
+          `Afventer betaling i vibrant app, forsøg ${trial}/${trials}`,
+          faCreditCard
+        );
+        paymentIntent = await this.api
+          .getVibrantPaymentIntent(accountId, id)
+          .bypassClientCache()
+          .transfer();
+        if (
+          paymentIntent.status !== "requires_payment_method" &&
+          paymentIntent.status !== "processing"
+        ) {
+          break;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+
+      await this.progress.done();
+
+      return new Redirect(callbackUrl);
     } catch (error) {
       await this.progress.error("Kortbetaling kunne ikke gennemføres", error);
+      return false;
     }
   }
 }

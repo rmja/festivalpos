@@ -3,10 +3,10 @@
     <ux-dialog-header>
       <font-awesome-icon
         if.bind="icon"
-        icon.bind="icon"
+        icon.bind="model.icon"
         fixed-width="true"
       ></font-awesome-icon>
-      ${title}
+      ${model.title}
     </ux-dialog-header>
     <ux-dialog-body class="text-center">
       <font-awesome-icon

@@ -6,6 +6,7 @@ import { autoinject, LogManager } from "aurelia-framework";
 
 @autoinject()
 export class ProgressService {
+  private busyModel?: { icon?: any; title?: string };
   private busyOpenPromise?: Promise<any>;
   private logger = LogManager.getLogger("progress");
 
@@ -28,21 +29,29 @@ export class ProgressService {
   }
 
   setBusy(title: string, icon?: any) {
+    if (this.state === "busy" && this.busyModel) {
+      // Already busy, update the model
+      this.busyModel.icon = icon;
+      this.busyModel.title = title;
+      return;
+    }
+
     this.logger.info("Setting state: busy");
     this.state = "busy";
 
     if (this.busyOpenPromise) {
       this.busyOpenPromise.then(async () => {
         await this.dialog.closeAll();
+        this.busyModel = { icon, title };
         this.busyOpenPromise = this.dialog.open({
           viewModel: ProgressBusy,
-          model: { icon, title },
+          model: this.busyModel,
         });
       });
     } else {
       this.busyOpenPromise = this.dialog.open({
         viewModel: ProgressBusy,
-        model: { icon, title },
+        model: this.busyModel,
       });
     }
   }
