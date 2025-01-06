@@ -1,4 +1,4 @@
-FROM node:20 AS webpack
+FROM node:22 AS webpack
 ARG WEBPACK_MODE=production
 WORKDIR /src
 COPY ["src/FestivalPOS/package*.json", "./"]
@@ -8,12 +8,12 @@ COPY ["src/FestivalPOS/typings", "./typings"]
 COPY ["src/FestivalPOS/src", "./src"]
 RUN node_modules/.bin/webpack --mode ${WEBPACK_MODE}
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY ["src/FestivalPOS/FestivalPOS.csproj", "src/FestivalPOS/"]
 RUN dotnet restore "src/FestivalPOS/FestivalPOS.csproj"
