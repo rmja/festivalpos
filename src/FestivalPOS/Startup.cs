@@ -1,17 +1,12 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Azure.Storage.Blobs;
 using FestivalPOS.Converters;
 using FestivalPOS.Hubs;
 using FestivalPOS.Printing;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FestivalPOS
 {
@@ -39,8 +34,8 @@ namespace FestivalPOS
             services
                 .AddMvc(options =>
                 {
-                    var jsonPatchInputFormatter = fakeMvcOptions.InputFormatters
-                        .OfType<Microsoft.AspNetCore.Mvc.Formatters.NewtonsoftJsonPatchInputFormatter>()
+                    var jsonPatchInputFormatter = fakeMvcOptions
+                        .InputFormatters.OfType<Microsoft.AspNetCore.Mvc.Formatters.NewtonsoftJsonPatchInputFormatter>()
                         .Single();
                     options.InputFormatters.Insert(0, jsonPatchInputFormatter);
                 })
@@ -71,8 +66,8 @@ namespace FestivalPOS
                     options.PayloadSerializerOptions.Converters.Add(new DecimalConverter());
                 });
 
-            services.AddMediatR(
-                config => config.RegisterServicesFromAssembly(typeof(Startup).Assembly)
+            services.AddMediatR(config =>
+                config.RegisterServicesFromAssembly(typeof(Startup).Assembly)
             );
 
             services.AddSingleton(sp =>

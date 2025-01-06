@@ -4,11 +4,6 @@ using FestivalPOS.Printing;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
 {
@@ -60,8 +55,8 @@ namespace FestivalPOS.Controllers
         [HttpGet]
         public async Task<List<Order>> GetAll(int? terminalId, int? pointOfSaleId)
         {
-            var orders = await _db.Orders
-                .Where(x => terminalId == null || x.TerminalId == terminalId)
+            var orders = await _db
+                .Orders.Where(x => terminalId == null || x.TerminalId == terminalId)
                 .Where(x => pointOfSaleId == null || x.PointOfSaleId == pointOfSaleId)
                 .OrderByDescending(x => x.Created)
                 .Take(10)
@@ -73,8 +68,8 @@ namespace FestivalPOS.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Order>> GetById(int id)
         {
-            var order = await _db.Orders
-                .Include(x => x.Lines.OrderBy(l => l.Position))
+            var order = await _db
+                .Orders.Include(x => x.Lines.OrderBy(l => l.Position))
                 .Include(x => x.Payments)
                 .Include(x => x.Servings)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -90,8 +85,8 @@ namespace FestivalPOS.Controllers
         [HttpGet("/api/Tags/{tagNumber:int}/CurrentOrder")]
         public async Task<ActionResult<Order>> GetCurrentByTag(int tagNumber)
         {
-            var order = await _db.OrderTags
-                .Where(x => x.Number == tagNumber && x.Detached == null)
+            var order = await _db
+                .OrderTags.Where(x => x.Number == tagNumber && x.Detached == null)
                 .Include(x => x.Order.Lines.OrderBy(l => l.Position))
                 .Include(x => x.Order.Payments)
                 .Include(x => x.Order.Servings)
@@ -110,8 +105,8 @@ namespace FestivalPOS.Controllers
         public async Task<ActionResult> AssignTag(int id, int tagNumber, bool force)
         {
             var now = LocalClock.Now;
-            var currentTags = await _db.OrderTags
-                .Where(x => x.Number == tagNumber && x.Detached == null)
+            var currentTags = await _db
+                .OrderTags.Where(x => x.Number == tagNumber && x.Detached == null)
                 .ToListAsync();
 
             if (currentTags.Count > 0)
@@ -158,8 +153,8 @@ namespace FestivalPOS.Controllers
         [HttpDelete("{id:int}/Tags/{tagNumber:int}")]
         public async Task<ActionResult> UnassignTag(int id, int tagNumber)
         {
-            var tag = await _db.OrderTags.FirstOrDefaultAsync(
-                x => x.Number == tagNumber && x.OrderId == id && x.Detached == null
+            var tag = await _db.OrderTags.FirstOrDefaultAsync(x =>
+                x.Number == tagNumber && x.OrderId == id && x.Detached == null
             );
 
             if (tag != null)
@@ -209,8 +204,8 @@ namespace FestivalPOS.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var order = await _db.Orders
-                .Include(x => x.Payments)
+            var order = await _db
+                .Orders.Include(x => x.Payments)
                 .Include(x => x.Servings)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -231,8 +226,8 @@ namespace FestivalPOS.Controllers
             CancellationToken cancellationToken
         )
         {
-            await _db.Orders
-                .Where(x => x.Created >= notBefore)
+            await _db
+                .Orders.Where(x => x.Created >= notBefore)
                 .ExecuteUpdateAsync(u => u.SetProperty(x => x.IsDeleted, true), cancellationToken);
 
             return NoContent();

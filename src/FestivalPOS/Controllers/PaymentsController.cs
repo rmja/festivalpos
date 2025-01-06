@@ -3,10 +3,6 @@ using FestivalPOS.Notifications;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
 {
@@ -40,9 +36,14 @@ namespace FestivalPOS.Controllers
                     return BadRequest();
                 }
 
-                var account = await _db.Accounts.FirstOrDefaultAsync(
-                    x => x.Id == payment.AccountId
+                var account = await _db.Accounts.FirstOrDefaultAsync(x =>
+                    x.Id == payment.AccountId
                 );
+
+                if (account is null)
+                {
+                    return BadRequest();
+                }
 
                 if (account.RemainingCredit >= payment.Amount)
                 {
@@ -108,12 +109,12 @@ namespace FestivalPOS.Controllers
 
             if (terminalId != null)
             {
-                query = query.Where(x => x.Order.TerminalId == terminalId);
+                query = query.Where(x => x.Order != null && x.Order.TerminalId == terminalId);
             }
 
             if (pointOfSaleId != null)
             {
-                query = query.Where(x => x.Order.PointOfSaleId == pointOfSaleId);
+                query = query.Where(x => x.Order != null && x.Order.PointOfSaleId == pointOfSaleId);
             }
 
             if (accountId != null)

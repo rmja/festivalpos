@@ -3,10 +3,6 @@ using FestivalPOS.Models;
 using FestivalPOS.Sql;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
 {
@@ -97,8 +93,8 @@ namespace FestivalPOS.Controllers
                 }
 
                 foreach (
-                    var serving in productServingStats.Where(
-                        x => x.PeriodStart == order.PeriodStart
+                    var serving in productServingStats.Where(x =>
+                        x.PeriodStart == order.PeriodStart
                     )
                 )
                 {
@@ -132,7 +128,7 @@ namespace FestivalPOS.Controllers
             internal DateTimeOffset EarliestOrderCreated { get; set; }
             internal DateTimeOffset PeriodStart => EarliestOrderCreated.StartOf(Kind);
             public int ProductId { get; set; }
-            public string ProductName { get; set; }
+            public required string ProductName { get; set; }
             public int ProductQuantity { get; set; }
             public int OrderCount { get; set; }
             public decimal Total { get; set; }
@@ -144,7 +140,7 @@ namespace FestivalPOS.Controllers
             internal DateTimeOffset EarliestServingCreated { get; set; }
             internal DateTimeOffset PeriodStart => EarliestServingCreated.StartOf(Kind);
             public int ProductId { get; set; }
-            public string ProductName { get; set; }
+            public required string ProductName { get; set; }
             public int ProductQuantity { get; set; }
             public int ServingCount { get; set; }
         }

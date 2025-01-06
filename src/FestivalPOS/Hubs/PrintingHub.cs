@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using FestivalPOS.Printing;
+﻿using FestivalPOS.Printing;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,8 +17,8 @@ namespace FestivalPOS.Hubs
 
         public async Task Hello(int terminalId)
         {
-            var printerIds = await _db.Printers
-                .Where(x => x.TerminalId == terminalId)
+            var printerIds = await _db
+                .Printers.Where(x => x.TerminalId == terminalId)
                 .Select(x => x.Id)
                 .ToListAsync();
 
@@ -29,7 +26,7 @@ namespace FestivalPOS.Hubs
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, $"Printers:{printerId}");
 
-                PrintJob job;
+                PrintJob? job;
                 while ((job = await _printQueue.DequeueAsync(printerId)) != null)
                 {
                     await Clients.Caller.SendAsync("Print", job);

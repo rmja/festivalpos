@@ -4,10 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
 {
@@ -27,8 +23,8 @@ namespace FestivalPOS.Controllers
         [HttpPost("/api/Orders/{orderId:int}/Servings")]
         public async Task<ActionResult<Serving>> Create(int orderId, Serving serving)
         {
-            var order = await _db.Orders
-                .Include(x => x.Lines)
+            var order = await _db
+                .Orders.Include(x => x.Lines)
                 .FirstOrDefaultAsync(x => x.Id == orderId);
 
             if (order == null)
@@ -36,8 +32,8 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            var newestTag = await _db.OrderTags
-                .OrderByDescending(x => x.Attached)
+            var newestTag = await _db
+                .OrderTags.OrderByDescending(x => x.Attached)
                 .FirstOrDefaultAsync(x => x.OrderId == order.Id && x.Detached == null);
 
             serving.OrderId = orderId;
@@ -79,8 +75,8 @@ namespace FestivalPOS.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Serving>> GetById(int id)
         {
-            var serving = await _db.Servings
-                .Include(x => x.Lines.OrderBy(l => l.Position))
+            var serving = await _db
+                .Servings.Include(x => x.Lines.OrderBy(l => l.Position))
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (serving == null)
@@ -125,15 +121,14 @@ namespace FestivalPOS.Controllers
         {
             var completedThreshold = LocalClock.Now.AddSeconds(-60);
 
-            var servings = await _db.Servings
-                .Include(x => x.Lines.OrderBy(l => l.Position))
+            var servings = await _db
+                .Servings.Include(x => x.Lines.OrderBy(l => l.Position))
                 .Where(x => x.PointOfSaleId == pointOfSaleId)
                 .Where(x => !x.Order.IsDeleted)
-                .Where(
-                    x =>
-                        x.State == ServingState.Pending
-                        || x.State == ServingState.Ongoing
-                        || x.Completed >= completedThreshold
+                .Where(x =>
+                    x.State == ServingState.Pending
+                    || x.State == ServingState.Ongoing
+                    || x.Completed >= completedThreshold
                 )
                 .OrderBy(x => x.Created)
                 .ToListAsync();

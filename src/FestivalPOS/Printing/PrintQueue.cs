@@ -1,16 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
 using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Printing
 {
     public class PrintQueue
     {
         private readonly PosOptions _options;
-        private volatile IDatabase _database;
+        private volatile IDatabase? _database;
         private SemaphoreSlim _lock = new SemaphoreSlim(1);
 
         public PrintQueue(IOptions<PosOptions> options)
@@ -20,15 +16,15 @@ namespace FestivalPOS.Printing
 
         public async Task<long> EnqueueAsync(PrintJob job)
         {
-            await EnsureConnected();
+            var database = await GetDatabaseAsync();
 
             var jobKey = $"printers:{job.PrinterId}:jobs:{Guid.NewGuid()}";
 
-            var batch = _database.CreateBatch();
+            var batch = database.CreateBatch();
 
             _ = batch.HashSetAsync(
                 jobKey,
-                new[] { new HashEntry("name", job.Name), new HashEntry("data", job.Data) }
+                [new HashEntry("name", job.Name), new HashEntry("data", job.Data)]
             );
 
             var positionTask = batch.ListRightPushAsync($"printers:{job.PrinterId}:queue", jobKey);
@@ -38,12 +34,12 @@ namespace FestivalPOS.Printing
             return await positionTask;
         }
 
-        public async Task<PrintJob> DequeueAsync(int printerId)
+        public async Task<PrintJob?> DequeueAsync(int printerId)
         {
-            await EnsureConnected();
+            var database = await GetDatabaseAsync();
 
-            var result = (RedisValue[])
-                await _database.ScriptEvaluateAsync(
+            var result = (RedisValue[]?)
+                await database.ScriptEvaluateAsync(
                     @"
 local queueKey = KEYS[1]
 local jobKey = redis.call('LPOP', queueKey)
@@ -53,11 +49,11 @@ if jobKey then
     return hash
 end
 return {}",
-                    new RedisKey[] { $"printers:{printerId}:queue" },
+                    [$"printers:{printerId}:queue"],
                     Array.Empty<RedisValue>()
                 );
 
-            if (result.Length == 0)
+            if (result is null || result.Length == 0)
             {
                 return null;
             }
@@ -67,37 +63,37 @@ return {}",
             {
                 var key = result[i];
                 var value = result[i + 1];
-                dictionary.Add(key, value);
+                dictionary.Add(key!, value);
             }
 
             return new PrintJob()
             {
                 PrinterId = printerId,
-                Name = dictionary["name"],
-                Data = dictionary["data"]
+                Name = dictionary["name"]!,
+                Data = dictionary["data"]!
             };
         }
 
-        private async Task EnsureConnected()
+        private async Task<IDatabase> GetDatabaseAsync()
         {
-            if (_database != null)
+            if (_database is not null)
             {
-                return;
+                return _database;
             }
 
             await _lock.WaitAsync();
 
             try
             {
-                if (_database != null)
+                if (_database is not null)
                 {
-                    return;
+                    return _database;
                 }
 
                 var connection = await ConnectionMultiplexer.ConnectAsync(
                     _options.RedisConnectionString
                 );
-                _database = connection.GetDatabase();
+                return _database = connection.GetDatabase();
             }
             finally
             {

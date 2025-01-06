@@ -2,9 +2,6 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
 {
@@ -60,8 +57,8 @@ namespace FestivalPOS.Controllers
         [HttpPatch("{id:int}")]
         public async Task<ActionResult<Account>> Update(int id, JsonPatchDocument<Account> patch)
         {
-            var account = await _db.Accounts
-                .Include(x => x.Payments)
+            var account = await _db
+                .Accounts.Include(x => x.Payments)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (account == null)

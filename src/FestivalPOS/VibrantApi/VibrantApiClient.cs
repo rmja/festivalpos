@@ -1,9 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace FestivalPOS.VibrantApi
 {
@@ -36,7 +31,7 @@ namespace FestivalPOS.VibrantApi
             var details = await response.Content.ReadFromJsonAsync<ProcessPaymentIntentResponse>(
                 cancellationToken
             );
-            return details.ObjectIdToProcess;
+            return details!.ObjectIdToProcess;
         }
 
         public async Task<PaymentIntent> GetPaymentIntentAsync(
@@ -54,7 +49,7 @@ namespace FestivalPOS.VibrantApi
                 _jsonSerializerOptions,
                 cancellationToken
             );
-            return paymentIntent;
+            return paymentIntent!;
         }
 
         public async Task<Terminal> CreateTerminalAsync(
@@ -75,11 +70,11 @@ namespace FestivalPOS.VibrantApi
                 cancellationToken
             );
             response.EnsureSuccessStatusCode();
-            terminal = await response.Content.ReadFromJsonAsync<Terminal>(
+            var created = await response.Content.ReadFromJsonAsync<Terminal>(
                 _jsonSerializerOptions,
                 cancellationToken
             );
-            return terminal;
+            return created!;
         }
 
         public async Task<Terminal> GetTerminalAsync(
@@ -99,7 +94,7 @@ namespace FestivalPOS.VibrantApi
                 cancellationToken
             );
 
-            return terminal;
+            return terminal!;
         }
 
         public async Task<Terminal[]> GetTerminalsAsync(
@@ -118,7 +113,7 @@ namespace FestivalPOS.VibrantApi
                 cancellationToken
             );
 
-            return terminals.Data;
+            return terminals!.Data;
         }
 
         public async Task DeleteTerminalAsync(

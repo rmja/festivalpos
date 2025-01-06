@@ -9,8 +9,8 @@ namespace FestivalPOS.VibrantApi
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? AccountId { get; init; }
-        public string Name { get; set; }
-        public string Descriptor { get; set; }
+        public required string Name { get; set; }
+        public string? Descriptor { get; set; }
         public string Mode { get; set; } = "terminal";
         public bool Virtual { get; set; }
     }

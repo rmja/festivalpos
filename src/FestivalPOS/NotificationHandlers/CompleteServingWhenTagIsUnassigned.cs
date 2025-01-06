@@ -2,10 +2,6 @@
 using FestivalPOS.Notifications;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.NotificationHandlers
 {
@@ -26,12 +22,11 @@ namespace FestivalPOS.NotificationHandlers
             CancellationToken cancellationToken
         )
         {
-            var servings = await _db.Servings
-                .Where(
-                    x =>
-                        x.OrderId == notification.OrderId
-                        && x.State != ServingState.Completed
-                        && x.TagNumber == notification.TagNumber
+            var servings = await _db
+                .Servings.Where(x =>
+                    x.OrderId == notification.OrderId
+                    && x.State != ServingState.Completed
+                    && x.TagNumber == notification.TagNumber
                 )
                 .ToListAsync();
 

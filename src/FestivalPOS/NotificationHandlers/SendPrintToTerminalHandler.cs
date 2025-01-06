@@ -3,8 +3,6 @@ using FestivalPOS.Notifications;
 using FestivalPOS.Printing;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.NotificationHandlers
 {
@@ -24,7 +22,7 @@ namespace FestivalPOS.NotificationHandlers
             CancellationToken cancellationToken
         )
         {
-            PrintJob job;
+            PrintJob? job;
             while ((job = await _printQueue.DequeueAsync(notification.PrinterId)) != null)
             {
                 var clients = _hub.Clients.Group($"Printers:{notification.PrinterId}");

@@ -2,10 +2,6 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
 {
@@ -75,8 +71,8 @@ namespace FestivalPOS.Controllers
                 return NotFound();
             }
 
-            var pointsOfSale = await _db.PointOfSales
-                .Where(x => x.ReceiptPrinterId == printer.Id)
+            var pointsOfSale = await _db
+                .PointOfSales.Where(x => x.ReceiptPrinterId == printer.Id)
                 .ToListAsync();
 
             foreach (var pos in pointsOfSale)

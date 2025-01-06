@@ -2,19 +2,12 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using FestivalPOS.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
 {
@@ -212,8 +205,8 @@ namespace FestivalPOS.Controllers
         [HttpGet("/api/PointOfSales/{pointOfSaleId:int}/Products")]
         public Task<List<PointOfSaleProduct>> GetProductsByPointOfSaleId(int pointOfSaleId)
         {
-            return _db.PointOfSaleProducts
-                .Include(x => x.Product)
+            return _db
+                .PointOfSaleProducts.Include(x => x.Product)
                 .Where(x => x.PointOfSaleId == pointOfSaleId)
                 .OrderBy(x => x.Position)
                 .ToListAsync();
@@ -225,8 +218,8 @@ namespace FestivalPOS.Controllers
             JsonPatchDocument<IList<PointOfSaleProduct>> patch
         )
         {
-            var items = await _db.PointOfSaleProducts
-                .Where(x => x.PointOfSaleId == pointOfSaleId)
+            var items = await _db
+                .PointOfSaleProducts.Where(x => x.PointOfSaleId == pointOfSaleId)
                 .OrderBy(x => x.Position)
                 .Include(x => x.Product)
                 .ToListAsync();

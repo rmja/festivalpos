@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Hubs
 {

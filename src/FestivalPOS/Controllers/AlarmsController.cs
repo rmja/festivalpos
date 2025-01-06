@@ -4,9 +4,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
 {
@@ -102,24 +99,24 @@ namespace FestivalPOS.Controllers
             _db.AlarmEvents.Add(@event);
             await _db.SaveChangesAsync();
 
-            @event = await _db.AlarmEvents
-                .Include(x => x.AlarmFeed)
+            var created = await _db
+                .AlarmEvents.Include(x => x.AlarmFeed)
                 .Include(x => x.Terminal)
                 .Include(x => x.PointOfSale)
-                .FirstOrDefaultAsync(x => x.Id == @event.Id);
+                .FirstAsync(x => x.Id == @event.Id);
 
             //feed.SubscriberEmails
 
-            await _hub.Clients.All.SendAsync("EventCreated", @event);
+            await _hub.Clients.All.SendAsync("EventCreated", created);
 
-            return @event;
+            return created;
         }
 
         [HttpGet("Events/Pending")]
         public Task<List<AlarmEvent>> GetAllPendingAlarms(int? terminalId, int? pointOfSaleId)
         {
-            var query = _db.AlarmEvents
-                .Include(x => x.AlarmFeed)
+            var query = _db
+                .AlarmEvents.Include(x => x.AlarmFeed)
                 .Include(x => x.Terminal)
                 .Include(x => x.PointOfSale)
                 .Where(x => x.Cancelled == null);
@@ -150,13 +147,13 @@ namespace FestivalPOS.Controllers
             @event.Cancelled = LocalClock.Now;
             await _db.SaveChangesAsync();
 
-            @event = await _db.AlarmEvents
-                .Include(x => x.AlarmFeed)
+            var cancelled = await _db
+                .AlarmEvents.Include(x => x.AlarmFeed)
                 .Include(x => x.Terminal)
                 .Include(x => x.PointOfSale)
-                .FirstOrDefaultAsync(x => x.Id == @event.Id);
+                .FirstAsync(x => x.Id == @event.Id);
 
-            return @event;
+            return cancelled;
         }
     }
 }

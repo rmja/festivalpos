@@ -2,9 +2,6 @@
 using FestivalPOS.Notifications;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.NotificationHandlers
 {
@@ -28,8 +25,8 @@ namespace FestivalPOS.NotificationHandlers
             if (serving.State == ServingState.Completed)
             {
                 var now = LocalClock.Now;
-                var tags = await _db.OrderTags
-                    .Where(x => x.OrderId == serving.OrderId && x.Detached == null)
+                var tags = await _db
+                    .OrderTags.Where(x => x.OrderId == serving.OrderId && x.Detached == null)
                     .ToListAsync();
 
                 foreach (var tag in tags)

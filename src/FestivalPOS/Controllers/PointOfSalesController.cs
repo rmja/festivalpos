@@ -4,9 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FestivalPOS.Controllers
 {
@@ -42,8 +39,8 @@ namespace FestivalPOS.Controllers
         [HttpGet]
         public async Task<List<PointOfSale>> GetAll()
         {
-            var poss = await _db.PointOfSales
-                .Include(x => x.ServingStaff.OrderBy(s => s.Number))
+            var poss = await _db
+                .PointOfSales.Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .OrderBy(x => x.Name)
                 .ToListAsync();
 
@@ -53,8 +50,8 @@ namespace FestivalPOS.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<PointOfSale>> GetById(int id)
         {
-            var pos = await _db.PointOfSales
-                .Include(x => x.ServingStaff.OrderBy(s => s.Number))
+            var pos = await _db
+                .PointOfSales.Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (pos == null)
@@ -71,8 +68,8 @@ namespace FestivalPOS.Controllers
             JsonPatchDocument<PointOfSale> patch
         )
         {
-            var pos = await _db.PointOfSales
-                .Include(x => x.ServingStaff.OrderBy(s => s.Number))
+            var pos = await _db
+                .PointOfSales.Include(x => x.ServingStaff.OrderBy(s => s.Number))
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (pos == null)
