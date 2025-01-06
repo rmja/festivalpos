@@ -1,9 +1,9 @@
 ﻿using FestivalPOS.Hubs;
 using FestivalPOS.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using SystemTextJsonPatch;
 
 namespace FestivalPOS.Controllers
 {

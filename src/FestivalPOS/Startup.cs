@@ -4,7 +4,6 @@ using Azure.Storage.Blobs;
 using FestivalPOS.Converters;
 using FestivalPOS.Hubs;
 using FestivalPOS.Printing;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -18,22 +17,8 @@ namespace FestivalPOS
         {
             services.Configure<PosOptions>(Configuration);
 
-            var fakeServiceProvider = new ServiceCollection();
-            fakeServiceProvider.AddLogging().AddMvc().AddNewtonsoftJson();
-
-            var fakeMvcOptions = fakeServiceProvider
-                .BuildServiceProvider()
-                .GetRequiredService<IOptions<MvcOptions>>()
-                .Value;
-
             services
-                .AddMvc(options =>
-                {
-                    var jsonPatchInputFormatter = fakeMvcOptions
-                        .InputFormatters.OfType<Microsoft.AspNetCore.Mvc.Formatters.NewtonsoftJsonPatchInputFormatter>()
-                        .Single();
-                    options.InputFormatters.Insert(0, jsonPatchInputFormatter);
-                })
+                .AddMvc()
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(

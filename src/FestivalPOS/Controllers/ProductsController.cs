@@ -1,13 +1,12 @@
-﻿using Azure;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using FestivalPOS.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using SystemTextJsonPatch;
 
 namespace FestivalPOS.Controllers
 {
@@ -113,7 +112,7 @@ namespace FestivalPOS.Controllers
 
                 return new EmptyResult();
             }
-            catch (RequestFailedException e)
+            catch (Azure.RequestFailedException e)
             {
                 return StatusCode(e.Status);
             }
@@ -148,16 +147,12 @@ namespace FestivalPOS.Controllers
             async Task UploadAsync(Image image, string name)
             {
                 var blob = container.GetBlobClient(name);
-                using (var stream = new MemoryStream())
-                {
-                    image.SaveAsPng(stream);
+                using var stream = new MemoryStream();
+                image.SaveAsPng(stream);
 
-                    stream.Position = 0;
-                    await blob.UploadAsync(stream);
-                    await blob.SetHttpHeadersAsync(
-                        new BlobHttpHeaders { ContentType = "image/png" }
-                    );
-                }
+                stream.Position = 0;
+                await blob.UploadAsync(stream);
+                await blob.SetHttpHeadersAsync(new BlobHttpHeaders { ContentType = "image/png" });
             }
         }
 
