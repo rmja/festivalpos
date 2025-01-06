@@ -20,14 +20,12 @@
   },
   "homepage": "https://github.com/rmja/festivalpos#readme",
   "devDependencies": {
-    "@types/autoprefixer": "^10.2.0",
     "@types/big.js": "^6.1.6",
     "@types/croppie": "^2.5.4",
     "@types/hammerjs": "^2.0.36",
     "@types/luxon": "^3.0.1",
     "@types/webpack": "^5.28.0",
     "@types/webpack-bundle-analyzer": "^4.4.1",
-    "@types/workbox-webpack-plugin": "^6.0.0",
     "aurelia-webpack-plugin": "^5.0.4",
     "autoprefixer": "^10.4.7",
     "css-loader": "^7.1.2",
@@ -42,7 +40,7 @@
     "ur-workbox-utils": "^0.1.5",
     "webpack": "^5.73.0",
     "webpack-bundle-analyzer": "^4.5.0",
-    "webpack-cli": "^5.1.4",
+    "webpack-cli": "^6.0.1",
     "webpack-dev-middleware": "^7.0.0",
     "webpack-hot-middleware": "^2.25.1",
     "workbox-webpack-plugin": "^7.0.0"
