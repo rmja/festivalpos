@@ -33,7 +33,7 @@ export class VibrantPaymentIntent {
   amount!: number;
 
   @jsonProperty()
-  status!: "requires_payment_method" | "processing" | "succeeded" | "canceled";
+  status!: "requiresPaymentMethod" | "processing" | "succeeded" | "canceled";
 
   @jsonProperty()
   cancelationReason!: string;

@@ -145,7 +145,7 @@ export class CardCallback {
       }
     } else {
       let message = intent.cancelationReason;
-      if (!message && intent.status === "requires_payment_method") {
+      if (!message && intent.status === "requiresPaymentMethod") {
         message = "Afbrudt eller timeout";
       }
       return new RedirectToRoute(

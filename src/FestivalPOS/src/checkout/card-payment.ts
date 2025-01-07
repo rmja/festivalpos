@@ -115,7 +115,7 @@ export class CardPayment {
           .bypassClientCache()
           .transfer();
         if (
-          paymentIntent.status !== "requires_payment_method" &&
+          paymentIntent.status !== "requiresPaymentMethod" &&
           paymentIntent.status !== "processing"
         ) {
           break;
