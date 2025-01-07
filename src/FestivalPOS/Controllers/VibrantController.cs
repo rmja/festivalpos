@@ -1,15 +1,15 @@
-﻿using FestivalPOS.Models;
+﻿using FestivalPOS.Extensions;
+using FestivalPOS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using VibrantApi;
-using VibrantApi.Extensions;
-using VibrantApi.Models;
+using VibrantIo.PosApi;
+using VibrantIo.PosApi.Models;
 
 namespace FestivalPOS.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class VibrantController(PosContext db, IVibrantApiClientFactory clientFactory)
+public class VibrantController(PosContext db, IVibrantPosApiClientFactory clientFactory)
     : ControllerBase
 {
     [HttpPost("Accounts")]
@@ -43,10 +43,9 @@ public class VibrantController(PosContext db, IVibrantApiClientFactory clientFac
     }
 
     [HttpGet("Accounts/{accountId}/Terminals")]
-    public async Task<ActionResult<List<VibrantApi.Models.Terminal>>> GetVibrantTerminalsAsync(
-        string accountId,
-        CancellationToken cancellationToken
-    )
+    public async Task<
+        ActionResult<List<VibrantIo.PosApi.Models.Terminal>>
+    > GetVibrantTerminalsAsync(string accountId, CancellationToken cancellationToken)
     {
         var account = await db.VibrantAccounts.FirstOrDefaultAsync(
             x => x.Id == accountId,

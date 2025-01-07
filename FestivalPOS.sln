@@ -15,10 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PagerController", "src\Page
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FestivalPOS.Models", "src\FestivalPOS.Models\FestivalPOS.Models.csproj", "{3C4EE560-B0ED-4FE1-A6BE-AEF47ECF349B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VibrantApi", "src\VibrantApi\VibrantApi.csproj", "{36883910-9DDC-4764-9754-A7110028E9C0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VibrantApi.Tests", "test\VibrantApi.Tests\VibrantApi.Tests.csproj", "{31B159DA-B18B-444C-B4C3-70184A78DD42}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,14 +33,6 @@ Global
 		{3C4EE560-B0ED-4FE1-A6BE-AEF47ECF349B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C4EE560-B0ED-4FE1-A6BE-AEF47ECF349B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C4EE560-B0ED-4FE1-A6BE-AEF47ECF349B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36883910-9DDC-4764-9754-A7110028E9C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36883910-9DDC-4764-9754-A7110028E9C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36883910-9DDC-4764-9754-A7110028E9C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36883910-9DDC-4764-9754-A7110028E9C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31B159DA-B18B-444C-B4C3-70184A78DD42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31B159DA-B18B-444C-B4C3-70184A78DD42}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31B159DA-B18B-444C-B4C3-70184A78DD42}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31B159DA-B18B-444C-B4C3-70184A78DD42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

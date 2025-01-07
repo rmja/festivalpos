@@ -1,6 +1,6 @@
-﻿namespace VibrantApi.Extensions;
+﻿namespace FestivalPOS.Extensions;
 
-public static class AsyncEnumerableExtensions
+internal static class AsyncEnumerableExtensions
 {
     public static async Task<List<T>> ToListAsync<T>(
         this IAsyncEnumerable<T> source,
