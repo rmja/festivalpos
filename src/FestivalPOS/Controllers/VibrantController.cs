@@ -71,6 +71,7 @@ public class VibrantController(PosContext db, IVibrantPosApiClientFactory client
         string accountId,
         string terminalId,
         PaymentIntentInit paymentIntent,
+        string? idempotencyKey,
         CancellationToken cancellationToken
     )
     {
@@ -90,6 +91,7 @@ public class VibrantController(PosContext db, IVibrantPosApiClientFactory client
         var ppi = await client.Terminals.ProcessPaymentIntentAsync(
             terminalId,
             new() { PaymentIntent = paymentIntent },
+            idempotencyKey,
             cancellationToken
         );
         return ppi.ObjectIdToProcess;

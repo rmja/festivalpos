@@ -94,35 +94,20 @@ export class CardPayment {
 
       this.progress.setBusy("Afventer betaling i vibrant app", faCreditCard);
 
-      if (!navigator.userAgent.includes("Windows")) {
+      if (__DEBUG__ && navigator.userAgent.includes("Windows")) {
+        alert("Foretag betaling i vibrant app, og tryk derefter på OK");
+      }
+      else {
         // App switch
         window.location.assign(
           "vibrantio://a2a?callbackUrl=" + encodeURIComponent(callbackUrl)
         );
+
+        // Ensure that we have switched to the app
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
       // Only for debugging from pc, or if vibrant does not call the callback, e.g. when we manually switch back to here
-
-      let paymentIntent: VibrantPaymentIntent;
-      const trials = 20;
-      for (let trial = 1; trial <= trials; trial++) {
-        this.progress.setBusy(
-          `Afventer betaling i vibrant app, forsøg ${trial}/${trials}`,
-          faCreditCard
-        );
-        paymentIntent = await this.api
-          .getVibrantPaymentIntent(accountId, id)
-          .bypassClientCache()
-          .transfer();
-        if (
-          paymentIntent.status !== "requiresPaymentMethod" &&
-          paymentIntent.status !== "processing"
-        ) {
-          break;
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
 
       await this.progress.done();
 

@@ -87,6 +87,7 @@ export class CardCallback {
         );
       } catch (error) {
         await this.progress.error("Betalingen kunne ikke registreres", error);
+        return false;
       }
     } else {
       return new RedirectToRoute(
@@ -142,6 +143,7 @@ export class CardCallback {
         );
       } catch (error) {
         await this.progress.error("Betalingen kunne ikke registreres", error);
+        return false;
       }
     } else {
       let message = intent.cancelationReason;
