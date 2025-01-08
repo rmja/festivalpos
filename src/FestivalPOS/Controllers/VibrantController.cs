@@ -57,7 +57,7 @@ public class VibrantController(PosContext db, IVibrantPosApiClientFactory client
         }
 
         var client = clientFactory.Create(
-            new() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
+            new VibrantPosApiOptions() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
         );
 
         var terminals = await client
@@ -85,7 +85,7 @@ public class VibrantController(PosContext db, IVibrantPosApiClientFactory client
         }
 
         var client = clientFactory.Create(
-            new() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
+            new VibrantPosApiOptions() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
         );
 
         var ppi = await client.Terminals.ProcessPaymentIntentAsync(
@@ -114,7 +114,7 @@ public class VibrantController(PosContext db, IVibrantPosApiClientFactory client
         }
 
         var client = clientFactory.Create(
-            new() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
+            new VibrantPosApiOptions() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
         );
 
         var paymentIntent = await client.PaymentIntents.GetByIdAsync(

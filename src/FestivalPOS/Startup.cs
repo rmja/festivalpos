@@ -50,7 +50,7 @@ public class Startup(IConfiguration configuration)
             config.RegisterServicesFromAssembly(typeof(Startup).Assembly)
         );
 
-        services.AddVibrantPosApi();
+        services.AddVibrantPosApiFactory();
 
         services.AddSingleton(sp =>
         {
