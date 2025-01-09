@@ -4,7 +4,7 @@
   "description": "POS system tailored for small festivals",
   "scripts": {
     "watch": "webpack --mode development --watch",
-    "prettier": "prettier --write src/**/*.ts src/**/*.html",
+    "prettier": "prettier --write src/**/*.ts src/**/*.html *.ts *.js appsettings*.json tsconfig*.json",
     "release": "webpack --mode production",
     "clean": "rimraf --glob wwwroot/dist wwwroot/service-worker.js* wwwroot/workbox-*.js"
   },

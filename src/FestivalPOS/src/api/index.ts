@@ -575,7 +575,9 @@ export class Api {
     paymentIntent: { amount: number; description: string },
   ) {
     return http
-      .post(`/Vibrant/Accounts/${accountId}/Terminals/${terminalId}/PaymentIntents`)
+      .post(
+        `/Vibrant/Accounts/${accountId}/Terminals/${terminalId}/PaymentIntents`,
+      )
       .withJson(paymentIntent)
       .expectJson<string>();
   }

@@ -17,7 +17,7 @@ import { resolve } from "path";
 
 const config = (
   _env: any,
-  argv?: { mode?: "production" | "development" }
+  argv?: { mode?: "production" | "development" },
 ): Configuration => {
   const mode = (argv || {}).mode || "development";
   const isRelease = mode === "production";

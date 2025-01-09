@@ -19,7 +19,7 @@ export class CardPayment {
 
   constructor(
     private api: Api,
-    private progress: ProgressService
+    private progress: ProgressService,
   ) {}
 
   async canActivate(params: { orderId: string; tagNumber?: string }) {
@@ -57,7 +57,7 @@ export class CardPayment {
       await this.progress.done();
 
       let appUrl = `sumupmerchant://pay/1.0?affiliate-key=${affiliateKey}&app-id=${appId}&total=${total}&currency=DKK&title=${encodeURIComponent(
-        title
+        title,
       )}&skip-screen-success=true&callback=${encodeURIComponent(callbackUrl)}`;
       if (receiptEmail) {
         appUrl += `&receipt-email=${encodeURIComponent(receiptEmail)}`;
@@ -96,11 +96,10 @@ export class CardPayment {
 
       if (__DEBUG__ && navigator.userAgent.includes("Windows")) {
         alert("Foretag betaling i vibrant app, og tryk derefter på OK");
-      }
-      else {
+      } else {
         // App switch
         window.location.assign(
-          "vibrantio://a2a?callbackUrl=" + encodeURIComponent(callbackUrl)
+          "vibrantio://a2a?callbackUrl=" + encodeURIComponent(callbackUrl),
         );
 
         // Ensure that we have switched to the app
