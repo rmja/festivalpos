@@ -50,7 +50,6 @@ const config = (
             loader: "ts-loader",
             options: {
               silent: true,
-              configFile: "tsconfig.app.json",
             },
           },
         },
@@ -131,12 +130,11 @@ const config = (
       new InjectManifest({
         swSrc: "./src/workbox/service-worker.ts",
         swDest: resolve("./wwwroot/service-worker.js"),
-        maximumFileSizeToCacheInBytes:
-            (isRelease ? 4 : 64) * 1024 * 1024,
+        maximumFileSizeToCacheInBytes: (isRelease ? 4 : 64) * 1024 * 1024,
         manifestTransforms: [
-            addTemplatedURLs({
-                Index: ["Pages/Index.cshtml*"],
-            }),
+          addTemplatedURLs({
+            Index: ["Pages/Index.cshtml*"],
+          }),
         ],
       }),
     ],

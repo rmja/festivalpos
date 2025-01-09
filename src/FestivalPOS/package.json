@@ -1,8 +1,7 @@
 {
   "name": "festivalpos",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "POS system tailored for small festivals",
   "scripts": {
     "watch": "webpack --mode development --watch",
     "prettier": "prettier --write src/**/*.ts src/**/*.html",

@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2018",
     "sourceMap": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "skipDefaultLibCheck": true,
     "strict": true,
-    "lib": ["ES2020", "DOM", "WebWorker"],
-    "noImplicitAny": false
+    "noImplicitAny": true,
+    "lib": ["ES2018", "DOM", "WebWorker"]
   },
   "exclude": ["bin", "node_modules"]
 }
