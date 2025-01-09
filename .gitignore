@@ -1,9 +1,10 @@
 .vs
 .vscode
-*.csproj.user
 bin
 obj
 node_modules
+**/*.pubxml
+**/*.user
 **/wwwroot/dist
 **/wwwroot/service-worker.js*
 **/wwwroot/workbox-*.js*
