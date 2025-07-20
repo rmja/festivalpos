@@ -13,11 +13,24 @@ public class PaymentsController(PosContext db, IMediator mediator) : ControllerB
     [HttpPost("/api/Orders/{orderId:int}/Payments")]
     public async Task<ActionResult<Payment>> CreateOnOrder(int orderId, Payment payment)
     {
-        var order = await db.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+        var order = await db
+            .Orders.Include(x => x.Payments)
+            .FirstOrDefaultAsync(x => x.Id == orderId);
 
         if (order == null)
         {
             return NotFound();
+        }
+
+        if (payment.Provider is not null && payment.TransactionNumber is not null)
+        {
+            var existingPayment = order.Payments.FirstOrDefault(x =>
+                x.Provider == payment.Provider && x.TransactionNumber == payment.TransactionNumber
+            );
+            if (existingPayment is not null)
+            {
+                return existingPayment;
+            }
         }
 
         if (payment.Method == PaymentMethod.Account)
@@ -76,7 +89,7 @@ public class PaymentsController(PosContext db, IMediator mediator) : ControllerB
             Method = PaymentMethod.Deposit,
             Amount = -amount,
             AccountId = account.Id,
-            Created = LocalClock.Now
+            Created = LocalClock.Now,
         };
 
         db.Payments.Add(payment);
