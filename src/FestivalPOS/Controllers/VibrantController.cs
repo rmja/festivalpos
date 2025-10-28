@@ -3,7 +3,8 @@ using FestivalPOS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VibrantIo.PosApi;
-using VibrantIo.PosApi.Models;
+using VibrantIo.PosApi.PaymentIntents;
+using VibrantIo.PosApi.Terminals;
 
 namespace FestivalPOS.Controllers;
 
@@ -44,7 +45,7 @@ public class VibrantController(PosContext db, IVibrantPosApiClientFactory client
 
     [HttpGet("Accounts/{accountId}/Terminals")]
     public async Task<
-        ActionResult<List<VibrantIo.PosApi.Models.Terminal>>
+        ActionResult<List<VibrantIo.PosApi.Terminals.Terminal>>
     > GetVibrantTerminalsAsync(string accountId, CancellationToken cancellationToken)
     {
         var account = await db.VibrantAccounts.FirstOrDefaultAsync(
@@ -60,9 +61,7 @@ public class VibrantController(PosContext db, IVibrantPosApiClientFactory client
             new VibrantPosApiOptions() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
         );
 
-        var terminals = await client
-            .Terminals.GetAllAsync(cancellationToken)
-            .ToListAsync(cancellationToken);
+        var terminals = await client.Terminals.ListTerminalsAsync().ToListAsync(cancellationToken);
         return terminals;
     }
 
@@ -117,7 +116,7 @@ public class VibrantController(PosContext db, IVibrantPosApiClientFactory client
             new VibrantPosApiOptions() { ApiKey = account.ApiKey, Sandbox = account.Sandbox }
         );
 
-        var paymentIntent = await client.PaymentIntents.GetByIdAsync(
+        var paymentIntent = await client.PaymentIntents.GetPaymentIntentAsync(
             paymentIntentId,
             cancellationToken
         );
