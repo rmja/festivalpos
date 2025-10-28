@@ -1,8 +1,9 @@
 <template>
-  <div if.bind="feeds.length" class="card-deck">
-    <div repeat.for="feed of feeds" class="card">
+  <div if.bind="feeds.length" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <div repeat.for="feed of feeds" class="col">
+      <div class="card h-100">
       <div class="card-body">
-        <button if.bind="feed.pendingEvent" class="btn btn-danger btn-block">
+        <button if.bind="feed.pendingEvent" class="btn btn-danger w-100">
           <h6>${feed.name}</h6>
           <small
             >${feed.pendingEvent.terminalName},
@@ -11,12 +12,13 @@
         </button>
         <button
           else
-          class="btn btn-success btn-block"
+          class="btn btn-success w-100"
           click.delegate="raise(feed)"
         >
           <h6>${feed.name}</h6>
           <small>Send besked</small>
         </button>
+      </div>
       </div>
     </div>
   </div>

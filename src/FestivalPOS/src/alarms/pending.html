@@ -1,6 +1,7 @@
 <template>
-  <div class="card-deck" if.bind="pendingEvents.length">
-    <div class="card" repeat.for="event of pendingEvents">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" if.bind="pendingEvents.length">
+    <div class="col" repeat.for="event of pendingEvents">
+      <div class="card h-100">
       <h4 class="card-header">${event.alarmFeedName}</h4>
       <div class="card-body">
         <div class="row">
@@ -25,6 +26,7 @@
             </button>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>
