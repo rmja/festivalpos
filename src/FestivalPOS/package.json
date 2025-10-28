@@ -47,7 +47,7 @@
   "dependencies": {
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
-    "@microsoft/signalr": "^8.0.0",
+    "@microsoft/signalr": "^9.0.6",
     "@utiliread/http": "^1.17.7",
     "@utiliread/json": "^1.1.1",
     "@utiliread/jsonpatch": "^1.0.3",
@@ -62,7 +62,7 @@
     "aurelia-store": "^2.0.1",
     "aurelia-validation": "^2.0.0-rc2",
     "aurelia-workbox-cachecontrol": "^1.4.1",
-    "big.js": "^6.2.0",
+    "big.js": "^7.0.1",
     "bootstrap": "^4.5.2",
     "croppie": "^2.6.5",
     "dexie": "^4.0.7",
