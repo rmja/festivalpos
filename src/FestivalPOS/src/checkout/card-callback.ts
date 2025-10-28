@@ -7,6 +7,7 @@ import { RedirectToRoute } from "aurelia-router";
 import { State } from "../state";
 import { connectTo } from "aurelia-store";
 import { faCashRegister } from "@fortawesome/free-solid-svg-icons";
+import { VibrantState } from "./vibrant-state";
 
 type SumupParams = {
   provider: "sumup";
@@ -17,10 +18,6 @@ type SumupParams = {
 
 type VibrantParams = {
   provider: "vibrant";
-  orderId: string;
-  amount: string;
-  paymentIntentId: string;
-  tagNumber?: string;
 };
 
 @noView()
@@ -35,6 +32,7 @@ export class CardCallback {
   constructor(
     private api: Api,
     private progress: ProgressService,
+    private vibrantState: VibrantState,
   ) {}
 
   // Example callback url: https://example.com/?smp-status=success&smp-message=Transaction%20successful.&smp-receipt-sent=false&smp-tx-code=TDT3L2XDGM#/checkout/orders/87/pay/card-callback?amount=40
@@ -105,15 +103,22 @@ export class CardCallback {
   }
 
   private async processVibrant(params: VibrantParams) {
-    const orderId = Number(params.orderId);
-    const amount = new Big(params.amount);
+    const data = this.vibrantState.getState();
+    if (!data) {
+      await this.progress.error("Manglende data for vibrant betaling","Der blev ikke fundet nogen gemt betalingsintention for vibrant betalingen.");
+      return false;
+    }
 
     const intent = await this.api
       .getVibrantPaymentIntent(
         this.state.vibrantAccountId!,
-        params.paymentIntentId,
+        data.paymentIntentId,
       )
       .transfer();
+
+      
+    const orderId = Number(data.orderId);
+    const amount = new Big(intent.amount).div(100);
 
     if (intent.status === "succeeded") {
       try {
@@ -124,7 +129,7 @@ export class CardCallback {
             method: "card",
             provider: "vibrant",
             amount: amount,
-            transactionNumber: params.paymentIntentId,
+            transactionNumber: intent.id,
           })
           .transfer();
 
@@ -135,7 +140,7 @@ export class CardCallback {
           {
             orderId: orderId,
             paymentId: payment.id,
-            tagNumber: params.tagNumber,
+            tagNumber: data.tagNumber,
           },
           {
             replace: true,

@@ -48,6 +48,11 @@ const routes: RouteConfig[] = [
     name: "receipt",
     moduleId: PLATFORM.moduleName("./receipt", "checkout"),
   },
+  {
+    route: "card-callback",
+    name: "card-callback",
+    moduleId: PLATFORM.moduleName("./card-callback", "checkout"),
+  },
 ];
 
 export class CheckoutRouter {

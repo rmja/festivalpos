@@ -7,6 +7,7 @@ import { State } from "../state";
 import { VibrantPaymentIntent } from "../api/vibrant";
 import { connectTo } from "aurelia-store";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
+import { VibrantState } from "./vibrant-state";
 
 @noView()
 @autoinject()
@@ -20,6 +21,7 @@ export class CardPayment {
   constructor(
     private api: Api,
     private progress: ProgressService,
+    private vibrantState: VibrantState,
   ) {}
 
   async canActivate(params: { orderId: string; tagNumber?: string }) {
@@ -87,10 +89,13 @@ export class CardPayment {
         })
         .transfer();
 
-      let callbackUrl = `${window.location.origin}/#/checkout/orders/${order.id}/pay/card-callback?provider=vibrant&amount=${order.amountDue}&paymentIntentId=${id}`;
-      if (tagNumber) {
-        callbackUrl += `&tagNumber=${tagNumber}`;
-      }
+      const callbackUrl = `${window.location.origin}/#/checkout/card-callback?provider=vibrant`;
+
+      this.vibrantState.setState({
+        paymentIntentId: id,
+        orderId,
+        tagNumber,
+      });
 
       this.progress.setBusy("Afventer betaling i vibrant app", faCreditCard);
 
