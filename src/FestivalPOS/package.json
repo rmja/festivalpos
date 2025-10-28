@@ -48,9 +48,9 @@
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@microsoft/signalr": "^9.0.6",
-    "@utiliread/http": "^1.17.7",
-    "@utiliread/json": "^1.1.1",
-    "@utiliread/jsonpatch": "^1.0.3",
+    "@utiliread/http": "^1.24.0",
+    "@utiliread/json": "^1.4.2",
+    "@utiliread/jsonpatch": "^1.1.2",
     "aurelia-bootstrapper": "^2.4.0",
     "aurelia-dialog": "^2.0.0",
     "aurelia-dragula": "^2.0.7",
@@ -63,14 +63,13 @@
     "aurelia-validation": "^2.0.0-rc2",
     "aurelia-workbox-cachecontrol": "^1.4.1",
     "big.js": "^7.0.1",
-    "bootstrap": "^4.5.2",
+    "bootstrap": "^5.3.3",
     "croppie": "^2.6.5",
     "dexie": "^4.0.7",
     "hammerjs": "^2.0.8",
     "jquery": "^3.6.0",
     "luxon": "^3.0.4",
     "nosleep.js": "^0.12.0",
-    "popper.js": "^1.16.1",
     "qrcodejs2": "^0.0.2"
   }
 }

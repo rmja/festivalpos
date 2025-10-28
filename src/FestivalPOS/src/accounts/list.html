@@ -12,10 +12,10 @@
       <tr repeat.for="account of accounts">
         <td>${account.number}</td>
         <td style="width: 100%">${account.name}</td>
-        <td class="text-right" style="white-space: nowrap">
+        <td class="text-end" style="white-space: nowrap">
           ${account.maxCredit | money}
         </td>
-        <td class="text-right" style="white-space: nowrap">
+        <td class="text-end" style="white-space: nowrap">
           ${account.remainingCredit | money}
         </td>
         <td>

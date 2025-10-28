@@ -15,19 +15,19 @@
     <button
       class="navbar-toggler collapsed"
       type="button"
-      data-toggle="collapse"
-      data-target="#navbar"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbar"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="top-navbar-actions ml-auto">
+    <div class="top-navbar-actions ms-auto">
       <slot></slot>
     </div>
 
     <div class="navbar-collapse collapse" id="navbar">
       <small style="color: #bbb">${pointOfSaleName}</small>
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav me-auto">
         <li
           repeat.for="nav of router.navigation"
           class="nav-item ${nav.active ? 'active' : ''} ${nav.settings.childRoutes ? 'dropdown' : ''}"
@@ -36,7 +36,7 @@
             <a
               class="nav-link dropdown-toggle"
               href
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               fast-click
               >${nav.title}</a
             >

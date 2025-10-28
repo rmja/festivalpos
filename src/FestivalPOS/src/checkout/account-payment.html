@@ -2,7 +2,7 @@
   <form submit.delegate="submit()">
     <div class="row">
       <h3 class="col text-muted">Total</h3>
-      <h3 class="col text-right">${total | money} kr.</h3>
+      <h3 class="col text-end">${total | money} kr.</h3>
     </div>
 
     <keypad-display
@@ -17,7 +17,7 @@
     </div>
     <div class="row">
       <h4 class="col text-muted">Kredit</h4>
-      <h4 class="col text-right ${remainingCreditClass}">
+      <h4 class="col text-end ${remainingCreditClass}">
         ${remainingCredit | money} kr.
       </h4>
     </div>

@@ -2,15 +2,15 @@
   <form submit.delegate="submit()">
     <div class="row">
       <h3 class="col text-muted">Total</h3>
-      <h3 class="col text-right">${total | money} kr.</h3>
+      <h3 class="col text-end">${total | money} kr.</h3>
     </div>
     <div class="row" if.bind="amountDue.neq(total)">
       <h3 class="col text-muted">Til betaling</h3>
-      <h3 class="col text-right">${amountDue | money} kr.</h3>
+      <h3 class="col text-end">${amountDue | money} kr.</h3>
     </div>
     <div class="row">
       <h4 class="col text-muted">Tilbage</h4>
-      <h4 class="col text-right">${change | money} kr.</h4>
+      <h4 class="col text-end">${change | money} kr.</h4>
     </div>
 
     <keypad-display

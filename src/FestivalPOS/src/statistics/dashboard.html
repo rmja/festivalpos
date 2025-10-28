@@ -12,7 +12,7 @@
             >${year}</a
           >
           <span else>${year}</span>
-          <a href class="dropdown-toggle" data-toggle="dropdown"></a>
+          <a href class="dropdown-toggle" data-bs-toggle="dropdown"></a>
           <div class="dropdown-menu">
             <a
               class="dropdown-item"
@@ -38,18 +38,16 @@
   </nav>
 
   <div class="input-group">
-    <div class="input-group-prepend">
-      <span class="input-group-text"
-        ><font-awesome-icon icon="filter"></font-awesome-icon
-      ></span>
-    </div>
-    <select class="custom-select" value.bind="pointOfSale">
+    <span class="input-group-text"
+      ><font-awesome-icon icon="filter"></font-awesome-icon
+    ></span>
+    <select class="form-select" value.bind="pointOfSale">
       <option>Alle salgssteder</option>
       <option repeat.for="pos of pointsOfSale" model.bind="pos">
         ${pos.name}
       </option>
     </select>
-    <select class="custom-select" value.bind="terminal">
+    <select class="form-select" value.bind="terminal">
       <option>Alle terminaler</option>
       <option repeat.for="terminal of terminals" model.bind="terminal">
         ${terminal.name}

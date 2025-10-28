@@ -25,10 +25,6 @@ export class EditProductDialog {
     }
   }
 
-  close() {
-    this.controller.cancel();
-  }
-
   submit() {
     const result: PointOfSaleProduct = JSON.parse(JSON.stringify(this.product));
     result.presale = this.presale;

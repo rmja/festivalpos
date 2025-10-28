@@ -35,10 +35,6 @@ export class AddProductDialog {
     }
   }
 
-  close() {
-    this.controller.cancel();
-  }
-
   submit() {
     const output: PointOfSaleProduct = {
       product: this.product,

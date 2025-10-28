@@ -21,8 +21,8 @@
       <tr repeat.for="product of products">
         <td>Billede</td>
         <td style="width: 100%">${product.name}</td>
-        <td class="text-right">${product.price | money}</td>
-        <td class="text-right">
+        <td class="text-end">${product.price | money}</td>
+        <td class="text-end">
           <a
             route-href="route: edit; params.bind: { productId: product.id }"
             class="btn btn-light btn-sm"

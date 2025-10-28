@@ -6,12 +6,12 @@
         <table class="table table-sm">
           <thead>
             <th>Vare</th>
-            <th class="text-right">Antal</th>
+            <th class="text-end">Antal</th>
           </thead>
           <tbody style="font-size: xx-large">
             <tr repeat.for="[name, count] of pendingServingSummary">
               <td style="white-space: nowrap; display: block">${name}</td>
-              <td class="text-right">${count}</td>
+              <td class="text-end">${count}</td>
             </tr>
           </tbody>
         </table>

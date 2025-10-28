@@ -14,10 +14,6 @@ export class ServerDialog {
     this.name = model?.name ?? "";
   }
 
-  close() {
-    this.controller.cancel();
-  }
-
   submit() {
     const output: Partial<ServingStaff> = {
       name: this.name,
