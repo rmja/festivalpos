@@ -2,19 +2,22 @@
   <require from="./serving-item"></require>
   <div class="container" style="width: 100%; max-width: 100%; padding: 20px">
     <div class="row">
+      <table class="table table-sm">
+        <thead>
+          <th>Vare</th>
+          <th class="text-end">Antal</th>
+        </thead>
+        <tbody style="font-size: 36pt">
+          <tr repeat.for="[name, count] of pendingServingSummary">
+            <td style="white-space: nowrap; display: block">${name}</td>
+            <td class="text-end">${count}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
       <div class="col">
-        <table class="table table-sm">
-          <thead>
-            <th>Vare</th>
-            <th class="text-end">Antal</th>
-          </thead>
-          <tbody style="font-size: xx-large">
-            <tr repeat.for="[name, count] of pendingServingSummary">
-              <td style="white-space: nowrap; display: block">${name}</td>
-              <td class="text-end">${count}</td>
-            </tr>
-          </tbody>
-        </table>
+        <h6>Kø</h6>
         <div class="list-group">
           <div
             repeat.for="serving of pendingServings"
