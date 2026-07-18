@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
@@ -33,19 +32,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.26.0" />
-    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.29.1" />
+    <PackageReference Include="Dapper" Version="2.1.79" />
     <PackageReference Include="MediatR" Version="13.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.10" />
+    <PackageReference
+      Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"
+      Version="1.23.0"
+    />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
-    <PackageReference Include="StackExchange.Redis" Version="2.9.32" />
-    <PackageReference Include="SystemTextJsonPatch" Version="4.2.0" />
-    <PackageReference Include="VibrantIo.PosApi" Version="0.0.15" />
+    <PackageReference Include="StackExchange.Redis" Version="3.0.17" />
+    <PackageReference Include="SystemTextJsonPatch" Version="5.0.0" />
+    <PackageReference Include="VibrantIo.PosApi" Version="0.0.16" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,16 +61,18 @@
 
   <!-- https://learn.microsoft.com/en-us/aspnet/core/client-side/spa-services#publish-the-app -->
   <Target Name="PublishWebpackRelease" AfterTargets="ComputeFilesToPublish">
-	<!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-	<Exec Command="npm run release" />
-	<ItemGroup>
-	  <DistFiles Include="wwwroot\dist\**" />
-	  <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-		<RelativePath>%(DistFiles.Identity)</RelativePath>
-		<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	  </ResolvedFileToPublish>
-	</ItemGroup>
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec Command="npm run release" />
+    <ItemGroup>
+      <DistFiles Include="wwwroot\dist\**" />
+      <ResolvedFileToPublish
+        Include="@(DistFiles->'%(FullPath)')"
+        Exclude="@(ResolvedFileToPublish)"
+      >
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
   </Target>
-
 </Project>

@@ -1,5 +1,4 @@
-﻿using FestivalPOS.Extensions;
-using FestivalPOS.Models;
+﻿using FestivalPOS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VibrantIo.PosApi;
