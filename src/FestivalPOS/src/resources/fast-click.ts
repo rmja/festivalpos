@@ -7,6 +7,9 @@ export class FastClick {
   private faked: boolean | "faking" = false;
   private timer = 0;
   private timerStarted?: number;
+  private touchStartX = 0;
+  private touchStartY = 0;
+  private isScrolling = false;
   private logger = LogManager.getLogger("fast-click");
 
   constructor(element: Element) {
@@ -15,24 +18,57 @@ export class FastClick {
     } else {
       throw new Error("Unsupported target element");
     }
+    this.touchstart = this.touchstart.bind(this);
+    this.touchmove = this.touchmove.bind(this);
     this.touchend = this.touchend.bind(this);
     this.click = this.click.bind(this);
   }
 
   bind() {
+    this.element.addEventListener("touchstart", this.touchstart, { passive: true });
+    this.element.addEventListener("touchmove", this.touchmove, { passive: true });
     this.element.addEventListener("touchend", this.touchend);
     this.element.addEventListener("click", this.click);
   }
 
   unbind() {
+    this.element.removeEventListener("touchstart", this.touchstart);
+    this.element.removeEventListener("touchmove", this.touchmove);
     this.element.removeEventListener("touchend", this.touchend);
     this.element.removeEventListener("click", this.click);
+  }
+
+  private touchstart(event: Event) {
+    const touch = (event as TouchEvent).touches[0];
+    if (!touch) return;
+    this.touchStartX = touch.clientX;
+    this.touchStartY = touch.clientY;
+    this.isScrolling = false;
+  }
+
+  private touchmove(event: Event) {
+    const touch = (event as TouchEvent).touches[0];
+    if (!touch) return;
+    const dx = Math.abs(touch.clientX - this.touchStartX);
+    const dy = Math.abs(touch.clientY - this.touchStartY);
+    if (dx > 8 || dy > 8) {
+      this.isScrolling = true;
+    }
   }
 
   // This event is fired first
   private touchend(_event: Event) {
     // The target of the event is where the touch started, and not where the touch ended,
     // i.e. the event is only fired if the swipe orignated from the anchor/button.
+    if (this.isScrolling) {
+      // User was scrolling — cancel any pending timer and do not fire a click.
+      if (this.timer) {
+        window.clearTimeout(this.timer);
+        this.timer = 0;
+      }
+      this.isScrolling = false;
+      return;
+    }
     this.faked = false;
     if (this.timer) {
       // Multiple touchend events can be generated for example if more than one finger touches.
@@ -58,6 +94,7 @@ export class FastClick {
     } else if (this.faked) {
       const elapsed = performance.now() - this.timerStarted!;
       event.preventDefault();
+      event.stopPropagation();
       this.logger.warn(
         `Real click event was cancelled because it was already faked (touchend fired ${elapsed}ms ago)`,
       );

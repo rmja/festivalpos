@@ -31,13 +31,15 @@
   <div class="wrapper">
     <div class="container" style="width: 100%; max-width: 100%">
       <div class="row">
-        <div class="col-sm-2" style="height: calc(100vh - 70px); overflow-y: auto;">
+        <div class="col-sm-2" style="height: calc(100vh - 70px); overflow-y: auto; touch-action: none; -webkit-user-select: none; -moz-user-select: none; user-select: none;" drag-scroll>
           <h6>Kø</h6>
           <div class="list-group">
-            <button
-              type="button"
+            <div
               repeat.for="serving of pendingServings"
+              role="button"
+              tabindex="0"
               class="list-group-item list-group-item-warning list-group-item-action ${serving === selectedServing ? 'active' : ''}"
+              style="cursor: pointer; touch-action: pan-y; -webkit-user-select: none; -moz-user-select: none; user-select: none;"
               click.delegate="toggleSelected(serving)"
               fast-click
             >
@@ -45,7 +47,7 @@
                 serving.bind="serving"
                 now.bind="now"
               ></serving-item>
-            </button>
+            </div>
           </div>
           ${selectedServing.thisIsNeededAsAHackToTriggerTheActiveClass}
         </div>

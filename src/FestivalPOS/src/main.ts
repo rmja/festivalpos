@@ -46,6 +46,7 @@ export async function configure(aurelia: Aurelia) {
     .globalResources(PLATFORM.moduleName("empty-hint.html"))
     .globalResources(PLATFORM.moduleName("resources/date-time-format"))
     .globalResources(PLATFORM.moduleName("resources/fast-click"))
+    .globalResources(PLATFORM.moduleName("resources/drag-scroll"))
     .globalResources(PLATFORM.moduleName("resources/money-format"))
     .globalResources(PLATFORM.moduleName("resources/number-format"))
     .globalResources(PLATFORM.moduleName("resources/keypad-display"))
